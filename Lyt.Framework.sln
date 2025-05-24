@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Persistence", "Lyt.Pers
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Translator.Service", "Lyt.Translator.Service\Lyt.Translator.Service.csproj", "{D4DF9CC9-63E9-475A-98CF-57C1EABD26D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.UserAdministration", "Lyt.UserAdministration\Lyt.UserAdministration.csproj", "{2DB6F066-F6DB-42A6-9CCC-8AFE23867472}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{D4DF9CC9-63E9-475A-98CF-57C1EABD26D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4DF9CC9-63E9-475A-98CF-57C1EABD26D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4DF9CC9-63E9-475A-98CF-57C1EABD26D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DB6F066-F6DB-42A6-9CCC-8AFE23867472}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DB6F066-F6DB-42A6-9CCC-8AFE23867472}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DB6F066-F6DB-42A6-9CCC-8AFE23867472}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DB6F066-F6DB-42A6-9CCC-8AFE23867472}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

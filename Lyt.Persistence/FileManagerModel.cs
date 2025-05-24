@@ -2,6 +2,24 @@
 
 public sealed class FileManagerModel : ModelBase, IModel
 {
+    public enum Area
+    {
+        Logs,
+        Settings,
+        Configuration,
+        User,
+        Resources,
+        Desktop,
+    }
+
+    public enum Kind
+    {
+        Json,
+        Text,
+        Binary,
+        BinaryNoExtension,
+    }
+
     public const string Wildcard = "*";
     public const string JsonExtension = ".json";
     public const string TextExtension = ".txt";
