@@ -6,16 +6,16 @@ public sealed class FormValidator<T>(FormValidatorParameters<T> parameters)
     private readonly FormValidatorParameters<T> parameters = parameters;
     private readonly List<FieldValidator> fieldValidators = [.. parameters.FieldValidators];
 
-    private T? value; 
+    private T? value;
 
     public Type TargetType => typeof(T);
 
     public bool HasValue { get; private set; }
 
-    public T Value 
-        => this.HasValue && this.value is not null ? 
-            this.value : 
-            throw new InvalidOperationException("No value, should have checked 'HasValue'."); 
+    public T Value
+        => this.HasValue && this.value is not null ?
+            this.value :
+            throw new InvalidOperationException("No value, should have checked 'HasValue'.");
 
     public void Clear(IBindable viewModel)
     {
@@ -26,9 +26,7 @@ public sealed class FormValidator<T>(FormValidatorParameters<T> parameters)
 
         viewModel.ClearValidationMessage(this.parameters.MessagePropertyName);
         this.SetFormValidProperty(viewModel, isValid: false);
-
         string? focusFieldName = this.parameters.FocusFieldName;
-
         if (!string.IsNullOrWhiteSpace(focusFieldName))
         {
             bool focused = viewModel.TryFocus(focusFieldName);
@@ -37,7 +35,6 @@ public sealed class FormValidator<T>(FormValidatorParameters<T> parameters)
                 viewModel.Logger.Warning(viewModel.GetType().Name + ": Focus has not been set.");
             }
         }
-
     }
 
     public FormValidatorResults<T> Validate(IBindable viewModel)

@@ -2,6 +2,8 @@
 
 public static class GeneralExtensions
 {
+    public static bool Is<T>(this Type type) => typeof(T) == type;
+
     public static bool Implements<TInterface>(this Type type)        
         => typeof(TInterface).IsAssignableFrom(type);
 
