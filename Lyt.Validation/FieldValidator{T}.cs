@@ -14,6 +14,7 @@ public sealed class FieldValidator<T>(FieldValidatorParameters<T> parameters)
         viewModel.Set(string.Empty, this.parameters.SourcePropertyName);
         viewModel.ClearValidationMessage(this.parameters.MessagePropertyName);
     }
+
     public override FieldValidatorResults<T> Validate(IBindable viewModel)
     {
         string ShowValidationMessage(string message)

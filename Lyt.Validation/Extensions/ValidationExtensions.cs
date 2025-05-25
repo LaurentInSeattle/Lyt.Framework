@@ -102,21 +102,4 @@ public static class ValidationExtensions
 
         return methodInfo.Invoke(target, null);
     }
-
-    public static IControl? GetControlByName(this IBindable bindable, string name)
-    {
-        if ((string.IsNullOrWhiteSpace(name)) || (bindable.Control is null))
-        {
-            return null;
-        }
-
-        IControl view = bindable.Control;
-        object? maybeControl = view.FindControl<IControl>(name);
-        if (maybeControl is IControl control)
-        {
-            return control;
-        }
-
-        return null;
-    }
 }

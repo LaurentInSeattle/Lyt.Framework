@@ -4,9 +4,9 @@ using Lyt.Framework.Interfaces.Logging;
 
 public interface IBindable
 {
-    IControl Control { get; }
-
     ILogger Logger { get; }
+
+    bool TryFocus(string propertyName);
 
     bool CanLocalize { get; }
 
