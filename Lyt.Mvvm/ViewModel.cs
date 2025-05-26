@@ -3,8 +3,7 @@
 namespace Lyt.Mvvm;
 
 /// <summary> Bindable class, aka a View Model.  </summary>
-/// <remarks> All bound properties are held in a dictionary.</remarks>
-public class Bindable : ObservableObject, ISupportBehaviors, IBindable
+public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
 {
     private static ILocalizer? StaticLocalizer;
 
@@ -58,18 +57,7 @@ public class Bindable : ObservableObject, ISupportBehaviors, IBindable
         }
     }
 
-    public Bindable()
-    {
-        try
-        {
-            // this.CreateAndBindCommands();
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine("Failed to bind commands and property changed actions \n" + ex.ToString());
-            throw;
-        }
-    }
+    public ViewModel() {    }
 
 #pragma warning disable IDE0079
 #pragma warning disable CA1822 // Mark members as static
@@ -88,29 +76,25 @@ public class Bindable : ObservableObject, ISupportBehaviors, IBindable
 
     /// <summary> The control, its Data Context is this instance. </summary>
     /// <remarks> Aka, the "View" </remarks>
-    public IControl? Control { get; private set; }
-
-    /// <summary> Allows to disable logging of automatic bindings so that we do not flood the logs. </summary>
-    public bool DisableAutomaticBindingsLogging { get; set; }
+    public IView? ViewBase { get; private set; }
 
     public List<object> Behaviors { get; private set; } = [];
 
     /// <summary> Binds a control and setup callbacks. </summary>
-    public void BindOnDataContextChanged(IControl control)
+    public void BindOnDataContextChanged(IView view)
     {
-        this.Control = control;
+        this.ViewBase = view;
         this.OnDataBinding();
-        this.Control.Loaded += (s, e) => this.OnViewLoaded();
     }
 
     /// <summary> Binds a control and setup callbacks. </summary>
-    public void Bind(IControl control)
+    public void Bind(IView view)
     {
-        this.Control = control;
+        this.ViewBase = view;
         this.Unbind();
         try
         {
-            this.Control.DataContext = this;
+            this.ViewBase.DataContext = this;
         }
         catch (InvalidCastException ex)
         {
@@ -118,39 +102,35 @@ public class Bindable : ObservableObject, ISupportBehaviors, IBindable
             // Major issue when defining the view, usually conflicting DaataContext by inheritance
             if (Debugger.IsAttached) { Debugger.Break(); }
             Debug.WriteLine(this.GetType().FullName);
-            Debug.WriteLine(this.Control.GetType().FullName);
-            Debug.WriteLine(this.Control.DataContext?.GetType().FullName);
+            Debug.WriteLine(this.ViewBase.GetType().FullName);
+            Debug.WriteLine(this.ViewBase.DataContext?.GetType().FullName);
             Debug.WriteLine(ex);
         }
 
         this.OnDataBinding();
-        this.Control.Loaded += (s, e) => this.OnViewLoaded();
     }
 
     /// <summary> Unbinds this bindable. </summary>
     public void Unbind()
     {
-        if (this.Control is not null)
+        if (this.ViewBase is not null)
         {
-            if (this.Control.DataContext != null)
+            if (this.ViewBase.DataContext != null)
             {
-                this.Control.DataContext = null;
+                this.ViewBase.DataContext = null;
             }
-
-            this.Control.Loaded -= (s, e) => this.OnViewLoaded();
         }
     }
 
     /// <summary> Unbinds the provided control. </summary>
-    public static void Unbind(IControl control)
+    public static void Unbind(IView view)
     {
-        if (control is not null)
+        if (view is not null)
         {
-            if (control.DataContext is Bindable bindable)
+            if (view.DataContext is ViewModel bindable)
             {
-                bindable.Control = null;
-                control.DataContext = null;
-                control.Loaded -= (s, e) => bindable.OnViewLoaded();
+                bindable.ViewBase = null;
+                view.DataContext = null;
             }
         }
     }
@@ -159,7 +139,7 @@ public class Bindable : ObservableObject, ISupportBehaviors, IBindable
     protected virtual void OnDataBinding() { }
 
     /// <summary> Invoked when this bindable control is loaded. </summary>
-    protected virtual void OnViewLoaded() { }
+    public virtual void OnViewLoaded() { }
 
     /// <summary> Usually invoked when this bindable is about to be shown, but could be used for other purposes. </summary>
     public virtual void Activate(object? activationParameters) => this.LogActivation(activationParameters);
@@ -182,10 +162,20 @@ public class Bindable : ObservableObject, ISupportBehaviors, IBindable
     #region IBindable implementation 
 
     public void Set(string message, string messagePropertyName)
-    { } //    => _ = this.Set<string>(message, messagePropertyName);
+        //    => _ = this.Set<string>(message, messagePropertyName);
+        => this.InvokeSetProperty(messagePropertyName, message);
 
     public string? Get(string sourcePropertyName)
-    => sourcePropertyName; //     => this.Get<string>(sourcePropertyName);
+    {
+        // => this.Get<string>(sourcePropertyName);
+        object? maybeString = this.InvokeGetProperty(sourcePropertyName);
+        if ( maybeString is string realString)
+        {
+            return realString; 
+        }
+
+        return null;
+    } 
 
     public ILogger Logger => StaticLogger;
 
@@ -215,7 +205,7 @@ public class Bindable : ObservableObject, ISupportBehaviors, IBindable
         return false;
     }
 
-    public IControl? GetControlByName(string name)
+    public IView? GetControlByName(string name)
     {
         //if ((string.IsNullOrWhiteSpace(name)) || (this.Control is null))
         //{
@@ -232,7 +222,6 @@ public class Bindable : ObservableObject, ISupportBehaviors, IBindable
     }
 
     #endregion IBindable implementation 
-
 
     #region Debug Utilities 
 

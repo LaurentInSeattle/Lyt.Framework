@@ -2,25 +2,6 @@
 
 public static class GeneralExtensions
 {
-    public static bool Is<T>(this Type type) => typeof(T) == type;
-
-    public static bool Implements<TInterface>(this Type type)        
-        => typeof(TInterface).IsAssignableFrom(type);
-
-    public static bool DerivesFrom<TBase>(this Type type)
-        where TBase : class
-        => typeof(TBase).IsAssignableFrom(type);
-
-    public static Action<object>? CastToActionObject<T>(this Action<T> actionOfT)
-    {
-        if (actionOfT == null)
-        {
-            return null;
-        }
-
-        return new Action<object>((o) => actionOfT((T)o));
-    }
-
     public static void ForEach<T>(this IEnumerable<T> sequence, Action<T> action)
     {
         if (sequence == null)

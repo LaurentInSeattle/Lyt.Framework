@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Lyt.Framework.Interfaces\Lyt.Framework.Interfaces.csproj" />
+    <ProjectReference Include="..\Lyt.Utilities\Lyt.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

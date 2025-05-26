@@ -1,7 +1,7 @@
 ﻿namespace Lyt.Mvvm;
 
-public class DialogBindable<TControl, TParameters> : Bindable<TControl>
-    where TControl : class, IControl, new()
+public class DialogBindable<TControl, TParameters> : ViewModel<TControl>
+    where TControl : class, IView, new()
 {
     protected readonly IDialogService dialogService;
 
