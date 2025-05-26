@@ -21,7 +21,7 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
 
 #pragma warning restore CS8618 
 
-    public static void InitializeBindable(IHost host)
+    public static void TypeInitialize(IHost host)
     {
         StaticHost = host;
         var services = host.Services;
