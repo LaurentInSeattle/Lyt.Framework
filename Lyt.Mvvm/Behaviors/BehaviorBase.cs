@@ -1,6 +1,6 @@
 ﻿namespace Lyt.Mvvm.Behaviors;
 
-/// <summary> Allows extending functionality to any object, including Bindable. </summary>
+/// <summary> Allows extending functionality to any object, including View Models. </summary>
 /// <typeparam name="TObject">The type of the associated object.</typeparam>
 public abstract class BehaviorBase<TObject> where TObject : class, ISupportBehaviors
 {

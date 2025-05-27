@@ -2,7 +2,9 @@
 
 namespace Lyt.Mvvm;
 
-/// <summary> Bindable class, aka a View Model.  </summary>
+/// <summary> 
+/// View Model base class, derived from ObservableObject from the MSFT CTK. 
+/// </summary>
 public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
 {
     private static ILocalizer? StaticLocalizer;
@@ -80,14 +82,14 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
 
     public List<object> Behaviors { get; private set; } = [];
 
-    /// <summary> Binds a control and setup callbacks. </summary>
+    /// <summary> Binds a view and setup callbacks. </summary>
     public void BindOnDataContextChanged(IView view)
     {
         this.ViewBase = view;
         this.OnDataBinding();
     }
 
-    /// <summary> Binds a control and setup callbacks. </summary>
+    /// <summary> Binds a view and setup callbacks. </summary>
     public void Bind(IView view)
     {
         this.ViewBase = view;
@@ -110,7 +112,7 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
         this.OnDataBinding();
     }
 
-    /// <summary> Unbinds this bindable. </summary>
+    /// <summary> Unbinds this view model. </summary>
     public void Unbind()
     {
         if (this.ViewBase is not null)
@@ -122,7 +124,7 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
         }
     }
 
-    /// <summary> Unbinds the provided control. </summary>
+    /// <summary> Unbinds the provided view. </summary>
     public static void Unbind(IView view)
     {
         if (view is not null)
@@ -135,16 +137,16 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
         }
     }
 
-    /// <summary> Invoked when this bindable is bound </summary>
+    /// <summary> Invoked when this view model is bound </summary>
     protected virtual void OnDataBinding() { }
 
-    /// <summary> Invoked when this bindable control is loaded. </summary>
+    /// <summary> Invoked when this view model's control is loaded. </summary>
     public virtual void OnViewLoaded() { }
 
-    /// <summary> Usually invoked when this bindable is about to be shown, but could be used for other purposes. </summary>
+    /// <summary> Usually invoked when this view model is about to be shown, but could be used for other purposes. </summary>
     public virtual void Activate(object? activationParameters) => this.LogActivation(activationParameters);
 
-    /// <summary> Usually invoked when this bindable is about to be hidden, and same as above. </summary>
+    /// <summary> Usually invoked when this view model is about to be hidden, and same as above. </summary>
     public virtual void Deactivate() => this.LogDeactivation();
 
     public virtual bool CanEscape { get; set; } = true;
