@@ -1,25 +1,25 @@
 ﻿namespace Lyt.Mvvm;
 
-public class DialogBindable<TControl, TParameters> : ViewModel<TControl>
+public class DialogViewModel<TControl, TParameters> : ViewModel<TControl>
     where TControl : class, IView, new()
 {
     protected readonly IDialogService dialogService;
 
-    protected Action<DialogBindable<TControl, TParameters>, bool>? onClose;
+    protected Action<DialogViewModel<TControl, TParameters>, bool>? onClose;
 
     protected TParameters? parameters;
 
-    public DialogBindable() : base()
+    public DialogViewModel() : base()
         => this.dialogService = this.Host.Services.GetRequiredService<IDialogService>();
 
-    public DialogBindable(TControl control) : base()
+    public DialogViewModel(TControl control) : base()
     {
         this.dialogService = this.Host.Services.GetRequiredService<IDialogService>();
         this.Bind(control);
     }
 
     public virtual void Initialize(
-        Action<DialogBindable<TControl, TParameters>, 
+        Action<DialogViewModel<TControl, TParameters>, 
         bool>? onClose,
         TParameters? parameters)
     {
