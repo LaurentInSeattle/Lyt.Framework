@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Lyt.Framework.Interfaces\Lyt.Framework.Interfaces.csproj" />
+    <ProjectReference Include="..\Lyt.Mvvm\Lyt.Mvvm.csproj" />
+    <ProjectReference Include="..\Lyt.StateMachine\Lyt.StateMachine.csproj" />
+    <ProjectReference Include="..\Lyt.Utilities\Lyt.Utilities.csproj" />
+  </ItemGroup>
+
+</Project>
