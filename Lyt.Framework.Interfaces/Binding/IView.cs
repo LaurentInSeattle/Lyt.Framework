@@ -1,4 +1,4 @@
-﻿namespace Lyt.Mvvm; 
+﻿namespace Lyt.Framework.Interfaces.Binding; 
 
 public interface IView
 {
