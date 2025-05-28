@@ -129,9 +129,9 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
     {
         if (view is not null)
         {
-            if (view.DataContext is ViewModel bindable)
+            if (view.DataContext is ViewModel viewModel)
             {
-                bindable.ViewBase = null;
+                viewModel.ViewBase = null;
                 view.DataContext = null;
             }
         }
@@ -227,7 +227,7 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
 
     #region Debug Utilities 
 
-    /// <summary> Logs that a bindable is being deactivated. </summary>
+    /// <summary> Logs that a view model is being deactivated. </summary>
     [Conditional("DEBUG")]
     private void LogDeactivation()
     {
@@ -236,7 +236,7 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
         this.Logger.Info(message);
     }
 
-    /// <summary> Logs that a bindable is being activated. </summary>
+    /// <summary> Logs that a view model is being activated. </summary>
     [Conditional("DEBUG")]
     private void LogActivation(object? parameter)
     {
