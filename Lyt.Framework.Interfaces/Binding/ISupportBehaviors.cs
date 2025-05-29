@@ -1,4 +1,4 @@
-﻿namespace Lyt.Mvvm.Behaviors;
+﻿namespace Lyt.Framework.Interfaces.Binding;
 
 /// <summary> 
 /// Tricky ! Seems to be doing nothing but...

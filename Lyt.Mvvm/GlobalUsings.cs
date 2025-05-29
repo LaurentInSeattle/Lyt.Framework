@@ -39,9 +39,6 @@ global using Lyt.Framework.Interfaces.Profiling;
 //global using Lyt.Messaging;
 global using Lyt.Utilities.Extensions;
 
-global using Lyt.Mvvm.Behaviors;
-global using Lyt.Mvvm.Dialog;
-
 
 
 

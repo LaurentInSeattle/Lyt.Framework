@@ -1,12 +1,4 @@
-﻿namespace Lyt.Mvvm.Dialog;
-
-public enum InformationLevel
-{
-    Info,
-    Warning,
-    Error,
-    Success,
-}
+﻿namespace Lyt.Framework.Interfaces.Binding;
 
 public sealed class ConfirmActionParameters
 {
