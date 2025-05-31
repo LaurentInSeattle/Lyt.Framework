@@ -1,5 +1,7 @@
 ﻿// #define VERBOSE_Bindable
 
+using Lyt.Framework.Interfaces.Dispatching;
+
 namespace Lyt.Mvvm;
 
 /// <summary> 
@@ -16,6 +18,8 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
     private static IHost StaticHost;
 
     private static ILogger StaticLogger;
+
+    private static IDispatch StaticDispatcher;
 
     private static IMessenger StaticMessenger;
 
@@ -35,13 +39,14 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
 
         try
         {
+            StaticDispatcher = host.Services.GetRequiredService<IDispatch>();
             StaticMessenger = host.Services.GetRequiredService<IMessenger>();
             StaticLogger = host.Services.GetRequiredService<ILogger>();
             StaticProfiler = host.Services.GetRequiredService<IProfiler>();
         }
         catch (Exception ex)
         {
-            Debug.WriteLine("Missing essential services \n" + ex.ToString());
+            Debug.WriteLine("Missing some essential services \n" + ex.ToString());
             throw;
         }
 
@@ -68,6 +73,8 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
 
     public ILocalizer Localizer =>
         this.CanLocalize ? StaticLocalizer! : throw new Exception("Should have checked CanLocalize property.");
+
+    public IDispatch Dispatcher => StaticDispatcher;
 
     public IMessenger Messenger => StaticMessenger;
 
@@ -187,7 +194,7 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
     {
         if (this.CanLocalize)
         {
-            return this.Localize(message);
+            return this.Localizer.Lookup(message);
         }
 
         return message;
