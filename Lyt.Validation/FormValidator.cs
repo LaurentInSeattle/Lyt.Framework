@@ -29,7 +29,7 @@ public sealed class FormValidator<T>(FormValidatorParameters<T> parameters)
         string? focusFieldName = this.parameters.FocusFieldName;
         if (!string.IsNullOrWhiteSpace(focusFieldName))
         {
-            bool focused = viewModel.TryFocus(focusFieldName);
+            bool focused = viewModel.TryFocusField(focusFieldName);
             if (!focused)
             {
                 viewModel.Logger.Warning(viewModel.GetType().Name + ": Focus has not been set.");

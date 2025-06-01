@@ -6,7 +6,7 @@ public interface IBindable
 {
     ILogger Logger { get; }
 
-    bool TryFocus(string propertyName);
+    bool TryFocusField(string fieldName);
 
     bool CanLocalize { get; }
 

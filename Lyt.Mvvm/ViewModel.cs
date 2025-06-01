@@ -17,6 +17,8 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
 
     private static IHost StaticHost;
 
+    private static IFocuser StaticFocuser;
+
     private static ILogger StaticLogger;
 
     private static IDispatch StaticDispatcher;
@@ -57,6 +59,12 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
             {
                 StaticLogger.Error("Missing localizer service, will not be able to localize. \n");
             }
+
+            StaticFocuser = host.Services.GetRequiredService<IFocuser>();
+            if (StaticFocuser is null)
+            {
+                StaticLogger.Error("Missing focuser service, will not be able to set focus on fields. \n");
+            }
         }
         catch (Exception ex)
         {
@@ -73,6 +81,8 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
 
     public ILocalizer Localizer =>
         this.CanLocalize ? StaticLocalizer! : throw new Exception("Should have checked CanLocalize property.");
+
+    public IFocuser Focuser => StaticFocuser;
 
     public IDispatch Dispatcher => StaticDispatcher;
 
@@ -200,35 +210,16 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
         return message;
     }
 
-    public bool TryFocus(string focusFieldName)
+    public bool TryFocusField(string focusFieldName)
     {
-        //var field = this.GetControlByName(focusFieldName);
-        //if (field is IControl control && control.Focusable)
-        //{
-        //    // viewModel.Logger.Debug(viewModel.GetType().Name + ": Focus on : " + focusFieldName);
-        //    // Why we need to wait is still a bit of a mistery !
-        //    // Schedule.OnUiThread(222, () => { control.Focus(); }, DispatcherPriority.ApplicationIdle);
-        //    return true;
-        //}
+        if ( this.ViewBase is null || this.Focuser is null )
+        {
+            Debug.WriteLine("TryFocusField: no view or no Focus service");
+            return false;
+        }
 
-        return false;
-    }
-
-    public IView? GetControlByName(string name)
-    {
-        //if ((string.IsNullOrWhiteSpace(name)) || (this.Control is null))
-        //{
-        //    return null;
-        //}
-
-        //object? maybeControl = this.Control.FindControl<Control>(name);
-        //if (maybeControl is Control control)
-        //{
-        //    return control;
-        //}
-
-        return null;
-    }
+        return this.Focuser.SetFocus(this.ViewBase, focusFieldName);
+    } 
 
     #endregion IBindable implementation 
 
