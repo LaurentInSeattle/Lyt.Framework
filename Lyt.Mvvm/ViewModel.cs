@@ -180,20 +180,50 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
 
     #region IBindable implementation 
 
-    public void Set(string message, string messagePropertyName)
-        //    => _ = this.Set<string>(message, messagePropertyName);
-        => this.InvokeSetProperty(messagePropertyName, message);
-
-    public string? Get(string sourcePropertyName)
+    public void Set<T>(string propertyName, T value)
     {
-        // => this.Get<string>(sourcePropertyName);
-        object? maybeString = this.InvokeGetProperty(sourcePropertyName);
-        if ( maybeString is string realString)
+        try
         {
-            return realString; 
-        }
+            this.InvokeSetProperty(propertyName, value);
+        } 
+        catch (Exception ex) 
+        { 
+            this.Logger.Warning("Property " + propertyName + "not set: " + ex.Message);
+            Debug.WriteLine(ex);
+        } 
+    } 
 
-        return null;
+    public T? Get<T>(string propertyName)
+    {
+        try
+        {
+            object? maybeT = this.InvokeGetProperty(propertyName);
+            if (maybeT is T realT)
+            {
+                return realT;
+            }
+
+            if (typeof(T) == typeof(string))
+            {
+                return default;
+            }
+            else
+            {
+                maybeT = Convert.ChangeType(maybeT, typeof(T), CultureInfo.InvariantCulture);
+                if (maybeT is T convertedT)
+                {
+                    return convertedT;
+                }
+
+                throw new Exception("Incompatible types");
+            } 
+        }
+        catch (Exception ex)
+        {
+            this.Logger.Warning("Failed to get property " + propertyName + " : " + ex.Message);
+            Debug.WriteLine(ex);
+            throw;
+        }
     } 
 
     public ILogger Logger => StaticLogger;

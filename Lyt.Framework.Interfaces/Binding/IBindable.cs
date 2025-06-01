@@ -12,7 +12,7 @@ public interface IBindable
 
     string Localize(string message);
 
-    void Set(string message, string messagePropertyName);
+    T? Get<T>(string propertyName); 
 
-    string? Get(string sourcePropertyName);
+    void Set<T>(string propertyName, T value); 
 }

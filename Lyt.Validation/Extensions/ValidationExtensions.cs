@@ -44,8 +44,8 @@ public static class ValidationExtensions
                 message = viewModel.Localize(message);
             }
 
-            // Set property: value comes first for Set
-            viewModel.Set(message, messagePropertyName);
+            // Set property
+            viewModel.Set(messagePropertyName, message);
         }
 
         return message;
@@ -55,8 +55,8 @@ public static class ValidationExtensions
     {
         if (!string.IsNullOrWhiteSpace(messagePropertyName))
         {
-            // Nothing to Localize, Set property: value comes first for Set
-            viewModel.Set(string.Empty, messagePropertyName);
+            // Nothing to Localize, Set property
+            viewModel.Set(messagePropertyName, string.Empty);
         }
     }
 
