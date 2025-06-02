@@ -11,13 +11,13 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
 {
     private static ILocalizer? StaticLocalizer;
 
+    private static IFocuser? StaticFocuser;
+
 #pragma warning disable CS8618 
     // Non-nullable field must contain a non-null value when exiting constructor.
     // Consider adding the 'required' modifier or declaring as nullable.
 
     private static IHost StaticHost;
-
-    private static IFocuser StaticFocuser;
 
     private static ILogger StaticLogger;
 
@@ -41,10 +41,10 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
 
         try
         {
-            StaticDispatcher = host.Services.GetRequiredService<IDispatch>();
-            StaticMessenger = host.Services.GetRequiredService<IMessenger>();
-            StaticLogger = host.Services.GetRequiredService<ILogger>();
-            StaticProfiler = host.Services.GetRequiredService<IProfiler>();
+            StaticDispatcher = services.GetRequiredService<IDispatch>();
+            StaticMessenger = services.GetRequiredService<IMessenger>();
+            StaticLogger = services.GetRequiredService<ILogger>();
+            StaticProfiler = services.GetRequiredService<IProfiler>();
         }
         catch (Exception ex)
         {
@@ -60,7 +60,7 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
                 StaticLogger.Error("Missing localizer service, will not be able to localize. \n");
             }
 
-            StaticFocuser = host.Services.GetRequiredService<IFocuser>();
+            StaticFocuser = services.GetService<IFocuser>();
             if (StaticFocuser is null)
             {
                 StaticLogger.Error("Missing focuser service, will not be able to set focus on fields. \n");
@@ -82,7 +82,8 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
     public ILocalizer Localizer =>
         this.CanLocalize ? StaticLocalizer! : throw new Exception("Should have checked CanLocalize property.");
 
-    public IFocuser Focuser => StaticFocuser;
+    public IFocuser Focuser => 
+        StaticFocuser;
 
     public IDispatch Dispatcher => StaticDispatcher;
 
@@ -230,15 +231,17 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
 
     public bool CanLocalize => StaticLocalizer is not null;
 
-    public string Localize(string message)
+    public string Localize(string message, bool failSilently = false)
     {
         if (this.CanLocalize)
         {
-            return this.Localizer.Lookup(message);
+            return this.Localizer.Lookup(message, failSilently);
         }
 
         return message;
     }
+
+    public bool CanFocus => StaticFocuser is not null;
 
     public bool TryFocusField(string focusFieldName)
     {

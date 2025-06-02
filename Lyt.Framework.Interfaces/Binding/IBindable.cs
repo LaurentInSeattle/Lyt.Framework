@@ -6,11 +6,13 @@ public interface IBindable
 {
     ILogger Logger { get; }
 
+    bool CanFocus { get; }
+
     bool TryFocusField(string fieldName);
 
     bool CanLocalize { get; }
 
-    string Localize(string message);
+    string Localize(string message, bool failSilently = false);
 
     T? Get<T>(string propertyName); 
 
