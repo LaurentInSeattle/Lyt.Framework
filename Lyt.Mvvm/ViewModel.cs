@@ -82,8 +82,8 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
     public ILocalizer Localizer =>
         this.CanLocalize ? StaticLocalizer! : throw new Exception("Should have checked CanLocalize property.");
 
-    public IFocuser Focuser => 
-        StaticFocuser;
+    public IFocuser Focuser =>
+        this.CanFocus ? StaticFocuser! : throw new Exception("Should have checked CanFocus property.");
 
     public IDispatch Dispatcher => StaticDispatcher;
 
@@ -94,8 +94,8 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
 #pragma warning restore CA1822 // Mark members as static
 #pragma warning restore IDE0079
 
-    /// <summary> The control, its Data Context is this instance. </summary>
-    /// <remarks> Aka, the "View" </remarks>
+    /// <summary> The View, its Data Context is this instance. </summary>
+    /// <remarks> Aka, the "Control" </remarks>
     public IView? ViewBase { get; private set; }
 
     public List<object> Behaviors { get; private set; } = [];
