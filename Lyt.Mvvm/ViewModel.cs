@@ -244,7 +244,9 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
     {
         if ( this.ViewBase is null || this.Focuser is null )
         {
-            Debug.WriteLine("TryFocusField: no view or no Focus service");
+            string msg = "TryFocusField: no view or no Focus service: " + focusFieldName;
+            Debug.WriteLine(msg);
+            this.Logger.Warning(msg);
             return false;
         }
 

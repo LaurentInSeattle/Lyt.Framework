@@ -26,6 +26,11 @@ public sealed class FormValidator<T>(FormValidatorParameters<T> parameters)
 
         viewModel.ClearValidationMessage(this.parameters.MessagePropertyName);
         this.SetFormValidProperty(viewModel, isValid: false);
+        _ = this.TryFocus(viewModel);
+    }
+
+    public bool TryFocus(IBindable viewModel)
+    {
         string? focusFieldName = this.parameters.FocusFieldName;
         if (!string.IsNullOrWhiteSpace(focusFieldName))
         {
@@ -34,7 +39,11 @@ public sealed class FormValidator<T>(FormValidatorParameters<T> parameters)
             {
                 viewModel.Logger.Warning(viewModel.GetType().Name + ": Focus has not been set.");
             }
+
+            return focused;
         }
+
+        return false;
     }
 
     public FormValidatorResults<T> Validate(IBindable viewModel)
