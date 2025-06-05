@@ -36,7 +36,7 @@ public class Chooser<T> where T : class
         } while (!found);
 
         this.recent.Enqueue(next);
-        if (this.recent.Count > this.source.Count / 2)
+        if (this.recent.Count > 3 * this.source.Count / 4)
         {
             _ = this.recent.Dequeue();
         }
