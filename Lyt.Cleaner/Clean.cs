@@ -2,12 +2,19 @@
 
 internal class Clean
 {
+    private const long bigFileMB = 100; // 100 MB 
+    private const long oneMB = 1_024 * 1_024; // 1 MB 
+    private const long bigFileSize = bigFileMB * oneMB; // 100 MB 
+
+    private readonly List<BigFile> bigFiles;
     private readonly EnumerationOptions enumerationOptions;
+    
     private string rootPath;
 
     public Clean()
     {
         this.rootPath = @"C:\Users";
+        this.bigFiles = [];
         this.enumerationOptions = new EnumerationOptions()
         {
             IgnoreInaccessible = false,
@@ -43,6 +50,7 @@ internal class Clean
         try
         {
             success = this.ProcessDirectory(this.rootPath);
+            this.ListBigFiles(); 
         }
         catch (Exception ex)
         {
@@ -90,6 +98,21 @@ internal class Clean
                 }
             }
 
+            // Check for big files 
+            var allFiles = folderPath.EnumerateFiles(this.enumerationOptions, "*.*");
+            if (allFiles.Count > 0)
+            {
+                foreach (string filePath in allFiles)
+                {
+                    FileInfo fileInfo = new (filePath);
+                    long size = fileInfo.Length;
+                    if (size > bigFileSize)
+                    {
+                        this.bigFiles.Add(new BigFile(filePath,size));
+                    } 
+                }
+            }
+
             // Recurse to sub folders, except '.git'
             var subDirs = folderPath.EnumerateDirectories();
             foreach (string subDir in subDirs)
@@ -110,5 +133,28 @@ internal class Clean
         }
 
         return true;
+    }
+
+    private void ListBigFiles ()
+    {
+        int count = this.bigFiles.Count; 
+        if (count == 0)
+        {
+            Console.WriteLine("No files above " + bigFileMB + " MB.");
+            return;
+        }
+
+        Console.WriteLine(count + " files above " + bigFileMB + " MB.");
+        List<BigFile> sorted =
+            [.. (from  bigFile in this.bigFiles
+             orderby bigFile.Size descending 
+             select bigFile)];
+        Console.WriteLine("Top largest files: ");
+        int min = Math.Min(12, count);
+        for (int i = 0; i < min; ++i)
+        {
+            BigFile bigFile = sorted[i];
+            Console.WriteLine(bigFile.Path + ": " + bigFile.Size / oneMB + " MB");
+        }
     }
 }

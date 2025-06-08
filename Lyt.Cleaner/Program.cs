@@ -10,7 +10,7 @@ internal class Program
         Console.WriteLine("Cleaner");
 
 #if LYT_DEBUG 
-        string path = "C:\\Users\\Laurent\\Desktop";
+        string path = "C:\\Users\\Laurent";
         // string path = @"C:\Users\Laurent\Desktop\Code"; 
         // string path = @"C:\Users\Laurent\source\repos";
         string[] debugArgs = [path];
