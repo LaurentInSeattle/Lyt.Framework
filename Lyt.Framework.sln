@@ -33,6 +33,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Mvvm", "Lyt.Mvvm\Lyt.Mv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Orchestrator", "Lyt.Orchestrator\Lyt.Orchestrator.csproj", "{30028600-8559-459E-9709-AD242224B015}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Cleaner", "Lyt.Cleaner\Lyt.Cleaner.csproj", "{4D7AE208-E9A3-403C-A319-23E23059454E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.FileSystem", "Lyt.FileSystem\Lyt.FileSystem.csproj", "{BA9B9DB9-507D-4D05-8EC3-DFD6ED4A6F77}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +103,14 @@ Global
 		{30028600-8559-459E-9709-AD242224B015}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30028600-8559-459E-9709-AD242224B015}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30028600-8559-459E-9709-AD242224B015}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D7AE208-E9A3-403C-A319-23E23059454E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D7AE208-E9A3-403C-A319-23E23059454E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D7AE208-E9A3-403C-A319-23E23059454E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D7AE208-E9A3-403C-A319-23E23059454E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA9B9DB9-507D-4D05-8EC3-DFD6ED4A6F77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA9B9DB9-507D-4D05-8EC3-DFD6ED4A6F77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA9B9DB9-507D-4D05-8EC3-DFD6ED4A6F77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA9B9DB9-507D-4D05-8EC3-DFD6ED4A6F77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
