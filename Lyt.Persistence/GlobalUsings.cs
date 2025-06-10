@@ -15,6 +15,8 @@ global using System.Threading.Tasks;
 global using Lyt.Framework.Interfaces.Logging;
 global using Lyt.Framework.Interfaces.Messaging;
 global using Lyt.Framework.Interfaces.Modeling;
+
+global using Lyt.FileSystem;
 global using Lyt.Model;
 
 

@@ -44,13 +44,13 @@ public sealed class FileManagerModel : ModelBase, IModel
             {
                 AllowTrailingCommas = true,
                 WriteIndented = true,
+                IndentSize = 4,
                 ReadCommentHandling = JsonCommentHandling.Skip,
                 IgnoreReadOnlyFields = true,
                 IgnoreReadOnlyProperties = true,
                 // .Net 9 properties 
                 //
                 // AllowOutOfOrderMetadataProperties = true,
-                // IndentSize = 4,
                 // RespectRequiredConstructorParameters = true,
                 // RespectNullableAnnotations= true,
             };
@@ -594,22 +594,7 @@ public sealed class FileManagerModel : ModelBase, IModel
         }
     }
 
-    public DriveInfo? DriveInfo(Area area)
-    {
-        string documentFolder = this.PathFromArea(area);
-        if (Directory.Exists(documentFolder))
-        {
-            var directoryInfo = new DirectoryInfo(documentFolder);
-            string root = directoryInfo.Root.ToString();
-            if (root.EndsWith('\\'))
-            {
-                string driveName = root.Replace("\\", string.Empty);
-                return new DriveInfo(driveName);
-            }
-        }
-
-        return null;
-    }
+    public DriveInfo? DriveInfo(Area area) => this.PathFromArea(area).DriveInfo(); 
 
     public long AvailableFreeSpace(Area area)
     {

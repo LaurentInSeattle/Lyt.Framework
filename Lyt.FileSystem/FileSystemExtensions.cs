@@ -32,13 +32,6 @@ public static class FileSystemExtensions
 
 
     // Enumerates files 
-    //var enumerationOptions = new EnumerationOptions()
-    //{
-    //    IgnoreInaccessible = true,
-    //    RecurseSubdirectories = true,
-    //    MatchType = MatchType.Simple,
-    //    MaxRecursionDepth = 8,
-    //};
     public static List<string> EnumerateFiles ( 
         this string folderPath,
         EnumerationOptions enumerationOptions, 

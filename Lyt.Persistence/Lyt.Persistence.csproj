@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Lyt.FileSystem\Lyt.FileSystem.csproj" />
     <ProjectReference Include="..\Lyt.Framework.Interfaces\Lyt.Framework.Interfaces.csproj" />
     <ProjectReference Include="..\Lyt.Model\Lyt.Model.csproj" />
   </ItemGroup>
