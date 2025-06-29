@@ -1,7 +1,5 @@
 ﻿// #define VERBOSE_Bindable
 
-using Lyt.Framework.Interfaces.Dispatching;
-
 namespace Lyt.Mvvm;
 
 /// <summary> 
@@ -72,7 +70,7 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
         }
     }
 
-    public ViewModel() {    }
+    public ViewModel() { }
 
 #pragma warning disable IDE0079
 #pragma warning disable CA1822 // Mark members as static
@@ -186,13 +184,13 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
         try
         {
             this.InvokeSetProperty(propertyName, value);
-        } 
-        catch (Exception ex) 
-        { 
+        }
+        catch (Exception ex)
+        {
             this.Logger.Warning("Property " + propertyName + "not set: " + ex.Message);
             Debug.WriteLine(ex);
-        } 
-    } 
+        }
+    }
 
     public T? Get<T>(string propertyName)
     {
@@ -217,7 +215,7 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
                 }
 
                 throw new Exception("Incompatible types");
-            } 
+            }
         }
         catch (Exception ex)
         {
@@ -225,7 +223,7 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
             Debug.WriteLine(ex);
             throw;
         }
-    } 
+    }
 
     public ILogger Logger => StaticLogger;
 
@@ -245,7 +243,7 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
 
     public bool TryFocusField(string focusFieldName)
     {
-        if ( this.ViewBase is null || this.Focuser is null )
+        if (this.ViewBase is null || this.Focuser is null)
         {
             string msg = "TryFocusField: no view or no Focus service: " + focusFieldName;
             Debug.WriteLine(msg);
@@ -254,7 +252,7 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
         }
 
         return this.Focuser.SetFocus(this.ViewBase, focusFieldName);
-    } 
+    }
 
     #endregion IBindable implementation 
 
