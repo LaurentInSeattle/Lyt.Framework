@@ -15,13 +15,14 @@ public sealed class LocalizerConfiguration
     public string LanguagesFileExtension { get; set; } = ".axaml"; // includes dot
 
     public bool IsLikelyValid =>
-        this.Languages.Count > 0 &&
+        // No need for a localizer when using one single language 
+        this.Languages.Count > 1 &&
         !string.IsNullOrWhiteSpace(this.AssemblyName) &&
         !string.IsNullOrWhiteSpace(this.AssetsFolder) &&
         !string.IsNullOrWhiteSpace(this.LanguagesSubFolder) &&
         !string.IsNullOrWhiteSpace(this.LanguagesFilePrefix);
 
-    // TODO: These two utilities do not belong here (Avalonia specific) 
+    // These two utilities are Avalonia specific.
     public string ResourceFileUriString(string targetLanguage)
         => string.Format(
             "avares://{0}/{1}/{2}/{3}{4}{5}",
