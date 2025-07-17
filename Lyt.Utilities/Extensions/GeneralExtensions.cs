@@ -27,4 +27,11 @@ public static class GeneralExtensions
     public static bool ToBool(this bool? ternary) => ternary ?? false;
 
     public static bool IsNullOrEmpty(this Guid? id) => null == id || Guid.Empty == id;
+
+    public static void With ( ref bool flag , Action action)
+    {
+        flag = true;
+        action();
+        flag = false;
+    }
 }
