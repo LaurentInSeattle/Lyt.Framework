@@ -9,8 +9,8 @@ public sealed class Templator
         this.template = template;
     }
 
-    public string Generate ( Parameters parameters)
-    { 
+    public string Generate(Parameters parameters)
+    {
         return template;
     }
 }
