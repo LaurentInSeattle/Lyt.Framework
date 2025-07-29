@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\AseFiles\arne16.ase" />
+    <None Remove="Resources\AseFiles\arne16pal.ase" />
+    <None Remove="Resources\AseFiles\COLOURlovers.com_Blue_Lace.ase" />
+    <None Remove="Resources\AseFiles\COLOURlovers.com_Giant_Goldfish.ase" />
+    <None Remove="Resources\AseFiles\db.ase" />
+    <None Remove="Resources\AseFiles\db16.ase" />
+    <None Remove="Resources\AseFiles\db16pal.ase" />
+    <None Remove="Resources\AseFiles\db32.ase" />
+    <None Remove="Resources\AseFiles\db32pal.ase" />
+    <None Remove="Resources\AseFiles\demo.ase" />
+    <None Remove="Resources\AseFiles\sw-colors-number-ase.ase" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\AseFiles\arne16.ase" />
+    <EmbeddedResource Include="Resources\AseFiles\arne16pal.ase" />
+    <EmbeddedResource Include="Resources\AseFiles\COLOURlovers.com_Blue_Lace.ase" />
+    <EmbeddedResource Include="Resources\AseFiles\COLOURlovers.com_Giant_Goldfish.ase" />
+    <EmbeddedResource Include="Resources\AseFiles\db.ase" />
+    <EmbeddedResource Include="Resources\AseFiles\db16.ase" />
+    <EmbeddedResource Include="Resources\AseFiles\db16pal.ase" />
+    <EmbeddedResource Include="Resources\AseFiles\db32.ase" />
+    <EmbeddedResource Include="Resources\AseFiles\db32pal.ase" />
+    <EmbeddedResource Include="Resources\AseFiles\demo.ase" />
+    <EmbeddedResource Include="Resources\AseFiles\sw-colors-number-ase.ase" />
+  </ItemGroup>
+
+</Project>

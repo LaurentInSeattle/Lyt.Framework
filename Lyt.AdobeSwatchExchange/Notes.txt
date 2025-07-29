@@ -1,0 +1,12 @@
+﻿// Reading Adobe Swatch Exchange (ase) files using C#
+// http://www.cyotek.com/blog/reading-adobe-swatch-exchange-ase-files-using-csharp
+
+// Reading Photoshop Color Swatch (aco) files using C#
+// http://www.cyotek.com/blog/reading-photoshop-color-swatch-aco-files-using-csharp
+
+// Writing Adobe Swatch Exchange (ase) files using C#
+// http://www.cyotek.com/blog/writing-adobe-swatch-exchange-ase-files-using-csharp
+
+// Writing Photoshop Color Swatch (aco) files using C#
+// http://www.cyotek.com/blog/writing-photoshop-color-swatch-aco-files-using-csharp
+
