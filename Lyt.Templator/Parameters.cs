@@ -2,6 +2,8 @@
 
 public sealed class Parameters : List<Parameter>
 {
+    public Parameters() : base(20) { } 
+
     public bool Validate(out string message)
     {
         message = string.Empty;

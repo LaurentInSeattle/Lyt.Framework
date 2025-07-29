@@ -1,13 +1,13 @@
 ﻿namespace Lyt.Templator;
 
-public sealed class Templator
+public sealed class TextGenerator
 {
     private const string ParameterStartTag = "<#";
     private const string ParameterEndTag = "#>";
 
     private readonly string template;
 
-    public Templator(string template) => this.template = template;
+    public TextGenerator(string template) => this.template = template;
 
     public string Generate(Parameters parameters)
     {
