@@ -1,4 +1,9 @@
-﻿// Reading Adobe Swatch Exchange (ase) files using C#
+﻿
+https://www.selapa.net/swatches/colors/fileformats.php#adobe_ase
+https://github.com/e-kornmann/ase-to-json
+https://github.com/ARolek
+
+// Reading Adobe Swatch Exchange (ase) files using C#
 // http://www.cyotek.com/blog/reading-adobe-swatch-exchange-ase-files-using-csharp
 
 // Reading Photoshop Color Swatch (aco) files using C#
