@@ -102,13 +102,22 @@ public static class FileSystemExtensions
         }
     }
 
-    public static void ChangeFileExtension(this string path, string newExtension)
+    public static string? ChangeFileExtension(this string path, string newExtension)
     {
         try
         {
             if (File.Exists(path))
             {
-                Path.ChangeExtension(path, newExtension);
+                string? newPath = Path.ChangeExtension(path, newExtension);
+                if (!string.IsNullOrWhiteSpace(newPath))
+                {
+                    File.Move(path, newPath);
+                    return newPath;
+                }
+                else
+                {
+                    Debug.WriteLine("Failed to swap extension");
+                }
             }
             else
             {
@@ -118,6 +127,10 @@ public static class FileSystemExtensions
         catch (Exception ex)
         {
             Debug.WriteLine(ex.ToString());
+            if ( Debugger.IsAttached) { Debugger.Break(); }
+            return ex.Message;
         }
+
+        return string.Empty;
     }
 }
