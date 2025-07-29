@@ -22,7 +22,7 @@ public static class FileSystemExtensions
 
     public static long AvailableFreeSpace(this string folderPath)
     {
-        if ( DriveInfo(folderPath) is DriveInfo driveInfo)
+        if (DriveInfo(folderPath) is DriveInfo driveInfo)
         {
             return driveInfo.AvailableFreeSpace;
         }
@@ -32,10 +32,10 @@ public static class FileSystemExtensions
 
 
     // Enumerates files 
-    public static List<string> EnumerateFiles ( 
+    public static List<string> EnumerateFiles(
         this string folderPath,
-        EnumerationOptions enumerationOptions, 
-        string extension, 
+        EnumerationOptions enumerationOptions,
+        string extension,
         string filter = "")
     {
         try
@@ -78,7 +78,7 @@ public static class FileSystemExtensions
         {
             if (Directory.Exists(folderPath))
             {
-                
+
                 var directories = Directory.EnumerateDirectories(folderPath);
                 var list = new List<string>(16);
                 foreach (string directory in directories)
@@ -99,6 +99,25 @@ public static class FileSystemExtensions
         {
             Debug.WriteLine(ex.ToString());
             return [];
+        }
+    }
+
+    public static void ChangeFileExtension(this string path, string newExtension)
+    {
+        try
+        {
+            if (File.Exists(path))
+            {
+                Path.ChangeExtension(path, newExtension);
+            }
+            else
+            {
+                Debug.WriteLine("No such file.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.ToString());
         }
     }
 }
