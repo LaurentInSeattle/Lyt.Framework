@@ -7,13 +7,9 @@ public enum ColorType
     Normal
 }
 
-public class ColorEntry : Block
+public sealed class ColorEntry : Block
 {
-    public ColorEntry() { }
-
-    //public ColorEntry(Color color) : this(color.Name, color) { }
-
-    //public ColorEntry(string name, Color color) : this(name, color.R, color.G, color.B) { }
+    public ColorEntry() : base(string.Empty) { }
 
     public ColorEntry(byte r, byte g, byte b) : this(string.Empty, r, g, b) { }
 
@@ -31,26 +27,8 @@ public class ColorEntry : Block
 
     public byte R { get; set; }
 
-    public ColorType Type { get; set; }
-
-    //public Color ToColor()
-    //{
-    //    return Color.FromArgb(this.R, this.G, this.B);
-    //}
+    public ColorType Type { get; set; } = ColorType.Global;
 }
 
 public class ColorEntryCollection : Collection<ColorEntry> { }
 
-public class ColorGroup : Block, IEnumerable<ColorEntry>
-{
-    public ColorGroup() => this.Colors = [];
-
-    public ColorEntryCollection Colors { get; set; }
-
-    /// <summary> Returns an enumerator that iterates through the collection. </summary>
-    public IEnumerator<ColorEntry> GetEnumerator() => this.Colors.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
-}
-
-public class ColorGroupCollection : Collection<ColorGroup> { }

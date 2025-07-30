@@ -7,9 +7,9 @@ internal enum BlockType
     GroupEnd = 0xc002
 }
 
-public abstract class Block
+public abstract class Block(string name)
 {
-    public byte[] ExtraData { get; set; } = new byte[4];
+    public string Name { get; set; } = name;
 
-    public string Name { get; set; } = string.Empty;
+    public byte[] ExtraData { get; set; } = new byte[4];
 }
