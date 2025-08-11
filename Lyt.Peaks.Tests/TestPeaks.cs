@@ -10,7 +10,7 @@ public sealed class TestPeaks
     {
         // Test with flat signal(no peaks) with all default conditions 
         double[] flat_signal = [1, 1, 1, 1, 1];
-        bool result = PeakFinder.Explore(flat_signal, new Conditions(), out List<PeakResult> peaks);
+        bool result = PeakFinder.Analyse(flat_signal, new Conditions(), out List<PeakResult> peaks);
         Assert.IsFalse(result);
         Assert.AreEqual(0, peaks.Count);
     }
@@ -20,7 +20,7 @@ public sealed class TestPeaks
     {
         // Sample signal for testing
         double[] simple_signal = [0, 1, 0, 2, 0, 3, 0, 2, 0, 1, 0];
-        bool result = PeakFinder.Explore(simple_signal, new Conditions (), out List<PeakResult> peaks);
+        bool result = PeakFinder.Analyse(simple_signal, new Conditions (), out List<PeakResult> peaks);
         Assert.IsTrue(result);
 
         //    Should find 5 peaks
@@ -51,7 +51,7 @@ public sealed class TestPeaks
 
         var conditions = new Conditions();
         conditions.Height.Min = 2.5; 
-        bool result = PeakFinder.Explore(simple_signal, conditions, out List<PeakResult> peaks);
+        bool result = PeakFinder.Analyse(simple_signal, conditions, out List<PeakResult> peaks);
         Assert.IsTrue(result);
 
         // Only one peak, the peak with height 3 at index 5 
@@ -69,7 +69,7 @@ public sealed class TestPeaks
         {
             Distance = 3
         };
-        bool result = PeakFinder.Explore(simple_signal, conditions, out List<PeakResult> peaks);
+        bool result = PeakFinder.Analyse(simple_signal, conditions, out List<PeakResult> peaks);
         Assert.IsTrue(result);
 
         Assert.AreEqual(3, peaks.Count);
@@ -87,7 +87,7 @@ public sealed class TestPeaks
         {
             Distance = 3
         };
-        bool result = PeakFinder.Explore(plateau_signal, conditions, out List<PeakResult> peaks);
+        bool result = PeakFinder.Analyse(plateau_signal, conditions, out List<PeakResult> peaks);
         Assert.IsTrue(result);
         Assert.AreEqual(3, peaks.Count);
 
@@ -114,7 +114,7 @@ public sealed class TestPeaks
         var conditions = new Conditions();
         conditions.Prominence.Min = 1.5; 
 
-        bool result = PeakFinder.Explore(simple_signal, conditions, out List<PeakResult> peaks);
+        bool result = PeakFinder.Analyse(simple_signal, conditions, out List<PeakResult> peaks);
         Assert.IsTrue(result);
         Assert.AreEqual(3, peaks.Count);
 
@@ -137,7 +137,7 @@ public sealed class TestPeaks
         conditions.Width.Min =  2.0; // Only peaks with width >= 2.0
         conditions.RelativeHeight = 0.5; // Measure width at 50% of peak height
 
-        bool result = PeakFinder.Explore(simple_signal, conditions, out List<PeakResult> peaks);
+        bool result = PeakFinder.Analyse(simple_signal, conditions, out List<PeakResult> peaks);
         Assert.IsFalse(result);
         Assert.IsTrue(peaks.Count==0);
 
@@ -157,7 +157,7 @@ public sealed class TestPeaks
         var conditions = new Conditions();
         conditions.Threshold.Min = 1.5; // Peak must exceed neighbors by at least 1.5
 
-        bool result = PeakFinder.Explore(simple_signal, conditions, out List<PeakResult> peaks);
+        bool result = PeakFinder.Analyse(simple_signal, conditions, out List<PeakResult> peaks);
         Assert.IsTrue(result);
 
         for (int i = 0; i < peaks.Count; i++)
@@ -173,7 +173,7 @@ public sealed class TestPeaks
         // Test detection with noisy signal 
         double[] noisy_signal = [1.2, 0.8, 1.9, 1.5, 2.7, 1.8, 1.1, 2.5, 3.2, 2.8, 1.6, 0.9];
         var conditions = new Conditions();
-        bool result = PeakFinder.Explore(noisy_signal, conditions, out List<PeakResult> peaks);
+        bool result = PeakFinder.Analyse(noisy_signal, conditions, out List<PeakResult> peaks);
         Assert.IsTrue(result);
 
         // Verify that peaks are correctly identified in noisy signal
@@ -236,7 +236,7 @@ public sealed class TestPeaks
         conditions.Width.Min = 1.0;  // Width between 1.0 and 4.0
         conditions.Width.Max = 4.0;  
 
-        bool result = PeakFinder.Explore(simple_signal, conditions, out List<PeakResult> peaks);
+        bool result = PeakFinder.Analyse(simple_signal, conditions, out List<PeakResult> peaks);
         Assert.IsTrue(result);
 
         // Check that all peaks satisfy all conditions
@@ -267,7 +267,7 @@ public sealed class TestPeaks
         var conditions = new Conditions();
         conditions.Height.Min = 0.5; // Same as SciPy test:  Height >= 0.5
 
-        bool result = PeakFinder.Explore(scipy_signal, conditions, out List<PeakResult> peaks);
+        bool result = PeakFinder.Analyse(scipy_signal, conditions, out List<PeakResult> peaks);
         Assert.IsTrue(result);
 
         Assert.IsTrue(5 == peaks.Count);

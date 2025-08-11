@@ -12,5 +12,5 @@ public struct LprPeakProminence
 
     public double Prominence;   // Calculated prominence value of the peak 
 
-    public int right_base;      // Index of the right base point used for prominence calculation 
+    public int RightBase;      // Index of the right base point used for prominence calculation 
 }

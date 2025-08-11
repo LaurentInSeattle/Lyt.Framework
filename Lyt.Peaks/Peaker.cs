@@ -2,22 +2,21 @@
 
 public sealed class PeakFinder
 {
-    public static bool Explore(double[] x, Conditions conditions, out List<PeakResult> results)
+    public static bool Analyse(double[] x, Conditions conditions, out List<PeakResult> results)
     {
         results = [];
 
         // Step 1: Find all local maxima in the input array 
-        bool ret = LocalMaximaOneDimension(x, out List<LmrPeakIndex>? peaks);
-        if (!ret || peaks is null || peaks.Count == 0)
+        bool foundMaxima = PeakFinder.LocalMaximaOneDimension(x, out List<LmrPeakIndex>? peaks);
+        if (!foundMaxima || peaks is null || peaks.Count == 0)
         {
-            // throw ? 
-            goto cleanup;
+            return false;
         }
 
         // Count of peaks found 
         int peaks_size = peaks.Count;
 
-        // Step 2: Allocate memory for peak properties 
+        // Step 2: Allocate data objects for peak properties 
 
         // Array of peak indices 
         int[] peak_idx = new int[peaks_size];
@@ -26,7 +25,8 @@ public sealed class PeakFinder
         double[] heights = new double[peaks_size];
 
         // Mask array to track which peaks pass filters 
-        int[] mask = new int[peaks_size];
+        // True if valid 
+        bool[] mask = new bool[peaks_size];
 
         // Information about peak plateaus
         var plateaus = new LprPeakPlateau[peaks_size];
@@ -43,25 +43,25 @@ public sealed class PeakFinder
         // Initialize all peaks as valid (passing filters) 
         for (int i = 0; i < peaks_size; i++)
         {
-            mask[i] = 1;
+            mask[i] = true;
         }
 
         /* Step 3: Extract peak indices from the raw peak data */
-        PeakIndices(peaks, peak_idx);
+        PeakFinder.PeakIndices(peaks, peak_idx);
 
         /* Step 4: Calculate height of each peak */
-        PeakHeights(x, peaks, heights);
+        PeakFinder.PeakHeights(x, peaks, heights);
 
         /* Step 5: Identify plateau characteristics for each peak */
-        PeakPlateaus(peaks, plateaus);
+        PeakFinder.PeakPlateaus(peaks, plateaus);
 
         /* Step 6: Calculate threshold information for each peak */
-        PeakThresholds(x, peak_idx, thresholds);
+        PeakFinder.PeakThresholds(x, peak_idx, thresholds);
 
         /* Step 7: Filter peaks based on height, plateau size, and threshold criteria */
         for (int i = 0; i < peaks_size; i++)
         {
-            if (!(mask[i] != 0))
+            if (!mask[i])
             {
                 // Skip peaks that have already been filtered out 
                 continue;
@@ -70,40 +70,39 @@ public sealed class PeakFinder
             // Apply height filter 
             if (heights[i] > conditions.Height.Max || heights[i] < conditions.Height.Min)
             {
-                mask[i] = 0;
+                mask[i] = false;
             }
 
             // Apply plateau size filter 
             if (plateaus[i].PlateauSize > conditions.PlateauSize.Max || plateaus[i].PlateauSize < conditions.PlateauSize.Min)
             {
-                mask[i] = 0;
+                mask[i] = false;
             }
 
             // Apply threshold filter 
             if (Math.Min(thresholds[i].RightThreshold, thresholds[i].LeftThreshold) < conditions.Threshold.Min ||
                Math.Max(thresholds[i].RightThreshold, thresholds[i].LeftThreshold) > conditions.Threshold.Max)
             {
-                mask[i] = 0;
+                mask[i] = false;
             }
         }
 
-        /* Step 8: Filter peaks based on minimum distance between peaks */
-        ret = SelectByPeakDistance(peak_idx, peaks_size, heights, conditions.Distance, mask);
-        if (!ret)
+        // Step 8: Filter peaks based on minimum distance between peaks 
+        if (!PeakFinder.SelectByPeakDistance(peak_idx, peaks_size, heights, conditions.Distance, mask))
         {
-            goto cleanup;
+            return false;
         }
 
-        /* Step 9: Calculate peak prominences */
-        PeakProminences(x, peak_idx, conditions.WindowLength, mask, prominences);
+        // Step 9: Calculate peak prominences 
+        PeakFinder.PeakProminences(x, peak_idx, conditions.WindowLength, mask, prominences);
 
-        /* Step 10: Calculate peak widths */
-        PeakWidths(x, peak_idx, conditions.RelativeHeight, prominences, mask, widths);
+        // Step 10: Calculate peak widths
+        PeakFinder.PeakWidths(x, peak_idx, conditions.RelativeHeight, prominences, mask, widths);
 
-        /* Step 11: Filter peaks based on prominence and width criteria */
+        // Step 11: Filter peaks based on prominence and width criteria 
         for (int i = 0; i < peaks_size; i++)
         {
-            if (!(mask[i] != 0))
+            if (!mask[i])
             {
                 // Skip peaks that have already been filtered out 
                 continue;
@@ -112,13 +111,13 @@ public sealed class PeakFinder
             // Apply prominence filter 
             if (prominences[i].Prominence > conditions.Prominence.Max || prominences[i].Prominence < conditions.Prominence.Min)
             {
-                mask[i] = 0;
+                mask[i] = false;
             }
 
             // Apply width filter  
             if (widths[i].Width > conditions.Width.Max || widths[i].Width < conditions.Width.Min)
             {
-                mask[i] = 0;
+                mask[i] = false;
             }
         }
 
@@ -126,7 +125,7 @@ public sealed class PeakFinder
         int counter = 0;
         for (int i = 0; i < peaks_size; i++)
         {
-            if (mask[i] != 0)
+            if (mask[i] )
             {
                 counter++;
             }
@@ -135,16 +134,15 @@ public sealed class PeakFinder
         // If no peaks pass the filters, return early 
         if (counter == 0)
         {
-            ret = false;
-            goto cleanup;
+            return false;
         }
 
-        // Step 13: Not needed for C#: Allocate memory for the final results array 
+        // Step 13: Not needed for C#, was: Allocate memory for the final results array 
 
         // Step 14: Fill the results array with peaks that passed all filters 
         for (int i = 0; i < peaks_size; i++)
         {
-            if (!(mask[i] != 0))
+            if (!mask[i])
             {
                 // Skip peaks that have already been filtered out 
                 continue;
@@ -164,9 +162,7 @@ public sealed class PeakFinder
             results.Add(result);
         }
 
-    cleanup:
-
-        return ret;
+        return true;
     }
 
     private static int[] Sort(double[] x, int size)
@@ -247,7 +243,7 @@ public sealed class PeakFinder
         return true;
     }
 
-    private static bool SelectByPeakDistance(int[] peaks, int size, double[] priority, int distance, int[] keep)
+    private static bool SelectByPeakDistance(int[] peaks, int size, double[] priority, int distance, bool[] keep)
     {
         //Create map from `i` (index for `peaks` sorted by `priority`) to `j` (index
         //for `peaks` sorted by position). This allows to iterate `peaks` and `keep`
@@ -267,7 +263,7 @@ public sealed class PeakFinder
             int j = priority_to_position[size - 1 - i];
 
             // Skip evaluation for peak already marked as "don't keep"
-            if (keep[j] == 0)
+            if (!keep[j])
             {
                 continue;
             }
@@ -276,7 +272,7 @@ public sealed class PeakFinder
             int k = 1;
             while (k <= j && peaks[j] - peaks[j - k] < distance)
             {
-                keep[j - k] = 0;
+                keep[j - k] = false;
                 k++;
             }
 
@@ -285,7 +281,7 @@ public sealed class PeakFinder
             // Flag "later" peaks for removal until minimal distance is exceeded
             while (k < size && peaks[k] - peaks[j] < distance)
             {
-                keep[k] = 0;
+                keep[k] = false;
                 k++;
             }
         }
@@ -297,7 +293,7 @@ public sealed class PeakFinder
         double[] x,
         int[] peaks,
         int wlen,
-        int[] mask, // TODO: use bool 
+        bool[] mask, 
         LprPeakProminence[] prominences)
     {
         int i;
@@ -305,17 +301,11 @@ public sealed class PeakFinder
         int peak, i_min, i_max;
 
         int half_wlen = wlen / 2;
-
-        //    printf("wlen: %d, %d", wlen, half_wlen);
-        //    std::cout << "wlen: " << wlen << ", " << half_wlen << std::endl;
-
         int size_x = x.Length;
         int size_peaks = peaks.Length;
         for (int peak_nr = 0; peak_nr < size_peaks; peak_nr++)
         {
-            // 0 false, 1 true 
-            // !0 true, !1 false 
-            if (!(mask[peak_nr] != 0))
+            if (!mask[peak_nr])
             {
                 continue;
             }
@@ -357,7 +347,7 @@ public sealed class PeakFinder
 
             // Find the right base in interval [peak, i_max]
             i = peak;
-            prominence.right_base = peak;
+            prominence.RightBase = peak;
             right_min = x[peak];
 
             while (i <= i_max && x[i] <= x[peak])
@@ -365,7 +355,7 @@ public sealed class PeakFinder
                 if (x[i] < right_min)
                 {
                     right_min = x[i];
-                    prominence.right_base = i;
+                    prominence.RightBase = i;
                 }
                 i++;
             }
@@ -380,19 +370,19 @@ public sealed class PeakFinder
         int[] peaks,
         double rel_height,
         LprPeakProminence[] prominences,
-        int[] mask,
+        bool[] mask,
         WhlrPeakWidth[] widths)
     {
         for (int p = 0; p < peaks.Length; p++)
         {
-            if (!(mask[p] != 0))
+            if (!mask[p])
             {
                 continue;
             }
 
             WhlrPeakWidth width_data;
             int i_min = prominences[p].LeftBase;
-            int i_max = prominences[p].right_base;
+            int i_max = prominences[p].RightBase;
             int peak = peaks[p];
             double height = x[peak] - prominences[p].Prominence * rel_height;
             width_data.WidthHeight = x[peak] - prominences[p].Prominence * rel_height;
