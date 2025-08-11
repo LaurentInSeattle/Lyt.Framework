@@ -17,7 +17,7 @@ public sealed class TestPeaks
         // Test with flat signal(no peaks) with all default conditions 
         double[] flat_signal = [1, 1, 1, 1, 1];
         bool result = PeakFinder.find_peaks(flat_signal, new Conditions(), out List<PeakResult> peaks);
-        Assert.IsTrue(result);
+        Assert.IsFalse(result);
         Assert.AreEqual(0, peaks.Count);
     }
 
