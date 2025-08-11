@@ -8,9 +8,9 @@
 /// </remarks>
 public struct LprPeakProminence
 {
-    public int left_base;       // Index of the left base point used for prominence calculation 
+    public int LeftBase;       // Index of the left base point used for prominence calculation 
 
-    public double prominence;   // Calculated prominence value of the peak 
+    public double Prominence;   // Calculated prominence value of the peak 
 
     public int right_base;      // Index of the right base point used for prominence calculation 
 }

@@ -27,19 +27,19 @@ public sealed class TestPeaks
         Assert.AreEqual(5, peaks.Count);
 
         // Peak at index 1 with height 1
-        Assert.AreEqual(1, peaks[0].peak);
+        Assert.AreEqual(1, peaks[0].Peak);
 
         // Peak at index 3 with height 2
-        Assert.AreEqual(3, peaks[1].peak);
+        Assert.AreEqual(3, peaks[1].Peak);
 
         // Peak at index 5 with height 3
-        Assert.AreEqual(5, peaks[2].peak);
+        Assert.AreEqual(5, peaks[2].Peak);
 
         // Peak at index 7 with height 2
-        Assert.AreEqual(7, peaks[3].peak);
+        Assert.AreEqual(7, peaks[3].Peak);
 
         // Peak at index 9 with height 1
-        Assert.AreEqual(9, peaks[4].peak);
+        Assert.AreEqual(9, peaks[4].Peak);
     }
 
     [TestMethod]
@@ -50,14 +50,14 @@ public sealed class TestPeaks
         double[] simple_signal = [0, 1, 0, 2, 0, 3, 0, 2, 0, 1, 0];
 
         var conditions = new Conditions();
-        conditions.height.min = 2.5; 
+        conditions.Height.Min = 2.5; 
         bool result = PeakFinder.Explore(simple_signal, conditions, out List<PeakResult> peaks);
         Assert.IsTrue(result);
 
         // Only one peak, the peak with height 3 at index 5 
         Assert.AreEqual(1, peaks.Count);
-        Assert.AreEqual(5, peaks[0].peak);
-        Assert.AreEqual(3.0, peaks[0].peak_height, delta: 0.000_1);
+        Assert.AreEqual(5, peaks[0].Peak);
+        Assert.AreEqual(3.0, peaks[0].PeakHeight, delta: 0.000_1);
     }
 
     [TestMethod]
@@ -67,15 +67,15 @@ public sealed class TestPeaks
         double[] simple_signal = [0, 1, 0, 2, 0, 3, 0, 2, 0, 1, 0];
         var conditions = new Conditions
         {
-            distance = 3
+            Distance = 3
         };
         bool result = PeakFinder.Explore(simple_signal, conditions, out List<PeakResult> peaks);
         Assert.IsTrue(result);
 
         Assert.AreEqual(3, peaks.Count);
-        Assert.AreEqual(1, peaks[0].peak); // First peak at index 1
-        Assert.AreEqual(5, peaks[1].peak); // Second peak at index 5, the peak in index 3 is skipped
-        Assert.AreEqual(9, peaks[2].peak); // Second peak at index 9, the peak in index 7 is skipped
+        Assert.AreEqual(1, peaks[0].Peak); // First peak at index 1
+        Assert.AreEqual(5, peaks[1].Peak); // Second peak at index 5, the peak in index 3 is skipped
+        Assert.AreEqual(9, peaks[2].Peak); // Second peak at index 9, the peak in index 7 is skipped
     }
 
     [TestMethod]
@@ -85,25 +85,25 @@ public sealed class TestPeaks
         double[] plateau_signal = [0, 1, 1, 1, 0, 2, 2, 0, 3, 3, 3, 0];
         var conditions = new Conditions
         {
-            distance = 3
+            Distance = 3
         };
         bool result = PeakFinder.Explore(plateau_signal, conditions, out List<PeakResult> peaks);
         Assert.IsTrue(result);
         Assert.AreEqual(3, peaks.Count);
 
         // Check first plateau peak
-        Assert.AreEqual(2, peaks[0].peak); // The middle of the plateau
-        Assert.AreEqual(3, peaks[0].plateau.plateau_size); // 3 samples wide
-        Assert.AreEqual(1, peaks[0].plateau.left_edge);
-        Assert.AreEqual(3, peaks[0].plateau.right_edge);
+        Assert.AreEqual(2, peaks[0].Peak); // The middle of the plateau
+        Assert.AreEqual(3, peaks[0].Plateau.PlateauSize); // 3 samples wide
+        Assert.AreEqual(1, peaks[0].Plateau.LeftEdge);
+        Assert.AreEqual(3, peaks[0].Plateau.RightEdge);
 
         // Check second plateau peak
-        Assert.AreEqual(5, peaks[1].peak); // The middle of the plateau
-        Assert.AreEqual(2, peaks[1].plateau.plateau_size); // 2 samples wide
+        Assert.AreEqual(5, peaks[1].Peak); // The middle of the plateau
+        Assert.AreEqual(2, peaks[1].Plateau.PlateauSize); // 2 samples wide
 
         // Check third plateau peak
-        Assert.AreEqual(9, peaks[2].peak); // The middle of the plateau
-        Assert.AreEqual(3, peaks[2].plateau.plateau_size); // 3 samples wide
+        Assert.AreEqual(9, peaks[2].Peak); // The middle of the plateau
+        Assert.AreEqual(3, peaks[2].Plateau.PlateauSize); // 3 samples wide
     }
 
     [TestMethod]
@@ -112,20 +112,20 @@ public sealed class TestPeaks
         // Test detection with prominence calculation and filtering
         double[] simple_signal = [0, 1, 0, 2, 0, 3, 0, 2, 0, 1, 0];
         var conditions = new Conditions();
-        conditions.prominence.min = 1.5; 
+        conditions.Prominence.Min = 1.5; 
 
         bool result = PeakFinder.Explore(simple_signal, conditions, out List<PeakResult> peaks);
         Assert.IsTrue(result);
         Assert.AreEqual(3, peaks.Count);
 
-        Assert.AreEqual(3, peaks[0].peak); // Peak with height 2 has enough prominence
-        Assert.IsTrue(peaks[0].prominence.prominence >= 1.5);
+        Assert.AreEqual(3, peaks[0].Peak); // Peak with height 2 has enough prominence
+        Assert.IsTrue(peaks[0].Prominence.Prominence >= 1.5);
 
-        Assert.AreEqual(5, peaks[1].peak); // Peak with height 3 has enough prominence
-        Assert.IsTrue(peaks[1].prominence.prominence >= 1.5);
+        Assert.AreEqual(5, peaks[1].Peak); // Peak with height 3 has enough prominence
+        Assert.IsTrue(peaks[1].Prominence.Prominence >= 1.5);
 
-        Assert.AreEqual(7, peaks[2].peak); // Peak with height 2 has enough prominence
-        Assert.IsTrue(peaks[2].prominence.prominence >= 1.5);
+        Assert.AreEqual(7, peaks[2].Peak); // Peak with height 2 has enough prominence
+        Assert.IsTrue(peaks[2].Prominence.Prominence >= 1.5);
     }
 
     [TestMethod]
@@ -134,8 +134,8 @@ public sealed class TestPeaks
         // Test detection with width calculation and filtering
         double[] simple_signal = [0, 1, 0, 2, 0, 3, 0, 2, 0, 1, 0];
         var conditions = new Conditions();
-        conditions.width.min =  2.0; // Only peaks with width >= 2.0
-        conditions.rel_height = 0.5; // Measure width at 50% of peak height
+        conditions.Width.Min =  2.0; // Only peaks with width >= 2.0
+        conditions.RelativeHeight = 0.5; // Measure width at 50% of peak height
 
         bool result = PeakFinder.Explore(simple_signal, conditions, out List<PeakResult> peaks);
         Assert.IsFalse(result);
@@ -145,7 +145,7 @@ public sealed class TestPeaks
         // There should be none 
         for (int i = 0; i < peaks.Count; i++)
         {
-            Assert.IsTrue(peaks[i].width.width >= 2.0);
+            Assert.IsTrue(peaks[i].Width.Width >= 2.0);
         }
     }
 
@@ -155,15 +155,15 @@ public sealed class TestPeaks
         // Test detection with threshold filtering
         double[] simple_signal = [0, 1, 0, 2, 0, 3, 0, 2, 0, 1, 0];
         var conditions = new Conditions();
-        conditions.threshold.min = 1.5; // Peak must exceed neighbors by at least 1.5
+        conditions.Threshold.Min = 1.5; // Peak must exceed neighbors by at least 1.5
 
         bool result = PeakFinder.Explore(simple_signal, conditions, out List<PeakResult> peaks);
         Assert.IsTrue(result);
 
         for (int i = 0; i < peaks.Count; i++)
         {
-            Assert.IsTrue(peaks[i].threshold.left_threshold >= 1.5);
-            Assert.IsTrue(peaks[i].threshold.right_threshold >= 1.5);
+            Assert.IsTrue(peaks[i].Threshold.LeftThreshold >= 1.5);
+            Assert.IsTrue(peaks[i].Threshold.RightThreshold >= 1.5);
         }
     }
 
@@ -183,10 +183,10 @@ public sealed class TestPeaks
         bool found_max_peak = false;
         for (int i = 0; i < peaks.Count; i++)
         {
-            if (peaks[i].peak == 8)
+            if (peaks[i].Peak == 8)
             {
                 found_max_peak = true;
-                Assert.AreEqual(3.2, peaks[i].peak_height, delta: 0.000_1);
+                Assert.AreEqual(3.2, peaks[i].PeakHeight, delta: 0.000_1);
                 break;
             }
         }
@@ -229,12 +229,12 @@ public sealed class TestPeaks
         double[] simple_signal = [0, 1, 0, 2, 0, 3, 0, 2, 0, 1, 0];
         var conditions = new Conditions
         {
-            distance = 2         // At least 2 samples between peaks
+            Distance = 2         // At least 2 samples between peaks
         };
-        conditions.height.min = 1.5;         // Height >= 1.5
-        conditions.prominence.min = 1.0;     // Prominence >= 1.0
-        conditions.width.min = 1.0;  // Width between 1.0 and 4.0
-        conditions.width.max = 4.0;  
+        conditions.Height.Min = 1.5;         // Height >= 1.5
+        conditions.Prominence.Min = 1.0;     // Prominence >= 1.0
+        conditions.Width.Min = 1.0;  // Width between 1.0 and 4.0
+        conditions.Width.Max = 4.0;  
 
         bool result = PeakFinder.Explore(simple_signal, conditions, out List<PeakResult> peaks);
         Assert.IsTrue(result);
@@ -242,16 +242,16 @@ public sealed class TestPeaks
         // Check that all peaks satisfy all conditions
         for (int i = 0; i < peaks.Count; i++)
         {
-            Assert.IsTrue(peaks[i].peak_height >= 1.5);
-            Assert.IsTrue(peaks[i].prominence.prominence >= 1.0);
-            Assert.IsTrue(peaks[i].width.width >= 1.0);
-            Assert.IsTrue(peaks[i].width.width <= 4.0);
+            Assert.IsTrue(peaks[i].PeakHeight >= 1.5);
+            Assert.IsTrue(peaks[i].Prominence.Prominence >= 1.0);
+            Assert.IsTrue(peaks[i].Width.Width >= 1.0);
+            Assert.IsTrue(peaks[i].Width.Width <= 4.0);
         }
 
         // Make sure peaks are at least 2 samples apart
         for (int  i = 1; i < peaks.Count; i++)
         {
-            Assert.IsTrue(peaks[i].peak - peaks[i - 1].peak >= 2);
+            Assert.IsTrue(peaks[i].Peak - peaks[i - 1].Peak >= 2);
         }
     }
 
@@ -265,7 +265,7 @@ public sealed class TestPeaks
         // These are the expected peak indices from SciPy's find_peaks
         int [] expected_peaks = [ 1, 3, 5, 7, 9 ];
         var conditions = new Conditions();
-        conditions.height.min = 0.5; // Same as SciPy test:  Height >= 0.5
+        conditions.Height.Min = 0.5; // Same as SciPy test:  Height >= 0.5
 
         bool result = PeakFinder.Explore(scipy_signal, conditions, out List<PeakResult> peaks);
         Assert.IsTrue(result);
@@ -274,7 +274,7 @@ public sealed class TestPeaks
 
         for (int i = 0; i < peaks.Count; i++)
         {
-            Assert.AreEqual(expected_peaks[i], peaks[i].peak);
+            Assert.AreEqual(expected_peaks[i], peaks[i].Peak);
         }
     }
 }

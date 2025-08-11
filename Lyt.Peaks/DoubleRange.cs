@@ -5,7 +5,7 @@ public struct DoubleRange
 {
     public DoubleRange() { }
 
-    public double min = double.MinValue;
+    public double Min = double.MinValue;
     
-    public double max = double.MaxValue;
+    public double Max = double.MaxValue;
 }

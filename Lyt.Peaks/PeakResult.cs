@@ -7,15 +7,15 @@
 /// </remarks>
 public struct PeakResult
 {
-    public int peak;                    // Index of the peak in the input data 
+    public int Peak;                    // Index of the peak in the input data 
 
-    public double peak_height;           //  Height (value) of the peak 
+    public double PeakHeight;           //  Height (value) of the peak 
 
-    public LprPeakPlateau plateau;       // Information about the peak's plateau 
+    public LprPeakPlateau Plateau;       // Information about the peak's plateau 
 
-    public LrPeakThreshold threshold;    // Threshold values for the peak 
+    public LrPeakThreshold Threshold;    // Threshold values for the peak 
 
-    public LprPeakProminence prominence; // Prominence information for the peak 
+    public LprPeakProminence Prominence; // Prominence information for the peak 
 
-    public WhlrPeakWidth width;          // Width information for the peak 
+    public WhlrPeakWidth Width;          // Width information for the peak 
 }

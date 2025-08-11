@@ -2,7 +2,7 @@
 
 internal struct ValueIndex
 {
-    public double value;
+    public double Value;
 
-    public int index;
+    public int Index;
 }

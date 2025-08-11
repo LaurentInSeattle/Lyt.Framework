@@ -8,11 +8,11 @@
 /// </remarks>
 public struct WhlrPeakWidth
 {
-    public double width;        // Calculated width of the peak 
+    public double Width;        // Calculated width of the peak 
 
-    public double width_height; // Height level at which width is measured 
+    public double WidthHeight; // Height level at which width is measured 
 
-    public double left_ip;      // Interpolated position of the left width crossing point 
+    public double LeftIp;      // Interpolated position of the left width crossing point 
 
-    public double right_ip;     // Interpolated position of the right width crossing point 
+    public double RightIp;     // Interpolated position of the right width crossing point 
 }

@@ -68,37 +68,37 @@ public sealed class PeakFinder
             }
 
             // Apply height filter 
-            if (heights[i] > conditions.height.max || heights[i] < conditions.height.min)
+            if (heights[i] > conditions.Height.Max || heights[i] < conditions.Height.Min)
             {
                 mask[i] = 0;
             }
 
             // Apply plateau size filter 
-            if (plateaus[i].plateau_size > conditions.plateau_size.max || plateaus[i].plateau_size < conditions.plateau_size.min)
+            if (plateaus[i].PlateauSize > conditions.PlateauSize.Max || plateaus[i].PlateauSize < conditions.PlateauSize.Min)
             {
                 mask[i] = 0;
             }
 
             // Apply threshold filter 
-            if (Math.Min(thresholds[i].right_threshold, thresholds[i].left_threshold) < conditions.threshold.min ||
-               Math.Max(thresholds[i].right_threshold, thresholds[i].left_threshold) > conditions.threshold.max)
+            if (Math.Min(thresholds[i].RightThreshold, thresholds[i].LeftThreshold) < conditions.Threshold.Min ||
+               Math.Max(thresholds[i].RightThreshold, thresholds[i].LeftThreshold) > conditions.Threshold.Max)
             {
                 mask[i] = 0;
             }
         }
 
         /* Step 8: Filter peaks based on minimum distance between peaks */
-        ret = SelectByPeakDistance(peak_idx, peaks_size, heights, conditions.distance, mask);
+        ret = SelectByPeakDistance(peak_idx, peaks_size, heights, conditions.Distance, mask);
         if (!ret)
         {
             goto cleanup;
         }
 
         /* Step 9: Calculate peak prominences */
-        PeakProminences(x, peak_idx, conditions.wlen, mask, prominences);
+        PeakProminences(x, peak_idx, conditions.WindowLength, mask, prominences);
 
         /* Step 10: Calculate peak widths */
-        PeakWidths(x, peak_idx, conditions.rel_height, prominences, mask, widths);
+        PeakWidths(x, peak_idx, conditions.RelativeHeight, prominences, mask, widths);
 
         /* Step 11: Filter peaks based on prominence and width criteria */
         for (int i = 0; i < peaks_size; i++)
@@ -110,13 +110,13 @@ public sealed class PeakFinder
             }
 
             // Apply prominence filter 
-            if (prominences[i].prominence > conditions.prominence.max || prominences[i].prominence < conditions.prominence.min)
+            if (prominences[i].Prominence > conditions.Prominence.Max || prominences[i].Prominence < conditions.Prominence.Min)
             {
                 mask[i] = 0;
             }
 
             // Apply width filter  
-            if (widths[i].width > conditions.width.max || widths[i].width < conditions.width.min)
+            if (widths[i].Width > conditions.Width.Max || widths[i].Width < conditions.Width.Min)
             {
                 mask[i] = 0;
             }
@@ -153,12 +153,12 @@ public sealed class PeakFinder
             // Store all peak properties in the result structure 
             var result = new PeakResult
             {
-                peak = peak_idx[i],
-                peak_height = heights[i],
-                plateau = plateaus[i],
-                threshold = thresholds[i],
-                prominence = prominences[i],
-                width = widths[i]
+                Peak = peak_idx[i],
+                PeakHeight = heights[i],
+                Plateau = plateaus[i],
+                Threshold = thresholds[i],
+                Prominence = prominences[i],
+                Width = widths[i]
             };
 
             results.Add(result);
@@ -175,15 +175,15 @@ public sealed class PeakFinder
         var comp_array = new ValueIndex[size];
         for (int i = 0; i < size; i++)
         {
-            comp_array[i].value = x[i];
-            comp_array[i].index = i;
+            comp_array[i].Value = x[i];
+            comp_array[i].Index = i;
         }
 
         // Sort in descending order : note minus sign !
-        Array.Sort(comp_array, (a, b) => -a.value.CompareTo(b.value));
+        Array.Sort(comp_array, (a, b) => -a.Value.CompareTo(b.Value));
         for (int i = 0; i < size; i++)
         {
-            idx[i] = comp_array[i].index;
+            idx[i] = comp_array[i].Index;
         }
 
         return idx;
@@ -225,10 +225,10 @@ public sealed class PeakFinder
                 {
                     var peak = new LmrPeakIndex
                     {
-                        left_edge = i,
-                        right_edge = i_ahead - 1,
+                        LeftEdge = i,
+                        RightEdge = i_ahead - 1,
                     };
-                    peak.mid_point = (peak.left_edge + peak.right_edge) / 2;
+                    peak.MidPoint = (peak.LeftEdge + peak.RightEdge) / 2;
                     peaks.Add(peak);
                     peak_idx++;
 
@@ -336,7 +336,7 @@ public sealed class PeakFinder
 
             // Find the left base in interval [i_min, peak]
             i = peak;
-            prominence.left_base = peak;
+            prominence.LeftBase = peak;
             left_min = x[peak];
 
             while (i_min <= i && x[i] <= x[peak])
@@ -344,7 +344,7 @@ public sealed class PeakFinder
                 if (x[i] < left_min)
                 {
                     left_min = x[i];
-                    prominence.left_base = i;
+                    prominence.LeftBase = i;
                 }
 
                 if (i == 0 && i_min == 0)
@@ -370,7 +370,7 @@ public sealed class PeakFinder
                 i++;
             }
 
-            prominence.prominence = x[peak] - Math.Max(left_min, right_min);
+            prominence.Prominence = x[peak] - Math.Max(left_min, right_min);
             prominences[peak_nr] = prominence;
         }
     }
@@ -391,11 +391,11 @@ public sealed class PeakFinder
             }
 
             WhlrPeakWidth width_data;
-            int i_min = prominences[p].left_base;
+            int i_min = prominences[p].LeftBase;
             int i_max = prominences[p].right_base;
             int peak = peaks[p];
-            double height = x[peak] - prominences[p].prominence * rel_height;
-            width_data.width_height = x[peak] - prominences[p].prominence * rel_height;
+            double height = x[peak] - prominences[p].Prominence * rel_height;
+            width_data.WidthHeight = x[peak] - prominences[p].Prominence * rel_height;
 
             // Find intersection point on left side
             int i = peak;
@@ -425,9 +425,9 @@ public sealed class PeakFinder
                 right_ip -= (height - x[i]) / (x[i - 1] - x[i]);
             }
 
-            width_data.width = right_ip - left_ip;
-            width_data.left_ip = left_ip;
-            width_data.right_ip = right_ip;
+            width_data.Width = right_ip - left_ip;
+            width_data.LeftIp = left_ip;
+            width_data.RightIp = right_ip;
 
             widths[p] = width_data;
         }
@@ -439,8 +439,8 @@ public sealed class PeakFinder
         {
             LrPeakThreshold thr;
             int peakIndex = peaks[peak_idx];
-            thr.left_threshold = x[peakIndex] - x[peakIndex - 1];
-            thr.right_threshold = x[peakIndex] - x[peakIndex + 1];
+            thr.LeftThreshold = x[peakIndex] - x[peakIndex - 1];
+            thr.RightThreshold = x[peakIndex] - x[peakIndex + 1];
             thresholds[peak_idx] = thr;
         }
     }
@@ -450,9 +450,9 @@ public sealed class PeakFinder
         for (int p = 0; p < peaks.Count; p++)
         {
             LprPeakPlateau plateau;
-            plateau.right_edge = peaks[p].right_edge;
-            plateau.left_edge = peaks[p].left_edge;
-            plateau.plateau_size = plateau.right_edge - plateau.left_edge + 1;
+            plateau.RightEdge = peaks[p].RightEdge;
+            plateau.LeftEdge = peaks[p].LeftEdge;
+            plateau.PlateauSize = plateau.RightEdge - plateau.LeftEdge + 1;
 
             plateaus[p] = plateau;
         }
@@ -462,7 +462,7 @@ public sealed class PeakFinder
     {
         for (int p = 0; p < peaks.Count; p++)
         {
-            heights[p] = x[peaks[p].mid_point];
+            heights[p] = x[peaks[p].MidPoint];
         }
     }
 
@@ -470,7 +470,7 @@ public sealed class PeakFinder
     {
         for (int p = 0; p < peaks.Count; p++)
         {
-            peak_indices[p] = peaks[p].mid_point;
+            peak_indices[p] = peaks[p].MidPoint;
         }
     }
 }

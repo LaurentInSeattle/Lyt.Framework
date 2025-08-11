@@ -7,7 +7,7 @@
 /// </remarks>
 public struct LrPeakThreshold
 {
-    public double left_threshold;  // Height difference between peak and left neighbor valley 
+    public double LeftThreshold;  // Height difference between peak and left neighbor valley 
 
-    public double right_threshold; // Height difference between peak and right neighbor valley 
+    public double RightThreshold; // Height difference between peak and right neighbor valley 
 }
