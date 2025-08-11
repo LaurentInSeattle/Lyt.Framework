@@ -1,8 +1,8 @@
 ﻿namespace Lyt.Peaks;
 
-public struct ValueIndex
+internal struct ValueIndex
 {
     public double value;
-    public int index;
 
+    public int index;
 }

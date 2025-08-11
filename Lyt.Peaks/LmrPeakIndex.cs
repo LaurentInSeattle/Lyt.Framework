@@ -9,6 +9,8 @@ public struct LmrPeakIndex
 {
 
     public int left_edge;   // Index of the leftmost sample belonging to the peak 
+
     public int mid_point;   // Index of the peak's highest point (or middle of plateau) 
+    
     public int right_edge;  // Index of the rightmost sample belonging to the peak 
 }
