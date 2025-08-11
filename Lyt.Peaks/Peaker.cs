@@ -87,7 +87,7 @@ public sealed class PeakFinder
         return true;
     }
 
-    bool select_by_peak_distance(int[] peaks, int size, double[] priority, int distance, int[] keep)
+    private static bool select_by_peak_distance(int[] peaks, int size, double[] priority, int distance, int[] keep)
     {
         //Create map from `i` (index for `peaks` sorted by `priority`) to `j` (index
         //for `peaks` sorted by position). This allows to iterate `peaks` and `keep`
@@ -215,7 +215,7 @@ public sealed class PeakFinder
         }
     }
 
-    void peak_widths(
+    private static void peak_widths(
         double[] x,
         int[] peaks,
         double rel_height,
@@ -320,7 +320,7 @@ public sealed class PeakFinder
         }
     }
 
-    public bool find_peaks(double[] x, Conditions conditions, out PeakResult[] results)
+    public static bool find_peaks(double[] x, Conditions conditions, out List<PeakResult> results)
     {
         results = [];
 
@@ -427,16 +427,20 @@ public sealed class PeakFinder
                 continue;
             }
 
-            /* Apply prominence filter */
+            // Apply prominence filter 
             if (prominences[i].prominence > conditions.prominence.max || prominences[i].prominence < conditions.prominence.min)
+            {
                 mask[i] = 0;
+            }
 
-            /* Apply width filter */
+            // Apply width filter  
             if (widths[i].width > conditions.width.max || widths[i].width < conditions.width.min)
+            {
                 mask[i] = 0;
+            }
         }
 
-        /* Step 12: Count how many peaks passed all filters */
+        // Step 12: Count how many peaks passed all filters 
         int counter = 0;
         for (int i = 0; i < peaks_size; i++)
         {
@@ -453,10 +457,9 @@ public sealed class PeakFinder
             goto cleanup;
         }
 
-        /* Step 13: Allocate memory for the final results array */
-        results = new PeakResult[counter];
+        // Step 13: Not needed for C#: Allocate memory for the final results array 
 
-        /* Step 14: Fill the results array with peaks that passed all filters */
+        // Step 14: Fill the results array with peaks that passed all filters 
         for (int i = 0; i < peaks_size; i++)
         {
             if (!(mask[i] != 0))
@@ -476,7 +479,7 @@ public sealed class PeakFinder
                 width = widths[i]
             };
 
-            results[i] = result;
+            results.Add(result);
         }
 
     cleanup:

@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.AdobeSwatchExchange", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Peaks", "Lyt.Peaks\Lyt.Peaks.csproj", "{D921CAF3-65AB-4EEF-899A-97FA0897C65E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Peaks.Tests", "Lyt.Peaks.Tests\Lyt.Peaks.Tests.csproj", "{2F2AB528-F9A9-47E0-825E-953C8F377F5A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -117,6 +119,10 @@ Global
 		{D921CAF3-65AB-4EEF-899A-97FA0897C65E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D921CAF3-65AB-4EEF-899A-97FA0897C65E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D921CAF3-65AB-4EEF-899A-97FA0897C65E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F2AB528-F9A9-47E0-825E-953C8F377F5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F2AB528-F9A9-47E0-825E-953C8F377F5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F2AB528-F9A9-47E0-825E-953C8F377F5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F2AB528-F9A9-47E0-825E-953C8F377F5A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,11 +8,16 @@
 /// </remarks>
 public struct Conditions
 {
+    public Conditions()
+    {
+        
+    }
+
     //     * @brief Height range for peak filtering
     //     *
     //     * Only peaks with heights within this range will be detected.
     //     * Default range is [-DBL_MAX, DBL_MAX] (all peaks regardless of height).
-    public DoubleRange height;
+    public DoubleRange height = new DoubleRange();
 
     //     * @brief Threshold range for peak filtering
     //     *
@@ -21,21 +26,21 @@ public struct Conditions
     //     * immediate surroundings.
     //     * Default range is [-DBL_MAX, DBL_MAX] (all peaks regardless of threshold).
     //     */
-    public DoubleRange threshold;
+    public DoubleRange threshold = new DoubleRange();
 
     //     * @brief Minimum distance between peaks
     //     *
     //     * Ensures peaks are separated by at least this many samples. When multiple
     //     * peaks are found within this distance, only the highest one is kept.
     //     * Default value is 1 (adjacent peaks allowed).
-    public int distance;
+    public int distance = 1;
 
     //     * @brief Prominence range for peak filtering
     //     *
     //     * Only peaks with prominence values within this range will be detected.
     //     * Prominence measures how much a peak stands out from its surrounding baseline.
     //     * Default range is [-DBL_MAX, DBL_MAX] (all peaks regardless of prominence).
-    public DoubleRange prominence;
+    public DoubleRange prominence = new DoubleRange();
 
     //     * @brief Width range for peak filtering
     //     *
@@ -43,14 +48,14 @@ public struct Conditions
     //     * measured at a height determined by rel_height.
     //     * Default range is [-DBL_MAX, DBL_MAX] (all peaks regardless of width).
     //     */
-    public DoubleRange width;
+    public DoubleRange width = new DoubleRange();
 
     //     * @brief Window length for prominence and width calculations
     //     *
     //     * Used to limit the evaluated area for prominence and width calculations.
     //     * Default value is 0 (use the full data extent).
     //     */
-    public int wlen;
+    public int wlen = 0;
 
     //     * @brief Relative height for width calculation
     //     *
@@ -58,7 +63,7 @@ public struct Conditions
     //     * of the peak height. For example, 0.5 means width is measured at half the
     //     * peak's height above its base.
     //     * Default value is 0.5 (half height).
-    public double rel_height;
+    public double rel_height = 0.5;
 
     //     * @brief Plateau size range for peak filtering
     //     *
@@ -66,7 +71,7 @@ public struct Conditions
     //     * Plateau size is the number of consecutive samples at the peak's maximum value.
     //     * Default range is [0, SIZE_MAX] (all peaks regardless of plateau size).
     //     */
-    public IntRange plateau_size;
+    public IntRange plateau_size = new IntRange();
 
     ///**
     // * @brief Set minimum and maximum height condition for peak detection
