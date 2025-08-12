@@ -13,4 +13,8 @@ public struct LmrPeakIndex
     public int MidPoint;   // Index of the peak's highest point (or middle of plateau) 
     
     public int RightEdge;  // Index of the rightmost sample belonging to the peak 
+
+    public readonly string ToDebugString()
+        => string.Format(
+            "Left: {0}  Mid: {1}  Right: {2}", this.LeftEdge, this.MidPoint, this.RightEdge);
 }

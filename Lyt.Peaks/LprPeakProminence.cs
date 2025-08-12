@@ -13,4 +13,8 @@ public struct LprPeakProminence
     public double Prominence;   // Calculated prominence value of the peak 
 
     public int RightBase;      // Index of the right base point used for prominence calculation 
+
+    public readonly string ToDebugString() 
+        => string.Format( 
+            "Left: {0}  Prominence: {1:F2}  Right: {2}" , this.LeftBase, this.Prominence, this.RightBase );
 }

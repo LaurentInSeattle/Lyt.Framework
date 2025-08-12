@@ -10,4 +10,8 @@ public struct LrPeakThreshold
     public double LeftThreshold;  // Height difference between peak and left neighbor valley 
 
     public double RightThreshold; // Height difference between peak and right neighbor valley 
+
+    public readonly string ToDebugString()
+        => string.Format(
+            "Left Threshold: {0:F2}   Right Threshold: {1:F2}", this.LeftThreshold, this.RightThreshold);
 }
