@@ -1,7 +1,5 @@
 ﻿namespace Lyt.Templator.Scripting;
 
-using System.Text;
-
 public sealed class CsxTemplator
 {
     public async Task<string> Generate(string template, Parameters parameters)
@@ -13,16 +11,17 @@ public sealed class CsxTemplator
                 throw new Exception("Empty template code");
             }
 
-            Script<string>? script = null; 
-            var options = ScriptOptions.Default;
-            if ( parameters.Count == 0)
+            Script<string>? script = null;
+            var options = ScriptOptions
+                .Default
+                .AddReferences(typeof(List<string>).Assembly)
+                .AddImports("System.Collections.Generic");
+            if (parameters.Count == 0)
             {
                 script = CSharpScript.Create<string>(template, options);
             }
             else if (parameters.Count >= 1)
             {
-                var parameter = parameters[0];
-
                 // If provided 
                 //      parameters.Clear();
                 //      parameters.Add(new Parameter("PaletteKind", "Primary"));
@@ -30,42 +29,15 @@ public sealed class CsxTemplator
                 //      var PaletteKind = "Primary";
 
                 StringBuilder sb = new(parameters.Count * 50);
-                for (int i = 0; i < parameters.Count; ++i)
+                foreach (Parameter parameter in parameters)
                 {
-                    parameter = parameters[i];
-                    string code =
-                        string.Format(
-                            "var {0} = \"{1}\";",
-                            parameter.Tag, parameter.Value);
+                    string code = parameter.ToCode();
                     Debug.WriteLine(parameter.Tag + " :  " + parameter.Value + " :  " + code);
-                    sb.AppendLine(code); 
+                    sb.AppendLine(code);
                 }
 
-                script = CSharpScript.Create<string>(sb.ToString());
+                script = CSharpScript.Create<string>(sb.ToString(), options);
                 script = script.ContinueWith<string>(template, options);
-
-                //script.ContinueWith<string>(code);
-                //string code =
-                //    string.Format(
-                //        "var {0} = \"{1}\";",
-                //        parameter.Tag, parameter.Value); 
-                //Debug.WriteLine(parameter.Tag + " :  " + parameter.Value + " :  " + code);
-                //script = CSharpScript.Create<string>(code);
-                //if (parameters.Count >= 1)
-                //{
-                //    // Note: Start at ONE! 
-                //    for (int i = 1; i < parameters.Count; ++i )
-                //    {
-                //        parameter = parameters[i];
-                //        code =
-                //            string.Format(
-                //                "var {0} = \"{1}\";",
-                //                parameter.Tag, parameter.Value);
-                //        Debug.WriteLine(parameter.Tag + " :  " + parameter.Value + " :  " + code);
-                //        script.ContinueWith<string>(code); 
-                //    }
-                //}
-
             }
 
             if (script is null)
@@ -77,6 +49,7 @@ public sealed class CsxTemplator
             Debug.WriteLine("");
             Debug.WriteLine(scriptCode);
 
+            var diagnostics = script.Compile();
             var state = await script.RunAsync();
             if (state is not null && state.ReturnValue is not null)
             {
@@ -94,10 +67,12 @@ public sealed class CsxTemplator
         catch (CompilationErrorException e)
         {
             Debug.WriteLine(e);
-            return string.Join(Environment.NewLine, e.Diagnostics.Select(d => $"// {d}"));
+            string message = string.Join(Environment.NewLine, e.Diagnostics.Select(d => $"// {d}"));
+            Debug.WriteLine(message);
+            return message; 
         }
-        catch  (Exception ex) 
-        { 
+        catch (Exception ex)
+        {
             Debug.WriteLine(ex);
             return string.Empty;
         }

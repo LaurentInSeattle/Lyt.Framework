@@ -1,18 +1,9 @@
 ﻿namespace Lyt.Templator;
 
-public sealed class TextGenerator
+public sealed class TextGenerator(string template)
 {
-    //private const string ParameterStartTag = "<#";
-    //private const string ParameterEndTag = "#>";
-
-    private readonly string template;
-    private readonly CsxTemplator templator;
-
-    public TextGenerator(string template)
-    {
-        this.template = template;
-        this.templator = new CsxTemplator();
-    } 
+    private readonly string template = template;
+    private readonly CsxTemplator templator = new();
 
     public string Generate(Parameters parameters)
     {        

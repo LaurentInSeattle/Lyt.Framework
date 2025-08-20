@@ -7,17 +7,11 @@ public sealed class Parameters : List<Parameter>
     public bool Validate(out string message)
     {
         message = string.Empty;
-        foreach (var parameter in this)
+        foreach (Parameter parameter in this)
         {
-            if (string.IsNullOrWhiteSpace(parameter.Tag))
+            bool success = parameter.Validate(out message); 
+            if ( ! success )
             {
-                message = "Invalid Tag"; 
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(parameter.Value))
-            {
-                message = "Invalid Value";
                 return false;
             }
         }
