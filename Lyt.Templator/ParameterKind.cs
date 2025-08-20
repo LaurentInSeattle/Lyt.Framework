@@ -2,5 +2,6 @@
 
 public enum ParameterKind
 {
-    Basic,
+    Scalar,
+    Collection,
 }
