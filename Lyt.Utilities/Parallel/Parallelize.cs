@@ -6,18 +6,18 @@ public static class Parallelize
     {
         if (length < 0)
         {
-            throw new Exception("ParallelizeActionOnIndices: Length cannot be negative");
+            throw new Exception("Parallelize.ActionOnIndices: Length cannot be negative");
         }
 
         if (length == 0)
         {
-            Debug.WriteLine("ParallelizeActionOnIndices: Length is zero, doing nothing");
+            Debug.WriteLine("Parallelize.ActionOnIndices: Length is zero, doing nothing");
             return;
         }
 
         if (length < 4)
         {
-            Debug.WriteLine("ParallelizeActionOnIndices: Length less than four, no threads.");
+            Debug.WriteLine("Parallelize.ActionOnIndices: Length less than four, no threads.");
             action(0, length);
             return;
         }
@@ -70,12 +70,12 @@ public static class Parallelize
         int length = actions.Length;
         if (length < 0)
         {
-            throw new Exception("ParallelizeActionOnIndices: Length cannot be negative");
+            throw new Exception("Parallelize.Actions: Length cannot be negative");
         }
 
         if (length == 0)
         {
-            Debug.WriteLine("ParallelizeActionOnIndices: Length is zero, doing nothing");
+            Debug.WriteLine("ParallelizeActions: Length is zero, doing nothing");
             return;
         }
 
