@@ -1,8 +1,10 @@
-﻿namespace Lyt.Templator.Scripting;
+﻿#define DEBUG_Verbose
+
+namespace Lyt.Templator.Scripting;
 
 public sealed class CsxTemplator
 {
-    public async Task<string> Generate(string template, Parameters parameters)
+    public static async Task<Tuple<bool, string>> Generate(string template, Parameters parameters)
     {
         try
         {
@@ -45,20 +47,28 @@ public sealed class CsxTemplator
                 throw new Exception("Script should not be null: Template generation failed with no exception thrown");
             }
 
+#if DEBUG_Verbose
             string scriptCode = script.Code;
             Debug.WriteLine("");
             Debug.WriteLine(scriptCode);
-
             var diagnostics = script.Compile();
+            if (diagnostics.Length > 0)
+            {
+                string message = string.Join(Environment.NewLine, diagnostics.Select(d => $"// {d}"));
+                Debug.WriteLine(message);
+            }
+#endif
             var state = await script.RunAsync();
             if (state is not null && state.ReturnValue is not null)
             {
                 string? generated = state.ReturnValue.ToString();
                 if (!string.IsNullOrWhiteSpace(generated))
                 {
+#if DEBUG_Verbose
                     Debug.WriteLine("");
                     Debug.WriteLine(generated);
-                    return generated;
+#endif
+                    return new Tuple<bool, string> (true, generated);
                 }
             }
 
@@ -69,12 +79,12 @@ public sealed class CsxTemplator
             Debug.WriteLine(e);
             string message = string.Join(Environment.NewLine, e.Diagnostics.Select(d => $"// {d}"));
             Debug.WriteLine(message);
-            return message; 
+            return new Tuple<bool, string>(false, message);
         }
         catch (Exception ex)
         {
             Debug.WriteLine(ex);
-            return string.Empty;
+            return new Tuple<bool, string>(false, ex.Message);
         }
     }
 }
