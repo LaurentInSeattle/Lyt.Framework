@@ -1,8 +1,8 @@
 ﻿namespace Lyt.Utilities.Parallel;
 
-public static class Parallelizer
+public static class Parallelize
 {
-    public static void ParallelizeActionOnIndices(int length, Action<int, int> action)
+    public static void ActionOnIndices(int length, Action<int, int> action)
     {
         if (length < 0)
         {
@@ -50,7 +50,7 @@ public static class Parallelizer
         Task.WaitAll(tasks);
     }
 
-    public static void ParallelForEach<T>(IList<T> list, Action<T, int> action)
+    public static void ForEach<T>(IList<T> list, Action<T, int> action)
     {
         int length = list.Count;
         void Process(int from, int to)
@@ -62,6 +62,38 @@ public static class Parallelizer
             }
         }
 
-        Parallelizer.ParallelizeActionOnIndices(length, Process);
+        Parallelize.ActionOnIndices(length, Process);
+    }
+
+    public static void Actions(params Action[] actions)
+    {
+        int length = actions.Length;
+        if (length < 0)
+        {
+            throw new Exception("ParallelizeActionOnIndices: Length cannot be negative");
+        }
+
+        if (length == 0)
+        {
+            Debug.WriteLine("ParallelizeActionOnIndices: Length is zero, doing nothing");
+            return;
+        }
+
+        int taskCount = length;
+        var tasks = new Task[taskCount];
+        for (int taskIndex = 0; taskIndex < taskCount; ++taskIndex)
+        {
+            var task = new Task(() => actions[taskIndex]());
+            tasks[taskIndex] = task;
+        }
+
+        // 2 : Start all tasks
+        for (int taskIndex = 0; taskIndex < taskCount; ++taskIndex)
+        {
+            tasks[taskIndex].Start();
+        }
+
+        // 3 : Wait for completion 
+        Task.WaitAll(tasks);
     }
 }
