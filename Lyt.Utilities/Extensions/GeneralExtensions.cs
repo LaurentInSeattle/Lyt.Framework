@@ -30,8 +30,12 @@ public static class GeneralExtensions
 
     public static void With ( ref bool flag , Action action)
     {
+#pragma warning disable IDE0059 
+        // Unnecessary assignment of a value
+        // Required by design 
         flag = true;
         action();
         flag = false;
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
     }
 }

@@ -129,7 +129,7 @@ public class NestedDictionary<TKey1, TKey2, TValue> : NestedDictionary<TKey1, Ne
     /// <exception cref="KeyNotFoundException">The property is retrieved and key does not exist in the lowest level of the collection</exception>
     public new NestedDictionary<TKey2, TValue> this[TKey1 key1]
     {
-        get => TryGetValue(key1, out NestedDictionary<TKey2, TValue>? dict) ? dict : base[key1] = new NestedDictionary<TKey2, TValue>(_capacity2, _comparer2);
+        get => this.TryGetValue(key1, out NestedDictionary<TKey2, TValue>? dict) ? dict : base[key1] = new NestedDictionary<TKey2, TValue>(_capacity2, _comparer2);
         set => base[key1] = value;
     }
 
@@ -150,14 +150,14 @@ public class NestedDictionary<TKey1, TKey2, TValue> : NestedDictionary<TKey1, Ne
     /// <returns>True if the nested dictionary contains an element with the specified key chain; otherwise, false.</returns>
     /// <exception cref="ArgumentNullException">key is null</exception>
     public bool ContainsKey(TKey1 key1, TKey2 key2) 
-        => TryGetValue(key1, out NestedDictionary<TKey2, TValue>? dict) && dict.ContainsKey(key2);
+        => this.TryGetValue(key1, out NestedDictionary<TKey2, TValue>? dict) && dict.ContainsKey(key2);
 
     /// <summary> Determines whether the nested dictionary contains a specific value. </summary>
     /// <param name="value">The value to locate in the nested dictionary. The value can be null for reference types.</param>
     /// <returns>True if the nested dictionary contains an element with the specified value; otherwise, false.</returns>
     public bool ContainsValue(TValue value)
     {
-        foreach (NestedDictionary<TKey2, TValue> dict in Values)
+        foreach (NestedDictionary<TKey2, TValue> dict in this.Values)
         {
             if (dict.ContainsValue(value))
             {
@@ -177,7 +177,7 @@ public class NestedDictionary<TKey1, TKey2, TValue> : NestedDictionary<TKey1, Ne
     /// <exception cref="ArgumentNullException">key is null</exception>
     public bool Remove(TKey1 key1, TKey2 key2)
     {
-        if (TryGetValue(key1, out NestedDictionary<TKey2, TValue>? dict))
+        if (this.TryGetValue(key1, out NestedDictionary<TKey2, TValue>? dict))
         {
             return dict.Remove(key2);
         }
@@ -195,7 +195,7 @@ public class NestedDictionary<TKey1, TKey2, TValue> : NestedDictionary<TKey1, Ne
     public bool TryGetValue(TKey1 key1, TKey2 key2, out TValue? value)
     {
         value = default;
-        return TryGetValue(key1, out NestedDictionary<TKey2, TValue>? dict) && dict.TryGetValue(key2, out value);
+        return this.TryGetValue(key1, out NestedDictionary<TKey2, TValue>? dict) && dict.TryGetValue(key2, out value);
     }
 }
 
@@ -300,7 +300,7 @@ public class NestedDictionary<TKey1, TKey2, TKey3, TValue> : NestedDictionary<TK
     /// <exception cref="KeyNotFoundException">The property is retrieved and key does not exist in the lowest level of the collection</exception>
     public new NestedDictionary<TKey2, TKey3, TValue> this[TKey1 key1]
     {
-        get => TryGetValue(key1, out NestedDictionary<TKey2, TKey3, TValue>? dict) ? dict : base[key1] = new NestedDictionary<TKey2, TKey3, TValue>(_capacity2, _capacity3, _comparer2, _comparer3);
+        get => this.TryGetValue(key1, out NestedDictionary<TKey2, TKey3, TValue>? dict) ? dict : base[key1] = new NestedDictionary<TKey2, TKey3, TValue>(_capacity2, _capacity3, _comparer2, _comparer3);
         set => base[key1] = value;
     }
 
@@ -334,21 +334,21 @@ public class NestedDictionary<TKey1, TKey2, TKey3, TValue> : NestedDictionary<TK
     /// <returns>True if the nested dictionary contains an element with the specified key chain; otherwise, false.</returns>
     /// <exception cref="ArgumentNullException">key is null</exception>
     public bool ContainsKey(TKey1 key1, TKey2 key2, TKey3 key3) 
-        => TryGetValue(key1, out NestedDictionary<TKey2, TKey3, TValue>? dict) && dict.ContainsKey(key2, key3);
+        => this.TryGetValue(key1, out NestedDictionary<TKey2, TKey3, TValue>? dict) && dict.ContainsKey(key2, key3);
 
     /// <summary> Determines whether the nested dictionary contains specified key chain. </summary>
     /// <param name="key1">The key to locate for 1. level.</param>
     /// <param name="key2">The key to locate for 2. level.</param>
     /// <returns>True if the nested dictionary contains an element with the specified key chain; otherwise, false.</returns>
     /// <exception cref="ArgumentNullException">key is null</exception>
-    public bool ContainsKey(TKey1 key1, TKey2 key2) => TryGetValue(key1, out NestedDictionary<TKey2, TKey3, TValue>? dict) && dict.ContainsKey(key2);
+    public bool ContainsKey(TKey1 key1, TKey2 key2) => this.TryGetValue(key1, out NestedDictionary<TKey2, TKey3, TValue>? dict) && dict.ContainsKey(key2);
 
     /// <summary> Determines whether the nested dictionary contains a specific value. </summary>
     /// <param name="value">The value to locate in the nested dictionary. The value can be null for reference types.</param>
     /// <returns>True if the nested dictionary contains an element with the specified value; otherwise, false.</returns>
     public bool ContainsValue(TValue value)
     {
-        foreach (NestedDictionary<TKey2, TKey3, TValue> dict in Values)
+        foreach (NestedDictionary<TKey2, TKey3, TValue> dict in this.Values)
         {
             if (dict.ContainsValue(value))
             {
@@ -369,7 +369,7 @@ public class NestedDictionary<TKey1, TKey2, TKey3, TValue> : NestedDictionary<TK
     /// <exception cref="ArgumentNullException">key is null</exception>
     public bool Remove(TKey1 key1, TKey2 key2, TKey3 key3)
     {
-        if (TryGetValue(key1, out NestedDictionary<TKey2, TKey3, TValue>? dict))
+        if (this.TryGetValue(key1, out NestedDictionary<TKey2, TKey3, TValue>? dict))
         {
             return dict.Remove(key2, key3);
         } 
@@ -386,7 +386,7 @@ public class NestedDictionary<TKey1, TKey2, TKey3, TValue> : NestedDictionary<TK
     /// <exception cref="ArgumentNullException">key is null</exception>
     public bool Remove(TKey1 key1, TKey2 key2)
     {
-        if (TryGetValue(key1, out NestedDictionary<TKey2, TKey3, TValue>? dict))
+        if (this.TryGetValue(key1, out NestedDictionary<TKey2, TKey3, TValue>? dict))
         {
             return dict.Remove(key2);
         }
@@ -405,7 +405,7 @@ public class NestedDictionary<TKey1, TKey2, TKey3, TValue> : NestedDictionary<TK
     public bool TryGetValue(TKey1 key1, TKey2 key2, TKey3 key3, out TValue? value)
     {
         value = default;
-        return TryGetValue(key1, out NestedDictionary<TKey2, TKey3, TValue>? dict) && dict.TryGetValue(key2, key3, out value);
+        return this.TryGetValue(key1, out NestedDictionary<TKey2, TKey3, TValue>? dict) && dict.TryGetValue(key2, key3, out value);
     }
 
     /// <summary>
@@ -420,6 +420,6 @@ public class NestedDictionary<TKey1, TKey2, TKey3, TValue> : NestedDictionary<TK
     public bool TryGetValue(TKey1 key1, TKey2 key2, out NestedDictionary<TKey3, TValue>? value)
     {
         value = default;
-        return TryGetValue(key1, out NestedDictionary<TKey2, TKey3, TValue>? dict) && dict.TryGetValue(key2, out value);
+        return this.TryGetValue(key1, out NestedDictionary<TKey2, TKey3, TValue>? dict) && dict.TryGetValue(key2, out value);
     }
 }

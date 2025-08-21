@@ -2,14 +2,32 @@
 
 public static class Parallelizer
 {
-    public static void ParallelizeActionOnIndices(int arrayLength, Action<int, int> action)
+    public static void ParallelizeActionOnIndices(int length, Action<int, int> action)
     {
+        if (length < 0)
+        {
+            throw new Exception("ParallelizeActionOnIndices: Length cannot be negative");
+        }
+
+        if (length == 0)
+        {
+            Debug.WriteLine("ParallelizeActionOnIndices: Length is zero, doing nothing");
+            return;
+        }
+
+        if (length < 4)
+        {
+            Debug.WriteLine("ParallelizeActionOnIndices: Length less than four, no threads.");
+            action(0, length);
+            return;
+        }
+
         // TODO: Use ProcessorCount
         // int processorCount = Environment.ProcessorCount;
 
         // 1 : Setup
-        int taskCount = 4; 
-        int all = arrayLength;
+        int taskCount = 4;
+        int all = length;
         int half = all / 2;
         int quart = half / 2;
         int[] indices = [0, quart, half, half + quart, all];
@@ -30,5 +48,20 @@ public static class Parallelizer
 
         // 3 : Wait for completion 
         Task.WaitAll(tasks);
+    }
+
+    public static void ParallelForEach<T>(IList<T> list, Action<T, int> action)
+    {
+        int length = list.Count;
+        void Process(int from, int to)
+        {
+            for (int index = from; index < to; ++index)
+            {
+                T element = list[index];
+                action(element, index);
+            }
+        }
+
+        Parallelizer.ParallelizeActionOnIndices(length, Process);
     }
 }

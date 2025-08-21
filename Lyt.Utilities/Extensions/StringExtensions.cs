@@ -1,9 +1,4 @@
-﻿using System.Diagnostics;
-using System.Globalization;
-using System.Text;
-using System.Text.RegularExpressions;
-
-namespace Lyt.Utilities.Extensions;
+﻿namespace Lyt.Utilities.Extensions;
 
 public static partial class StringExtensions
 {

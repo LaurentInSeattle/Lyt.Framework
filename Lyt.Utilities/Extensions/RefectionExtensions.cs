@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace Lyt.Utilities.Extensions;
+﻿namespace Lyt.Utilities.Extensions;
 
 public static class RefectionExtensions
 {

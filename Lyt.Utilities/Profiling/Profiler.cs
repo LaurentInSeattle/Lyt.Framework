@@ -1,10 +1,4 @@
-﻿using Lyt.Framework.Interfaces.Logging;
-using Lyt.Framework.Interfaces.Profiling;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
-
-namespace Lyt.Utilities.Profiling;
+﻿namespace Lyt.Utilities.Profiling;
 
 public sealed class Profiler(ILogger logger) : IProfiler
 {
