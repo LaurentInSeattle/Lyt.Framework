@@ -4,6 +4,9 @@ public static class RefectionExtensions
 {
     public static bool Is<T>(this Type type) => typeof(T) == type;
 
+    public static bool Implements<TInterface>(this object obj)
+        => typeof(TInterface).IsAssignableFrom(obj.GetType());
+
     public static bool Implements<TInterface>(this Type type)
         => typeof(TInterface).IsAssignableFrom(type);
 
