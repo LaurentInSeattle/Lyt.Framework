@@ -7,9 +7,6 @@ public interface IModel
 
     /// <summary> Shutdowns the model </summary>
     Task Shutdown();
-
-    /// <summary> Subscribes to updates from the model </summary>
-    void SubscribeToUpdates(Action<ModelUpdateMessage> onUpdate, bool withUiDispatch = false);
 }
 
 public interface IApplicationModel

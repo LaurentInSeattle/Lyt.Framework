@@ -13,9 +13,9 @@ global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using System.Threading.Tasks;
 
+global using CommunityToolkit.Mvvm.Messaging;
 
 global using Lyt.Framework.Interfaces;
 global using Lyt.Framework.Interfaces.Logging;
 global using Lyt.Framework.Interfaces.Modeling;
-global using Lyt.Framework.Interfaces.Messaging;
 global using Lyt.Framework.Interfaces.Profiling;

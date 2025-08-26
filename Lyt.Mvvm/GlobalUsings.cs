@@ -20,11 +20,11 @@ global using System.Windows.Input;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
 global using CommunityToolkit.Mvvm.ComponentModel;
+global using CommunityToolkit.Mvvm.Messaging;
 
 global using Lyt.Framework.Interfaces.Binding;
 global using Lyt.Framework.Interfaces.Localizing;
 global using Lyt.Framework.Interfaces.Logging;
-global using Lyt.Framework.Interfaces.Messaging;
 global using Lyt.Framework.Interfaces.Profiling;
 global using Lyt.Framework.Interfaces.Dispatching;
 

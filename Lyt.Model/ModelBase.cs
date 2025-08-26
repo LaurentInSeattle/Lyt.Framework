@@ -1,9 +1,12 @@
 ﻿namespace Lyt.Model;
 
+using CommunityToolkit.Mvvm.Messaging;
+using Lyt.Framework.Interfaces.Messaging;
+
 [AttributeUsage(AttributeTargets.Property)]
 public class ModelDoNotLogAttribute : Attribute { }
 
-public abstract class ModelBase(IMessenger messenger, ILogger logger) : IModel
+public abstract class ModelBase(ILogger logger) : IModel
 {
     private bool isDirty;
 
@@ -25,9 +28,6 @@ public abstract class ModelBase(IMessenger messenger, ILogger logger) : IModel
 
     [JsonIgnore]
     public ILogger Logger { get; private set; } = logger;
-
-    [JsonIgnore]
-    public IMessenger Messenger { get; private set; } = messenger;
 
     [JsonIgnore]
     public bool IsDirty
@@ -62,13 +62,10 @@ public abstract class ModelBase(IMessenger messenger, ILogger logger) : IModel
     /// <summary> The model properties.</summary>
     protected readonly Dictionary<string, object?> properties = [];
 
-    public void Clean() => this.IsDirty = false; 
-
-    public void SubscribeToUpdates(Action<ModelUpdateMessage> onUpdate, bool withUiDispatch = false)
-        => this.Messenger?.Subscribe(onUpdate, withUiDispatch);
+    public void Clean() => this.IsDirty = false;
 
     protected void NotifyUpdate(string propertyName = "", string methodName = "")
-        => this.Messenger?.Publish(new ModelUpdateMessage(this, propertyName, methodName));
+        => new ModelUpdateMessage(this, propertyName, methodName).Publish();
 
     /// <summary> Gets the value of a property </summary>
     protected T? Get<T>([CallerMemberName] string? name = null)

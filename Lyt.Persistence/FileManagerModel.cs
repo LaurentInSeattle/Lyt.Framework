@@ -1,5 +1,7 @@
 ﻿namespace Lyt.Persistence;
 
+using CommunityToolkit.Mvvm.Messaging;
+
 public sealed class FileManagerModel : ModelBase, IModel
 {
     public enum Area
@@ -36,7 +38,7 @@ public sealed class FileManagerModel : ModelBase, IModel
 
     private readonly JsonSerializerOptions jsonSerializerOptions;
 
-    public FileManagerModel(IMessenger messenger, ILogger logger) : base(messenger, logger)
+    public FileManagerModel(ILogger logger) : base(logger)
     {
         this.Configuration = new FileManagerConfiguration(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
         this.jsonSerializerOptions =

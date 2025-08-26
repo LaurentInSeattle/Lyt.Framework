@@ -2,9 +2,7 @@
 
 namespace Lyt.Mvvm;
 
-/// <summary> 
-/// View Model base class, derived from ObservableObject from the MSFT CTK. 
-/// </summary>
+/// <summary> View Model base class, derived from ObservableObject from the MSFT CTK.  </summary>
 public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
 {
     private static ILocalizer? StaticLocalizer;
@@ -21,7 +19,7 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
 
     private static IDispatch StaticDispatcher;
 
-    private static IMessenger StaticMessenger;
+    // private static IMessenger StaticMessenger;
 
     private static IProfiler StaticProfiler;
 
@@ -40,7 +38,6 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
         try
         {
             StaticDispatcher = services.GetRequiredService<IDispatch>();
-            StaticMessenger = services.GetRequiredService<IMessenger>();
             StaticLogger = services.GetRequiredService<ILogger>();
             StaticProfiler = services.GetRequiredService<IProfiler>();
         }
@@ -84,8 +81,6 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
         this.CanFocus ? StaticFocuser! : throw new Exception("Should have checked CanFocus property.");
 
     public IDispatch Dispatcher => StaticDispatcher;
-
-    public IMessenger Messenger => StaticMessenger;
 
     public IProfiler Profiler => StaticProfiler;
 
