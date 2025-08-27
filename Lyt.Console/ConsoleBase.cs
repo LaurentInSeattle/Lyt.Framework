@@ -58,10 +58,10 @@ public class ConsoleBase(
 
     public static void Print(string text)
     {
-        if ( string.IsNullOrWhiteSpace(text) )
+        if (string.IsNullOrWhiteSpace(text))
         {
-            Debug.WriteLine("Tried to output empty text..."); 
-            return; 
+            Debug.WriteLine("Tried to output empty text...");
+            return;
         }
 
         Debug.WriteLine(text);
@@ -93,7 +93,7 @@ public class ConsoleBase(
         this.InitializeHosting();
 
         this.OnStartupBegin();
-        _ = this.Startup(); 
+        _ = this.Startup();
         this.OnStartupComplete();
     }
 
@@ -120,7 +120,7 @@ public class ConsoleBase(
 
     private void InitializeHosting()
     {
-        ConsoleBase.AppHost = 
+        ConsoleBase.AppHost =
             Host.CreateDefaultBuilder()
                 .ConfigureServices((_0, services) =>
                 {
@@ -164,7 +164,7 @@ public class ConsoleBase(
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine(ex); 
+                            Debug.WriteLine(ex);
                             throw;
                         }
                     }
@@ -205,8 +205,8 @@ public class ConsoleBase(
                 }
             }
 
-                throw new ArgumentException(
-                    "Failed to create instance of service " + implementationName + " for " + RuntimeInformation.OSDescription);
+            throw new ArgumentException(
+                "Failed to create instance of service " + implementationName + " for " + RuntimeInformation.OSDescription);
         }
         catch (Exception ex)
         {
