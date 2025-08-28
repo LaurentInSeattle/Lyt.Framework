@@ -1,6 +1,6 @@
 ﻿namespace Lyt.UserAdministration;
 
-public sealed class UserAdministrationModel(IMessenger messenger, ILogger logger) : ModelBase(messenger, logger), IModel
+public sealed class UserAdministrationModel(ILogger logger) : ModelBase(logger), IModel
 {
     public List<User> Users { get; set; } = [];
 

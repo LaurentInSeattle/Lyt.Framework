@@ -5,8 +5,6 @@ VisualStudioVersion = 17.14.36121.58
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Console", "Lyt.Console\Lyt.Console.csproj", "{02447D1A-2C58-E90B-2510-29A4E1229BB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Messenger", "Lyt.Messenger\Lyt.Messenger.csproj", "{03BF238B-EB4A-170A-CCBC-5F7F9682313D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Search", "Lyt.Search\Lyt.Search.csproj", "{7E2D8B3E-1274-49E7-B727-DBB39152A74B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.StateMachine", "Lyt.StateMachine\Lyt.StateMachine.csproj", "{47BD69B2-C7E1-DA1D-BF71-C55EB45BD1CB}"
@@ -51,10 +49,6 @@ Global
 		{02447D1A-2C58-E90B-2510-29A4E1229BB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02447D1A-2C58-E90B-2510-29A4E1229BB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02447D1A-2C58-E90B-2510-29A4E1229BB5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{03BF238B-EB4A-170A-CCBC-5F7F9682313D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{03BF238B-EB4A-170A-CCBC-5F7F9682313D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{03BF238B-EB4A-170A-CCBC-5F7F9682313D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{03BF238B-EB4A-170A-CCBC-5F7F9682313D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7E2D8B3E-1274-49E7-B727-DBB39152A74B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7E2D8B3E-1274-49E7-B727-DBB39152A74B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E2D8B3E-1274-49E7-B727-DBB39152A74B}.Release|Any CPU.ActiveCfg = Release|Any CPU

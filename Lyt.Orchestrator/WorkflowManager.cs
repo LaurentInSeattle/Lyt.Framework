@@ -8,7 +8,6 @@ public sealed class WorkflowManager<TState, TTrigger> : IDisposable
     public const int MinimumAnimationDuration = 100; // milliseconds
 
     private readonly ILogger logger;
-    private readonly IMessenger messenger;
     private readonly FiniteStateMachine<TState, TTrigger, ViewModel> stateMachine;
     private readonly Dictionary<TState, WorkflowPage<TState, TTrigger>> pageIndex;
     private readonly IOrchestratorHostControl orchestratorHostControl;
@@ -17,12 +16,10 @@ public sealed class WorkflowManager<TState, TTrigger> : IDisposable
 
     public WorkflowManager(
         ILogger logger,
-        IMessenger messenger,
         IOrchestratorHostControl orchestratorHostControl,
         StateMachineDefinition<TState, TTrigger, ViewModel> stateMachineDefinition)
     {
         this.logger = logger;
-        this.messenger = messenger;
         this.orchestratorHostControl = orchestratorHostControl;
         this.stateMachine = new(this.logger);
         this.pageIndex = [];
@@ -89,7 +86,7 @@ public sealed class WorkflowManager<TState, TTrigger> : IDisposable
         var activated = await this.ActivatePage(newState);
 
         // Raise the Navigate weak event so that workflow related widgets, if any, will dismiss.
-        this.messenger.Publish(new NavigationMessage(activated, null));
+        new NavigationMessage(activated, null).Publish();
     }
 
     public void ClearBackNavigation() => this.stateMachine.ClearBackNavigation();
@@ -161,7 +158,7 @@ public sealed class WorkflowManager<TState, TTrigger> : IDisposable
         this.IsTransitioning = false;
 
         // Raise the Navigate weak event so that workflow related widgets, if any, will dismiss.
-        this.messenger.Publish(new NavigationMessage(activated, deactivated));
+        new NavigationMessage(activated, deactivated).Publish();
 
         string message =
             string.Format("Backwards workflow transition from: {0} to {1}", oldState.ToString(), newState.ToString());
@@ -182,7 +179,7 @@ public sealed class WorkflowManager<TState, TTrigger> : IDisposable
             this.IsTransitioning = false;
 
             // Raise the Navigate weak event so that workflow related widgets, if any, will dismiss.
-            this.messenger.Publish(new NavigationMessage(activated, deactivated));
+            new NavigationMessage(activated, deactivated).Publish();
 
             string message =
                 string.Format("Forward workflow transition from: {0} to {1}", oldState.ToString(), newState.ToString());
@@ -206,7 +203,7 @@ public sealed class WorkflowManager<TState, TTrigger> : IDisposable
             this.IsTransitioning = false;
 
             // Raise the Navigate weak event so that workflow related widgets, if any, will dismiss.
-            this.messenger.Publish(new NavigationMessage(activated, deactivated));
+            new NavigationMessage(activated, deactivated).Publish();
 
             string message =
                 string.Format("Forward workflow transition from: {0} to {1}", oldState.ToString(), newState.ToString());
