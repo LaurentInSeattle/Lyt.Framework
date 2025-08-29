@@ -8,35 +8,35 @@ public sealed class BasicLogger : ILogger
 
     public bool BreakOnError { get; set; } = true;
 
-    public void Debug(string message) => System.Diagnostics.Debug.WriteLine(ShortTimeString() + message);
+    public void Debug(string message) => System.Diagnostics.Debug.WriteLine(MessageWithShortTimeString(message));
 
-    public void Info(string message) => Trace.TraceInformation(ShortTimeString() + message);
+    public void Info(string message) => Trace.TraceInformation(MessageWithShortTimeString(message));
 
-    public void Warning(string message) => Trace.TraceWarning(ShortTimeString() + message);
+    public void Warning(string message) => Trace.TraceWarning(MessageWithShortTimeString(message));
 
     public void Error(string message)
     {
         if (this.BreakOnError && Debugger.IsAttached)
         {
+            this.Debug(message);
             Debugger.Break();
         }
 
-        Trace.TraceError(ShortTimeString() + message);
+        Trace.TraceError(MessageWithShortTimeString(message));
     }
 
     public void Fatal(string message)
     {
-        Trace.TraceError(message);
+        Trace.TraceError(MessageWithShortTimeString(message));
         if (Debugger.IsAttached) { Debugger.Break(); }
         throw new Exception(message);
     }
 
-    public static string ShortTimeString()
+    public static string MessageWithShortTimeString(string message)
     {
         DateTime now = DateTime.Now;
         int deltaMs = (int)(now - last).TotalMilliseconds;
-        string result = string.Format("{0}::{1} ({2}ms) - ", now.Second, now.Millisecond, deltaMs);
         last = now;
-        return result;
+        return string.Format("{0}::{1} ({2}ms) - {3}", now.Second, now.Millisecond, deltaMs, message);
     }
 }

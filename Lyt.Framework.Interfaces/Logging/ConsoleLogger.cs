@@ -8,11 +8,11 @@ public sealed class ConsoleLogger : ILogger
 {
     public bool BreakOnError { get; set; } = true;
 
-    public void Debug(string message) => Console.WriteLine(ShortTimeString() + message);
+    public void Debug(string message) => Console.WriteLine(MessageWithShortTimeString(message));
 
-    public void Info(string message) => Console.WriteLine(ShortTimeString() + message);
+    public void Info(string message) => Console.WriteLine(MessageWithShortTimeString(message));
 
-    public void Warning(string message) => Console.WriteLine(ShortTimeString() + message);
+    public void Warning(string message) => Console.WriteLine(MessageWithShortTimeString(message));
 
     public void Error(string message)
     {
@@ -21,12 +21,12 @@ public sealed class ConsoleLogger : ILogger
             Debugger.Break();
         }
 
-        Console.WriteLine(ShortTimeString() + message);
+        Console.WriteLine(MessageWithShortTimeString(message));
     }
 
     public void Fatal(string message)
     {
-        Console.WriteLine(message);
+        Console.WriteLine(MessageWithShortTimeString(message));
         if (Debugger.IsAttached) { Debugger.Break(); }
         throw new Exception(message);
     }
