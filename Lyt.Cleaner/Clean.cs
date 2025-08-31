@@ -8,7 +8,15 @@ internal class Clean
 
     private readonly List<BigFile> bigFiles;
     private readonly EnumerationOptions enumerationOptions;
-    
+    private readonly string[] tempFoldersEndings =
+        [
+            @"AppData\Local\Temp",
+            @"AppData\Local\CrashDumps",
+            @"AppData\Local\SourceServer",
+            @"AppData\LocalLow\Temp",
+            @"AppData\Roaming\Temp",
+        ];
+
     private string rootPath;
 
     public Clean()
@@ -68,6 +76,28 @@ internal class Clean
     {
         try
         {
+            // Delete if this is the nuget cache 
+            if (folderPath.EndsWith(".nuget"))
+            {
+                Directory.Delete(folderPath, recursive: true);
+                return true;
+            }
+
+            bool isTempFolder = false;
+            foreach (string ending in tempFoldersEndings)
+            {
+                if (folderPath.EndsWith(ending))
+                {
+                    isTempFolder = true;
+                    this.ProcessTempFolder(folderPath); 
+                } 
+            }
+
+            if (isTempFolder)
+            {
+                return true; 
+            } 
+
             // Check if the folder contains a *.sln file 
             // If yes, delete the '.vs' directory 
             var slnFiles = folderPath.EnumerateFiles(this.enumerationOptions, "*.sln");
@@ -96,6 +126,20 @@ internal class Clean
                 {
                     Directory.Delete(binPath, recursive: true);
                 }
+            }
+
+            // Delete all PDB files
+            // Assuming we do not care about Protein Data Bank files (Structural Biology)
+            var pdbFiles = folderPath.EnumerateFiles(this.enumerationOptions, "*.pdb");
+            foreach (string filePath in pdbFiles)
+            {
+                // Visual Studio has some PDB's that are protected and access restricted 
+                // So silently swallow any exceptions
+                try
+                {
+                    File.Delete(filePath);
+                } 
+                catch { /* Swallow */ }
             }
 
             // Check for big files 
@@ -133,6 +177,36 @@ internal class Clean
         }
 
         return true;
+    }
+
+    private void ProcessTempFolder(string folderPath)
+    {
+        var allFiles = folderPath.EnumerateFiles(this.enumerationOptions, "*.*");
+        if (allFiles.Count > 0)
+        {
+            foreach (string filePath in allFiles)
+            {
+                try
+                {
+                    File.Delete(filePath);
+                }
+                catch { /* Swallow */ }
+            }
+        }
+
+        var subDirs = folderPath.EnumerateDirectories();
+        if ( subDirs.Count > 0)
+        {
+            foreach (string subDir in subDirs)
+            {
+                this.ProcessTempFolder(subDir);
+                try
+                {
+                    Directory.Delete(subDir, recursive: true);
+                }
+                catch { /* Swallow */ }
+            }
+        }
     }
 
     private void ListBigFiles ()
