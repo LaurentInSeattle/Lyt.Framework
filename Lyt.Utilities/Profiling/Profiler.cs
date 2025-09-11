@@ -56,7 +56,6 @@ public sealed class Profiler(ILogger logger) : IProfiler
                 message, typeName, memberName, sourceFilePath, sourceLineNumber));
     }
 
-    [Conditional("DEBUG")]
     public void StartTiming()
     {
         if (this.isTimingStarted)
@@ -69,8 +68,7 @@ public sealed class Profiler(ILogger logger) : IProfiler
         this.stopwatch = Stopwatch.StartNew();
     }
 
-    [Conditional("DEBUG")]
-    public void EndTiming(string comment)
+    public void EndTiming(string comment = "")
     {
         if (!this.isTimingStarted || (this.stopwatch == null))
         {

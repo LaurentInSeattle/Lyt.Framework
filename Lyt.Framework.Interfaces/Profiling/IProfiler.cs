@@ -6,5 +6,9 @@ public interface IProfiler
 
     int[] CollectionCounts();
 
-    void MemorySnapshot(string comment = "", bool withGCCollect = true); 
+    void MemorySnapshot(string comment = "", bool withGCCollect = true);
+
+    void StartTiming();
+
+    void EndTiming(string comment = "");
 }
