@@ -75,10 +75,18 @@ public static class Parallelize
 
         if (length == 0)
         {
-            Debug.WriteLine("ParallelizeActions: Length is zero, doing nothing");
+            Debug.WriteLine("Parallelize.Actions: Length is zero, doing nothing");
             return;
         }
 
+        if (length == 1)
+        {
+            Debug.WriteLine("Parallelize.Actions: Length is one, no threading");
+            actions[0](); 
+            return;
+        }
+
+        // 1 : Create all tasks
         int taskCount = length;
         var tasks = new Task[taskCount];
         for (int taskIndex = 0; taskIndex < taskCount; ++taskIndex)
@@ -91,6 +99,96 @@ public static class Parallelize
         for (int taskIndex = 0; taskIndex < taskCount; ++taskIndex)
         {
             tasks[taskIndex].Start();
+        }
+
+        // 3 : Wait for completion 
+        Task.WaitAll(tasks);
+    }
+
+    public static void Loops (int length, Action<int> action)
+    {
+        if (length < 0)
+        {
+            throw new Exception("Parallelize.Loops: Length cannot be negative");
+        }
+
+        if (length == 0)
+        {
+            Debug.WriteLine("Parallelize.Loops: Length is zero, doing nothing");
+            return;
+        }
+
+        if (length == 1)
+        {
+            Debug.WriteLine("Parallelize.Actions: Length is one, no threading");
+            action(0);
+            return;
+        }
+
+        // 1 : Setup tasks 
+        int taskCount = length;
+        var tasks = new Task[taskCount];
+        for (int taskIndex = 0; taskIndex < taskCount; ++taskIndex)
+        {
+            // Copy index so that there is a capture in each loop 
+            // Using taskIndex for the action parameter !!!
+            int loopIndex = taskIndex;
+            var task = new Task(() => action(loopIndex));
+            tasks[taskIndex] = task;
+        }
+
+        // 2 : Start all tasks
+        for (int taskIndex = 0; taskIndex < taskCount; ++taskIndex)
+        {
+            tasks[taskIndex].Start();
+        }
+
+        // 3 : Wait for completion 
+        Task.WaitAll(tasks);
+    }
+
+    public static void NestedLoops(int outerLength, int innerLength, Action<int, int> action)
+    {
+        int length = outerLength * innerLength;
+        if (length < 0)
+        {
+            throw new Exception("Parallelize.Loops: Length cannot be negative");
+        }
+
+        if (length == 0)
+        {
+            Debug.WriteLine("Parallelize.Loops: Length is zero, doing nothing");
+            return;
+        }
+
+        if (length == 1)
+        {
+            Debug.WriteLine("Parallelize.Actions: Length is one, no threading");
+            action(0, 0);
+            return;
+        }
+
+        // 1 : Setup tasks 
+        int taskCount = length;
+        var tasks = new Task[taskCount];
+        int taskIndex = 0;
+        for (int i = 0; i < outerLength; i++)
+        {
+            for (int j = 0; j < innerLength; j++)
+            {
+                // Copy indices so that there is a capture in each loop 
+                // Using i and j for the action parameters will not work !!!
+                int outer = i;
+                int inner = j;
+                var task = new Task(() => action(outer , inner ));
+                tasks[taskIndex++] = task;
+            }
+        }
+
+        // 2 : Start all tasks
+        for (int index = 0; index < taskCount; ++index)
+        {
+            tasks[index].Start();
         }
 
         // 3 : Wait for completion 
