@@ -5,8 +5,13 @@ internal class Upgrade
     private readonly EnumerationOptions enumerationOptions;
     private string rootPath;
 
-    private const string source = "<TargetFramework>net9.0</TargetFramework>";
-    private const string target = "<TargetFramework>net10.0</TargetFramework>";
+    //private const string find = "<TargetFramework>net9.0</TargetFramework>";
+    //private const string source = "<TargetFramework>net9.0</TargetFramework>";
+    //private const string target = "<TargetFramework>net10.0</TargetFramework>";
+
+    private const string find = "<PackageReference Include=\"Avalonia";
+    private const string source = "Version=\"11.3.3\"";
+    private const string target = "Version=\"11.3.7\"";
 
     public Upgrade()
     {
@@ -65,7 +70,8 @@ internal class Upgrade
             foreach (string line in lines)
             {
                 string newLine = line;
-                if (line.Contains(source, StringComparison.InvariantCultureIgnoreCase))
+                if ((line.Contains(find, StringComparison.InvariantCultureIgnoreCase)) &&
+                    (line.Contains(source, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     newLine = line.Replace(source, target);
                     edited = true;
