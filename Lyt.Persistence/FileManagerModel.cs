@@ -17,6 +17,7 @@ public sealed class FileManagerModel : ModelBase, IModel
     public enum Kind
     {
         Json,
+        JsonCompressed,
         Text,
         Binary,
         BinaryNoExtension,
@@ -24,6 +25,7 @@ public sealed class FileManagerModel : ModelBase, IModel
 
     public const string Wildcard = "*";
     public const string JsonExtension = ".json";
+    public const string JsonCompressedExtension = ".cjson";
     public const string TextExtension = ".txt";
     public const string BinaryExtension = ".data";
 
@@ -327,6 +329,7 @@ public sealed class FileManagerModel : ModelBase, IModel
         return kind switch
         {
             Kind.Json => JsonExtension,
+            Kind.JsonCompressed => JsonCompressedExtension,
             Kind.Text => TextExtension,
             Kind.Binary => BinaryExtension,
             Kind.BinaryNoExtension => string.Empty,
@@ -352,31 +355,6 @@ public sealed class FileManagerModel : ModelBase, IModel
             this.Logger.Error(msg);
             throw new Exception(msg, ex);
         }
-    }
-
-    public bool Exists(FileId fileId)
-    {
-        fileId.Deconstruct(out Area area, out Kind kind, out string name);
-        return this.Exists(area, kind, name);
-    }
-
-    public bool Exists(Area area, Kind kind, string name)
-    {
-        string path = this.MakePath(area, kind, name);
-        return Path.Exists(path);
-    }
-
-    /// <summary> Can throw, use in a TCF construct! </summary>
-    public void Delete(FileId fileId)
-    {
-        fileId.Deconstruct(out Area area, out Kind kind, out string name);
-        this.Delete(area, kind, name);
-    }
-
-    public void Delete(Area area, Kind kind, string name)
-    {
-        string path = this.MakePath(area, kind, name);
-        File.Delete(path);
     }
 
     public T Load<T>(FileId fileId) where T : class
@@ -420,9 +398,15 @@ public sealed class FileManagerModel : ModelBase, IModel
                     throw new NotSupportedException("Type mismatch: expected 'string'");
 
                 case Kind.Json:
-                    string serialized = File.ReadAllText(path);
-                    T deserialized = this.Deserialize<T>(serialized);
+                    string serializedJson = File.ReadAllText(path);
+                    T deserialized = this.Deserialize<T>(serializedJson);
                     return deserialized;
+
+                case Kind.JsonCompressed:
+                    byte[] dataJsonCompressed = File.ReadAllBytes(path);
+                    string serializedDecompressed = CompressionUtilities.DecompressToString(dataJsonCompressed);
+                    T deserializedDecompressed = this.Deserialize<T>(serializedDecompressed);
+                    return deserializedDecompressed;
 
                 case Kind.Binary:
                 case Kind.BinaryNoExtension:
@@ -463,7 +447,8 @@ public sealed class FileManagerModel : ModelBase, IModel
                 return deserialized;
 
             case Kind.Binary:
-                throw new NotSupportedException("No binaries for now");
+            case Kind.JsonCompressed:
+                throw new NotSupportedException("No binaries or JSon compressed for now");
         }
     }
 
@@ -522,8 +507,14 @@ public sealed class FileManagerModel : ModelBase, IModel
                     break;
 
                 case Kind.Json:
-                    string serialized = this.Serialize<T>(content);
-                    File.WriteAllText(path, serialized);
+                    string serializedJson = this.Serialize<T>(content);
+                    File.WriteAllText(path, serializedJson);
+                    break;
+
+                case Kind.JsonCompressed:
+                    string serializedJsonCompressed = this.Serialize<T>(content);
+                    byte[] dataCompressed = CompressionUtilities.CompressString(serializedJsonCompressed);
+                    File.WriteAllBytes(path, dataCompressed);
                     break;
 
                 case Kind.Binary:
@@ -546,6 +537,31 @@ public sealed class FileManagerModel : ModelBase, IModel
             this.Logger.Fatal(msg);
             throw new Exception(msg, ex);
         }
+    }
+
+    public bool Exists(FileId fileId)
+    {
+        fileId.Deconstruct(out Area area, out Kind kind, out string name);
+        return this.Exists(area, kind, name);
+    }
+
+    public bool Exists(Area area, Kind kind, string name)
+    {
+        string path = this.MakePath(area, kind, name);
+        return Path.Exists(path);
+    }
+
+    /// <summary> Can throw, use in a TCF construct! </summary>
+    public void Delete(FileId fileId)
+    {
+        fileId.Deconstruct(out Area area, out Kind kind, out string name);
+        this.Delete(area, kind, name);
+    }
+
+    public void Delete(Area area, Kind kind, string name)
+    {
+        string path = this.MakePath(area, kind, name);
+        File.Delete(path);
     }
 
     public List<string> Enumerate(Area area, Kind kind, string filter = "")
