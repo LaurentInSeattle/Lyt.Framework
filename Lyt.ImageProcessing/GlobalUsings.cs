@@ -1,0 +1,28 @@
+﻿global using System;
+global using System.Collections;
+global using System.Collections.Concurrent;
+global using System.Collections.Generic;
+global using System.Collections.ObjectModel;
+global using System.ComponentModel;
+global using System.Diagnostics;
+global using System.Linq;
+global using System.Reflection;
+global using System.Runtime.CompilerServices;
+global using System.Runtime.Versioning;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;
+global using System.Threading.Tasks;
+
+global using CommunityToolkit.Mvvm.Messaging;
+
+global using Lyt.Framework.Interfaces;
+global using Lyt.Framework.Interfaces.Logging;
+global using Lyt.Framework.Interfaces.Modeling;
+global using Lyt.Framework.Interfaces.Profiling;
+
+global using Lyt.Utilities.Parallel;
+
+global using Lyt.ImageProcessing.ColorObjects;
+global using Lyt.ImageProcessing.Algorithms.ContrastEqualization;
+global using Lyt.ImageProcessing.Algorithms.KMeans.Generic;
+global using Lyt.ImageProcessing.Algorithms.KMeans.ForLabColor;

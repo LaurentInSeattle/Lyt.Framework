@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11012.119 d18.0
+VisualStudioVersion = 18.0.11012.119
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Console", "Lyt.Console\Lyt.Console.csproj", "{02447D1A-2C58-E90B-2510-29A4E1229BB5}"
 EndProject
@@ -42,6 +42,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Collections", "Lyt.Collections\Lyt.Collections.csproj", "{C30443BE-01F2-43A5-B849-465E011E0A81}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Upgrader", "Lyt.Upgrader\Lyt.Upgrader.csproj", "{D626F8F4-A168-4BFB-ADC5-D50C1AAD4A2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.ImageProcessing", "Lyt.ImageProcessing\Lyt.ImageProcessing.csproj", "{66AE8EEB-E405-4B2E-BE9D-23FCC958F65B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -129,6 +131,10 @@ Global
 		{D626F8F4-A168-4BFB-ADC5-D50C1AAD4A2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D626F8F4-A168-4BFB-ADC5-D50C1AAD4A2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D626F8F4-A168-4BFB-ADC5-D50C1AAD4A2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66AE8EEB-E405-4B2E-BE9D-23FCC958F65B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66AE8EEB-E405-4B2E-BE9D-23FCC958F65B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66AE8EEB-E405-4B2E-BE9D-23FCC958F65B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66AE8EEB-E405-4B2E-BE9D-23FCC958F65B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
