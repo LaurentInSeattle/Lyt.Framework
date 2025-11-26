@@ -12,7 +12,6 @@ internal class Program
 #if LYT_DEBUG 
         string path = "C:\\Users\\Laurent\\source\\repos";
         // string path = @"C:\Users\Laurent\Desktop\Code"; 
-        // string path = @"C:\Users\Laurent\source\repos";
         string[] debugArgs = [path];
         args = debugArgs;
 #endif
