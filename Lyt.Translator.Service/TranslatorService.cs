@@ -34,7 +34,7 @@ public class TranslatorService(ILogger logger)
     public async Task<Tuple<bool, Dictionary<string, string>>> BatchTranslate(
         ProviderKey provider, 
         Dictionary<string,string> sourceTexts, string sourceLanguageKey, string destinationLanguageKey,
-        int throttleDelayMillisecs = 2_000)
+        int throttleDelayMillisecs = 1_000)
     {
         bool success = true ;
         try
