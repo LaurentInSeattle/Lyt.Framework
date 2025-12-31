@@ -27,24 +27,29 @@ public class ApplicationModelBase(IProfiler profiler, ILogger logger, IApplicati
 
         if (Debugger.IsAttached)
         {
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    // Delay until the app has fully started up before looking up the perf counters 
-                    // Do not collect, again to avoid a slow startup.
-                    await Task.Delay(250);
-                    this.profiler.MemorySnapshot("All Models Initialized", withGCCollect: false);
-                }
-                catch (Exception ex)
-                {
-                    // Should never fail here
-                    if (Debugger.IsAttached) { Debugger.Break(); }
-                    this.logger.Error(ex.ToString());
-                    throw new ApplicationException("Failed to cleanup on startup.", ex);
-                }
-            });
-        } 
+            Debug.WriteLine("All Models Initialized.");
+
+            // Disabled for now to avoid slowing down startup
+            // (4 to 5 seconds, used to be much faster than that)
+            //
+            //_ = Task.Run(async () =>
+            //{
+            //    try
+            //    {
+            //        // Delay until the app has fully started up before looking up the perf counters 
+            //        // Do not collect, again to avoid a slow startup.
+            //        await Task.Delay(250);
+            //        this.profiler.MemorySnapshot("All Models Initialized", withGCCollect: false);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        // Should never fail here
+            //        if (Debugger.IsAttached) { Debugger.Break(); }
+            //        this.logger.Error(ex.ToString());
+            //        throw new ApplicationException("Failed to cleanup on startup.", ex);
+            //    }
+            //});
+        }
     }
 
     public async Task Shutdown()
