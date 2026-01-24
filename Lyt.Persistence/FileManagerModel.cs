@@ -1,7 +1,5 @@
 ﻿namespace Lyt.Persistence;
 
-using CommunityToolkit.Mvvm.Messaging;
-
 public sealed class FileManagerModel : ModelBase, IModel
 {
     public enum Area
