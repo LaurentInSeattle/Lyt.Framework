@@ -34,11 +34,16 @@ public sealed class CsxTemplator
                 foreach (Parameter parameter in parameters)
                 {
                     string code = parameter.ToCode();
+#if DEBUG_Verbose
                     Debug.WriteLine(parameter.Tag + " :  " + parameter.Value + " :  " + code);
+#endif
                     sb.AppendLine(code);
                 }
 
                 script = CSharpScript.Create<string>(sb.ToString(), options);
+#if DEBUG_Verbose
+                Debug.WriteLine(script.Code);
+#endif
                 script = script.ContinueWith<string>(template, options);
             }
 
@@ -51,13 +56,15 @@ public sealed class CsxTemplator
             string scriptCode = script.Code;
             Debug.WriteLine("");
             Debug.WriteLine(scriptCode);
+#endif
             var diagnostics = script.Compile();
             if (diagnostics.Length > 0)
             {
                 string message = string.Join(Environment.NewLine, diagnostics.Select(d => $"// {d}"));
                 Debug.WriteLine(message);
+                if (Debugger.IsAttached) { Debugger.Break(); }
             }
-#endif
+
             var state = await script.RunAsync();
             if (state is not null && state.ReturnValue is not null)
             {
