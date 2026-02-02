@@ -121,6 +121,7 @@ public sealed class RgbColor
         return new HsvColor(h, s / 100.0, value / 100.0);
     }
 
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte ToHsvV(byte r, byte g, byte b)
     {
@@ -138,8 +139,48 @@ public sealed class RgbColor
         return v ;        
     }
 
+    public HslColor ToHsl() => RgbColor.ToHsl(this.R/255.0, this.G / 255.0, this.B / 255.0);
+
+    // RGB Values are expected to be normalized in the range 0.0 to 1.0
+    public static HslColor ToHsl(double r, double g, double b)
+    {
+        double max = Math.Max(r, Math.Max(g, b));
+        double min = Math.Min(r, Math.Min(g, b));
+
+        // Calculate Luminance (L)
+        double luminance = (max + min) / 2.0;
+        if (Math.Abs(max - min) < 0.001)
+        {
+            // Achromatic case (gray scale)
+            return new HslColor(0.0, 0.0, luminance);
+        }
+
+        // Calculate Saturation (S)
+        double delta = max - min;
+        double saturation = luminance > 0.5 ? delta / (2.0 - max - min) : delta / (max + min);
+
+        // Calculate Hue (H)
+        double hue; 
+        if (Math.Abs(max - r) < 0.001)
+        {
+            hue = (g - b) / delta + (g< b ? 6.0 : 0.0);
+        }
+        else if (Math.Abs(max - g) < 0.001)
+        {
+            hue = (b - r) / delta + 2.0;
+        }
+        else
+        {
+            hue = (r - g ) / delta + 4.0;
+        }
+
+        hue *= 60.0; // Convert to degrees
+
+        return new HslColor(hue, saturation, luminance);
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static byte ToGrayScale(uint argb)
+    public static byte ToGrayScale(uint argb)
     {
         byte blue = (byte)(argb & 0x0FF);
         byte green = (byte)((argb & 0x0FF00) >> 8);

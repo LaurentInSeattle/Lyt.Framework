@@ -136,6 +136,43 @@ public sealed class HsvColor
         blue = (byte)Math.Round(b * 255.0);
     }
 
+    public HslColor ToHsl()
+    {
+        // HSL Lightness (L)
+        double lightness = (2.0 - this.S) * this.V / 2.0;
+
+        // HSL Saturation (S)
+        double saturation;
+        if (Math.Abs(lightness) < 0.000_1)
+        {
+            // If lightness is 0 or near, saturation is 0 (black)
+            saturation = 0.0;
+        }
+        else
+        {
+            if (Math.Abs(lightness- 1.0) < 0.000_1)
+            {
+                saturation = 0.0;
+            }
+            else if (lightness < 0.5)
+            {
+                saturation = this.S * this.V / (lightness * 2);
+            }
+            else
+            {
+                saturation = this.S * this.V / (2 - lightness * 2);
+            }
+        }
+
+        // Ensure saturation is clamped between 0 and 1
+        saturation = Math.Clamp(saturation, 0, 1);
+
+        // Ensure lightness is clamped between 0 and 1
+        lightness = Math.Clamp(lightness, 0, 1);
+
+        return new HslColor(this.H, saturation, lightness);
+    }
+
     public override string ToString() 
         => string.Format ("Hue: {0:F1}  Sat: {1:F1}  Bri: {2:F1}", this.H, this.S, this.V);
 }
