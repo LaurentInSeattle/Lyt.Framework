@@ -145,4 +145,27 @@ public sealed class HslColor
 
     public override string ToString()
         => string.Format("Hue: {0:F1}  Sat: {1:F1}  Li: {2:F1}", this.H, this.S, this.L);
+
+    [Conditional("DEBUG")]
+    void TestColor(HsvColor color)
+    {
+        var rgb1 = color.ToRgb();
+        var hsl = color.ToHsl();
+        var rgb2 = hsl.ToRgb();
+        if (Math.Abs(rgb1.R - rgb2.R) > 1 ||
+            Math.Abs(rgb1.G - rgb2.G) > 1 ||
+            Math.Abs(rgb1.B - rgb2.B) > 1)
+        {
+            Debugger.Break();
+        }
+
+        var hsv = hsl.ToHsv();
+        var rgb3 = hsv.ToRgb();
+        if (Math.Abs(rgb1.R - rgb3.R) > 1 ||
+            Math.Abs(rgb1.G - rgb3.G) > 1 ||
+            Math.Abs(rgb1.B - rgb3.B) > 1)
+        {
+            Debugger.Break();
+        }
+    }
 }
