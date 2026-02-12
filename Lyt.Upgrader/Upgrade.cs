@@ -10,8 +10,8 @@ internal class Upgrade
     //private const string target = "<TargetFramework>net10.0</TargetFramework>";
 
     private const string find = "<PackageReference Include=\"Avalonia";
-    private const string source = "Version=\"11.3.9\"";
-    private const string target = "Version=\"11.3.10\"";
+    private const string source = "Version=\"11.3.10\"";
+    private const string target = "Version=\"11.3.12\"";
 
     public Upgrade()
     {
