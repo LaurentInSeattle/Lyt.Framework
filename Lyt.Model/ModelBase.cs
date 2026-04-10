@@ -1,8 +1,5 @@
 ﻿namespace Lyt.Model;
 
-using CommunityToolkit.Mvvm.Messaging;
-using Lyt.Framework.Interfaces.Messaging;
-
 [AttributeUsage(AttributeTargets.Property)]
 public class ModelDoNotLogAttribute : Attribute { }
 
