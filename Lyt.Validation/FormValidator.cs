@@ -1,9 +1,11 @@
 ﻿namespace Lyt.Validation;
 
-public sealed class FormValidator<T>(FormValidatorParameters<T> parameters)
+public sealed class FormValidator<T>(FormValidatorParameters<T> parameters) : 
+    IFormValidator<T>
     where T : class, new()
 {
     private readonly FormValidatorParameters<T> parameters = parameters;
+
     private readonly List<FieldValidator> fieldValidators = [.. parameters.FieldValidators];
 
     private T? value;
