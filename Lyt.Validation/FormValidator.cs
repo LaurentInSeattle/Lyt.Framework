@@ -1,6 +1,6 @@
 ﻿namespace Lyt.Validation;
 
-public sealed class FormValidator<T>(FormValidatorParameters<T> parameters) : 
+public sealed class FormValidator<T>(FormValidatorParameters<T> parameters) :
     IFormValidator<T>
     where T : class, new()
 {
@@ -81,10 +81,29 @@ public sealed class FormValidator<T>(FormValidatorParameters<T> parameters) :
             // Copy validated property value into new object 
             string propertyName = fieldValidator.Parameters.SourcePropertyName;
 #pragma warning disable CA1507 // Use nameof to express symbol names
-            // VS does not understand it...  AI, my ass... 
+            // VS does not understand it... 
             object? propertyValue = result.InvokeGetProperty("Value");
 #pragma warning restore CA1507 
-            // TODO: Data conversions from string to numbers as needed
+
+            // Perform data conversions from string to numbers as needed
+            if (formValue.TryGetPropertyType(propertyName, out Type? propertyType))
+            {
+                if (propertyType != typeof(string))
+                {
+                    if (TryParse(propertyValue, propertyType, out object? parsedValue))
+                    {
+                        propertyValue = parsedValue;
+                    }
+                    else
+                    {
+                        return new FormValidatorResults<T>(IsValid: false, Message: $"Failed to parse property '{propertyName}'");
+                    }
+                }
+            }
+            else
+            {
+                return new FormValidatorResults<T>(IsValid: false, Message: $"Property '{propertyName}': Type not found.");
+            }
 
             formValue.InvokeSetProperty(propertyName, propertyValue);
         }
@@ -116,5 +135,92 @@ public sealed class FormValidator<T>(FormValidatorParameters<T> parameters) :
         {
             viewModel.InvokeSetProperty(propertyName, isValid);
         }
+    }
+
+    private static bool TryParse(object? propertyValue, Type targetType, [NotNullWhen(true)] out object? result)
+    {
+        result = null;
+        if ((propertyValue is null) || (propertyValue.GetType() != typeof(string)))
+        {
+            return false;
+        }
+
+        string? value = (string?)propertyValue;
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return false;
+        }
+
+        try
+        {
+            if (targetType == typeof(int))
+            {
+                if (int.TryParse(value, out int intValue))
+                {
+                    result = intValue;
+                    return true;
+                }
+            }
+            else if (targetType == typeof(uint))
+            {
+                if (uint.TryParse(value, out uint uintValue))
+                {
+                    result = uintValue;
+                    return true;
+                }
+            }
+            else if (targetType == typeof(long))
+            {
+                if (long.TryParse(value, out long longValue))
+                {
+                    result = longValue;
+                    return true;
+                }
+            }
+            else if (targetType == typeof(ulong))
+            {
+                if (ulong.TryParse(value, out ulong ulongValue))
+                {
+                    result = ulongValue;
+                    return true;
+                }
+            }
+            else if (targetType == typeof(double))
+            {
+                if (double.TryParse(value, out double doubleValue))
+                {
+                    result = doubleValue;
+                    return true;
+                }
+            }
+            else if (targetType == typeof(float))
+            {
+                if (float.TryParse(value, out float floatValue))
+                {
+                    result = floatValue;
+                    return true;
+                }
+            }
+            else if (targetType == typeof(decimal))
+            {
+                if (decimal.TryParse(value, out decimal decimalValue))
+                {
+                    result = decimalValue;
+                    return true;
+                }
+            }
+            else
+            {
+                // Add more types as needed, for now failing for unsupported types
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            // Ignore parsing exceptions and return false
+            Debug.WriteLine("Parsing Exception: " + ex);
+        }
+
+        return false;
     }
 }

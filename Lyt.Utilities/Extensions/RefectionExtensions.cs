@@ -24,6 +24,26 @@ public static class RefectionExtensions
         return new Action<object>((o) => actionOfT((T)o));
     }
 
+    public static bool TryGetPropertyType(
+        this object target, string propertyName, [NotNullWhen(true)] out Type? propertyType)
+    {
+        propertyType = null;
+        var propertyInfo = target.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
+        if (propertyInfo is null)
+        {
+            return false;
+        }
+       
+        var methodInfo = propertyInfo.GetGetMethod();
+        if (methodInfo is null)
+        {
+            return false    ;
+        }
+
+        propertyType = methodInfo.ReturnType;
+        return true;
+    }
+
     public static void InvokeSetProperty(this object target, string propertyName, object? value)
     {
         var propertyInfo = target.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
