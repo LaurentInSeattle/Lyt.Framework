@@ -84,6 +84,8 @@ public sealed class FormValidator<T>(FormValidatorParameters<T> parameters) :
             // VS does not understand it...  AI, my ass... 
             object? propertyValue = result.InvokeGetProperty("Value");
 #pragma warning restore CA1507 
+            // TODO: Data conversions from string to numbers as needed
+
             formValue.InvokeSetProperty(propertyName, propertyValue);
         }
 
