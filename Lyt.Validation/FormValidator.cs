@@ -60,6 +60,13 @@ public sealed class FormValidator<T>(FormValidatorParameters<T> parameters) :
         List<FieldValidatorResults> results = [];
         foreach (var fieldValidator in this.fieldValidators)
         {
+            if (fieldValidator is null)
+            {
+                // No validator for this field, skipping 
+                results.Add(new FieldValidatorResults(IsValid: true));
+                continue;
+            }
+
             var result = fieldValidator.Validate(viewModel);
             if (!result.IsValid)
             {

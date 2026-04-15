@@ -24,6 +24,54 @@ public static class RefectionExtensions
         return new Action<object>((o) => actionOfT((T)o));
     }
 
+    public static bool TryParseAny<T>(this string input, out T? result)
+    {
+        result = default;
+        Type type = typeof(T);
+        bool isIParsableOfT =
+            typeof(T)
+            .GetInterfaces()
+            .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IParsable<>));
+        if (!isIParsableOfT)
+        {
+            return false;
+        }
+
+        var parsableInterface =
+            typeof(T)
+            .GetInterfaces()
+            .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IParsable<>));
+        if (parsableInterface is null)
+        {
+            return false;
+        }
+
+        var parseMethod = parsableInterface.GetMethod("TryParse", new[] { typeof(string), type.MakeByRefType() });
+        if (parseMethod is null)
+        {
+            return false;
+        }
+
+        object?[] parameters = [input, CultureInfo.InvariantCulture, null];
+        object? maybeBool = parseMethod.Invoke(null, parameters);
+        if (maybeBool is not bool isParsed)
+        {
+            return false;
+        }
+
+        if (isParsed)
+        {
+            object? resultObject = parameters[2];
+            if (resultObject is T typedResult)
+            {
+                result = typedResult;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static bool TryGetPropertyType(
         this object target, string propertyName, [NotNullWhen(true)] out Type? propertyType)
     {
@@ -33,11 +81,11 @@ public static class RefectionExtensions
         {
             return false;
         }
-       
+
         var methodInfo = propertyInfo.GetGetMethod();
         if (methodInfo is null)
         {
-            return false    ;
+            return false;
         }
 
         propertyType = methodInfo.ReturnType;

@@ -2,7 +2,7 @@
 
 public sealed class FieldValidator<T>(FieldValidatorParameters<T> parameters)
     : FieldValidator(typeof(T), parameters)
-    where T : IParsable<T>
+    // where T : IParsable<T>
 {
     private readonly FieldValidatorParameters<T> parameters = parameters;
 
@@ -84,7 +84,30 @@ public sealed class FieldValidator<T>(FieldValidatorParameters<T> parameters)
             else
             {
                 // Need to parse  
-                bool isParsed = propertyText.TryParse<T>(out T? maybeValue);
+                bool isParsed = false;
+                T? maybeValue = default;
+                bool isIParsableOfT = 
+                    typeof(T)
+                    .GetInterfaces()
+                    .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IParsable<>));
+                if (isIParsableOfT)
+                {
+                    // Type T implements IParsable<T>, we can parse directly
+
+                    isParsed = propertyText.TryParseAny<T>(out maybeValue);
+                } 
+                else if (typeof(T).IsEnum)
+                {
+                    isParsed = Enum.TryParse(typeof(T), propertyText, ignoreCase: true, out object? enumValue);
+                    if (isParsed && enumValue is T enumValueOfT)
+                    {
+                        maybeValue = enumValueOfT;
+                    }
+                }
+                // else
+                //  Type T does not implement IParsable<T> and is not an enum :
+                //  consider trying to use TypeConverter as a fallback
+
                 if (!isParsed || maybeValue is not T value)
                 {
                     // failed to parse
