@@ -11,6 +11,7 @@ public sealed class FieldValidator<T>(FieldValidatorParameters<T> parameters)
     public override void Clear(IBindable viewModel)
     {
         // Clear
+        // TODO: This ONLY clears string properties fields 
         viewModel.Set(this.parameters.SourcePropertyName, string.Empty);
         viewModel.ClearValidationMessage(this.parameters.MessagePropertyName);
     }

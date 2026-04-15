@@ -182,7 +182,7 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
         }
         catch (Exception ex)
         {
-            this.Logger.Warning("Property " + propertyName + "not set: " + ex.Message);
+            this.Logger.Warning("Property " + propertyName + " not set: " + ex.Message);
             Debug.WriteLine(ex);
         }
     }

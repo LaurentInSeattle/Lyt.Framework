@@ -77,7 +77,7 @@ public sealed class FormValidator<T>(FormValidatorParameters<T> parameters) :
             results.Add(result);
         }
 
-        // Step #2: all fields valid, run the validator if one is provided 
+        // Step #2: all fields valid, run the form validator if one is provided 
         // 2-a Create object from validated fields, property names should match 
         T formValue = new();
         for (int i = 0; i < results.Count; ++i)
@@ -92,18 +92,26 @@ public sealed class FormValidator<T>(FormValidatorParameters<T> parameters) :
             object? propertyValue = result.InvokeGetProperty("Value");
 #pragma warning restore CA1507 
 
+            if (!result.TryGetPropertyType("Value", out Type? propertyValueType))
+            {
+                return new FormValidatorResults<T>(IsValid: false, Message: $"Property 'Value': Type not found.");
+            }
+
             // Perform data conversions from string to numbers as needed
             if (formValue.TryGetPropertyType(propertyName, out Type? propertyType))
             {
-                if (propertyType != typeof(string))
+                if (propertyType != propertyValueType)
                 {
-                    if (TryParse(propertyValue, propertyType, out object? parsedValue))
+                    if (propertyValueType == typeof(string))
                     {
-                        propertyValue = parsedValue;
-                    }
-                    else
-                    {
-                        return new FormValidatorResults<T>(IsValid: false, Message: $"Failed to parse property '{propertyName}'");
+                        if (TryParse(propertyValue, propertyType, out object? parsedValue))
+                        {
+                            propertyValue = parsedValue;
+                        }
+                        else
+                        {
+                            return new FormValidatorResults<T>(IsValid: false, Message: $"Failed to parse property '{propertyName}'");
+                        }
                     }
                 }
             }
