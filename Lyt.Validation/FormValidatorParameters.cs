@@ -12,7 +12,7 @@ public sealed record class FormValidatorParameters<T>
     (
         IEnumerable<FieldValidator> FieldValidators,
         AbstractValidator<T>? FormValidator = null,
-        string MessagePropertyName = "",
-        string FormValidPropertyName = "", 
+        string MessagePropertyName = "ValidationMessage",
+        string FormValidPropertyName = "FormIsValid", 
         string FocusFieldName = ""
     );
