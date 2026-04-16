@@ -1,31 +1,34 @@
 ﻿namespace Lyt.Validation;
 
-public sealed class FieldValidator<T>(FieldValidatorParameters<T> parameters)
-    : FieldValidator(typeof(T), parameters)
-    // where T : IParsable<T>
+public sealed class FieldValidator<T>(
+    string sourcePropertyName,
+    AbstractValidator<T>? validator = null,
+    bool allowEmpty = false,
+    string messagePropertyName = "ValidationMessage",
+    string emptyFieldMessage = "ValidationMessage",
+    string failedToParseMessage = "ValidationMessage" )
+    : FieldValidator(typeof(T), sourcePropertyName, allowEmpty, messagePropertyName, emptyFieldMessage, failedToParseMessage)
 {
-    private readonly FieldValidatorParameters<T> parameters = parameters;
+    public AbstractValidator<T>? Validator { get; } = validator;
 
-    public new FieldValidatorParameters<T> Parameters => this.parameters;
-
-    public override void Clear(IBindable viewModel)
+    internal override void Clear(IBindable viewModel)
     {
         // Clear
         // TODO: This ONLY clears string properties fields 
-        viewModel.Set(this.parameters.SourcePropertyName, string.Empty);
-        viewModel.ClearValidationMessage(this.parameters.MessagePropertyName);
+        viewModel.Set(this.SourcePropertyName, string.Empty);
+        viewModel.ClearValidationMessage(this.MessagePropertyName);
     }
 
-    public override FieldValidatorResults<T> Validate(IBindable viewModel)
+    internal override FieldValidatorResults<T> Validate(IBindable viewModel)
     {
         string ShowValidationMessage(string message)
-            => viewModel.ShowValidationMessage(this.parameters.MessagePropertyName, message);
+            => viewModel.ShowValidationMessage(this.MessagePropertyName, message);
 
         // Get property value 
         // Case #1: Value is of type T or  Value can be converted to type T 
         // Case #2: Value is a string that can be converted to type T or T is string
 
-        string propertyName = this.parameters.SourcePropertyName;
+        string propertyName = this.SourcePropertyName;
         bool valueIsFound = false;
         T? propertyValue = default;
         try
@@ -62,13 +65,13 @@ public sealed class FieldValidator<T>(FieldValidatorParameters<T> parameters)
             {
                 // Clear white space noise, if any
                 this.Clear(viewModel);
-                if (this.parameters.AllowEmpty)
+                if (this.AllowEmpty)
                 {
                     return new FieldValidatorResults<T>(IsValid: true);
                 }
                 else
                 {
-                    string emptyMessage = this.parameters.EmptyFieldMessage;
+                    string emptyMessage = this.EmptyFieldMessage;
                     emptyMessage = string.IsNullOrWhiteSpace(emptyMessage) ? DefaultEmptyFieldMessage : emptyMessage;
                     emptyMessage = ShowValidationMessage(emptyMessage);
                     return new FieldValidatorResults<T>(Message: emptyMessage);
@@ -112,7 +115,7 @@ public sealed class FieldValidator<T>(FieldValidatorParameters<T> parameters)
                 if (!isParsed || maybeValue is not T value)
                 {
                     // failed to parse
-                    string parseMessage = this.parameters.FailedToParseMessage;
+                    string parseMessage = this.FailedToParseMessage;
                     parseMessage = string.IsNullOrWhiteSpace(parseMessage) ? DefaultFailedToParseMessage : parseMessage;
                     parseMessage = ShowValidationMessage(parseMessage);
                     var parseResults = new FieldValidatorResults<T>(Message: parseMessage);
@@ -126,7 +129,7 @@ public sealed class FieldValidator<T>(FieldValidatorParameters<T> parameters)
 
         if (!valueIsFound || propertyValue is null )
         {
-            string emptyMessage = this.parameters.EmptyFieldMessage;
+            string emptyMessage = this.EmptyFieldMessage;
             emptyMessage = string.IsNullOrWhiteSpace(emptyMessage) ? DefaultEmptyFieldMessage : emptyMessage;
             emptyMessage = ShowValidationMessage(emptyMessage);
             return new FieldValidatorResults<T>(Message: emptyMessage);
@@ -134,7 +137,7 @@ public sealed class FieldValidator<T>(FieldValidatorParameters<T> parameters)
 
         // Now we have a value: Run the Fluent Validator if we have one, 
         // If no validator is specified, it's all done and valid...
-        var validator = this.parameters.Validator;
+        var validator = this.Validator;
         if (validator != null)
         {
             bool isValid = validator.IsValid(propertyValue, out string message);
@@ -146,7 +149,7 @@ public sealed class FieldValidator<T>(FieldValidatorParameters<T> parameters)
             }
         }
 
-        viewModel.ClearValidationMessage(this.parameters.MessagePropertyName);
+        viewModel.ClearValidationMessage(this.MessagePropertyName);
         return new FieldValidatorResults<T>(IsValid: true, HasValue: true, Value: propertyValue);
     }
 }

@@ -1,12 +1,22 @@
 ﻿namespace Lyt.Validation;
 
-public sealed class FormValidator<T>(FormValidatorParameters<T> parameters) :
+public sealed class FormValidator<T>(
+        IEnumerable<FieldValidator> fieldValidators,
+        AbstractValidator<T>? formValidator = null,
+        string messagePropertyName = "ValidationMessage",
+        string formValidPropertyName = "FormIsValid",
+        string focusFieldName = ""
+    ) :
     IFormValidator<T>
     where T : class, new()
 {
-    private readonly FormValidatorParameters<T> parameters = parameters;
+    private readonly IEnumerable<FieldValidator> FieldValidators = fieldValidators;
+    private readonly AbstractValidator<T>? formValidator = formValidator;
+    private readonly string MessagePropertyName = messagePropertyName;
+    private readonly string FormValidPropertyName = formValidPropertyName;
+    private readonly string FocusFieldName = focusFieldName;
 
-    private readonly List<FieldValidator> fieldValidators = [.. parameters.FieldValidators];
+    private readonly List<FieldValidator> fieldValidators = [.. fieldValidators];
 
     private T? value;
 
@@ -26,14 +36,14 @@ public sealed class FormValidator<T>(FormValidatorParameters<T> parameters) :
             fieldValidator.Clear(viewModel);
         }
 
-        viewModel.ClearValidationMessage(this.parameters.MessagePropertyName);
+        viewModel.ClearValidationMessage(this.MessagePropertyName);
         this.SetFormValidProperty(viewModel, isValid: false);
         _ = this.TryFocus(viewModel);
     }
 
     public bool TryFocus(IBindable viewModel)
     {
-        string? focusFieldName = this.parameters.FocusFieldName;
+        string? focusFieldName = this.FocusFieldName;
         if (!string.IsNullOrWhiteSpace(focusFieldName))
         {
             bool focused = viewModel.TryFocusField(focusFieldName);
@@ -51,7 +61,7 @@ public sealed class FormValidator<T>(FormValidatorParameters<T> parameters) :
     public FormValidatorResults<T> Validate(IBindable viewModel)
     {
         string ShowValidationMessage(string message)
-            => viewModel.ShowValidationMessage(this.parameters.MessagePropertyName, message);
+            => viewModel.ShowValidationMessage(this.MessagePropertyName, message);
 
         void SetFormValidProperty(bool isValid)
             => this.SetFormValidProperty(viewModel, isValid);
@@ -86,7 +96,7 @@ public sealed class FormValidator<T>(FormValidatorParameters<T> parameters) :
             var result = results[i];
 
             // Copy validated property value into new object 
-            string propertyName = fieldValidator.Parameters.SourcePropertyName;
+            string propertyName = fieldValidator.SourcePropertyName;
 #pragma warning disable CA1507 // Use nameof to express symbol names
             // VS does not understand it... 
             object? propertyValue = result.InvokeGetProperty("Value");
@@ -124,7 +134,7 @@ public sealed class FormValidator<T>(FormValidatorParameters<T> parameters) :
         }
 
         // 2-b Validate the resulting object if a validator is provided 
-        var maybeValidator = this.parameters.FormValidator;
+        var maybeValidator = this.formValidator;
         if (maybeValidator is not null)
         {
             bool isValid = maybeValidator.IsValid(formValue, out string message);
@@ -145,7 +155,7 @@ public sealed class FormValidator<T>(FormValidatorParameters<T> parameters) :
 
     private void SetFormValidProperty(IBindable viewModel, bool isValid)
     {
-        string propertyName = this.parameters.FormValidPropertyName;
+        string propertyName = this.FormValidPropertyName;
         if (!string.IsNullOrWhiteSpace(propertyName))
         {
             viewModel.InvokeSetProperty(propertyName, isValid);

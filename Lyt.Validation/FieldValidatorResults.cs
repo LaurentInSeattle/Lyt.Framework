@@ -1,13 +1,13 @@
 ﻿namespace Lyt.Validation;
 
-public record class FieldValidatorResults
+internal record class FieldValidatorResults
 (
     bool IsValid = false,
     bool HasValue = false,
     string Message = ""
 );
 
-public sealed record class FieldValidatorResults<T> 
+internal sealed record class FieldValidatorResults<T> 
 (
     T? Value = default,
     bool IsValid = false,
@@ -15,6 +15,6 @@ public sealed record class FieldValidatorResults<T>
     string Message = ""
 ) : FieldValidatorResults(IsValid , HasValue , Message )
 {
-    public T SafeValue 
+    internal T SafeValue 
         => this.HasValue ? this.Value! : throw new Exception("Should have checked 'HasValue'..."); 
 }
