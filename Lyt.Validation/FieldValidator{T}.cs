@@ -6,7 +6,7 @@ public sealed class FieldValidator<T>(
     bool allowEmpty = false,
     string messagePropertyName = "ValidationMessage",
     string emptyFieldMessage = "ValidationMessage",
-    string failedToParseMessage = "ValidationMessage" )
+    string failedToParseMessage = "ValidationMessage")
     : FieldValidator(typeof(T), sourcePropertyName, allowEmpty, messagePropertyName, emptyFieldMessage, failedToParseMessage)
 {
     public AbstractValidator<T>? Validator { get; } = validator;
@@ -25,31 +25,33 @@ public sealed class FieldValidator<T>(
             => viewModel.ShowValidationMessage(this.MessagePropertyName, message);
 
         // Get property value 
-        // Case #1: Value is of type T or  Value can be converted to type T 
-        // Case #2: Value is a string that can be converted to type T or T is string
-
         string propertyName = this.SourcePropertyName;
+        Debug.WriteLine("Validating property: " + propertyName + " of type: " + typeof(T).Name);
         bool valueIsFound = false;
         T? propertyValue = default;
-        try
+        bool isString = typeof(T).Is<string>();
+
+        FieldValidatorResults<T> RunValidator()
         {
-            // Case #1: Value is of type T or  Value can be converted to type T 
-            T? maybePropertyValue = viewModel.Get<T>(propertyName);
-            if (maybePropertyValue is T valueOfT)
+            var validator = this.Validator;
+            if (validator != null)
             {
-                propertyValue = valueOfT;
-                valueIsFound = true;
+                bool isValid = validator.IsValid(propertyValue, out string message);
+                if (!isValid)
+                {
+                    ShowValidationMessage(message);
+                    return new FieldValidatorResults<T>(Message: message);
+                }
             }
-        }
-        catch
-        {
-            // Swallow
-            viewModel.Logger.Info("Property is not of type " + typeof(T).Name);
+
+            // No validator, consider it valid
+            viewModel.ClearValidationMessage(this.MessagePropertyName);
+            return new FieldValidatorResults<T>(IsValid: true, HasValue: true, Value: propertyValue);
         }
 
-        if (!valueIsFound)
+        if (isString)
         {
-            // Case #2: Value is a string that can be converted to type T or T is string
+            // Value is a string that can be converted to type T or T is string
             string propertyText = string.Empty;
             string? maybePropertyText = viewModel.Get<string>(propertyName);
             bool isEmpty = string.IsNullOrWhiteSpace(maybePropertyText);
@@ -58,6 +60,8 @@ public sealed class FieldValidator<T>(
                 // Trim 
                 propertyText = maybePropertyText!;
                 propertyText = propertyText.Trim();
+
+                // Check if the trimmed text is empty
                 isEmpty = string.IsNullOrWhiteSpace(propertyText);
             }
 
@@ -65,16 +69,29 @@ public sealed class FieldValidator<T>(
             {
                 // Clear white space noise, if any
                 this.Clear(viewModel);
+
+                // Do not leave it null, make it empty 
+                propertyValue = (T)(object)string.Empty;
                 if (this.AllowEmpty)
                 {
-                    return new FieldValidatorResults<T>(IsValid: true);
+                    return new FieldValidatorResults<T>(Value: propertyValue, HasValue: true, IsValid: true);
                 }
                 else
                 {
-                    string emptyMessage = this.EmptyFieldMessage;
-                    emptyMessage = string.IsNullOrWhiteSpace(emptyMessage) ? DefaultEmptyFieldMessage : emptyMessage;
-                    emptyMessage = ShowValidationMessage(emptyMessage);
-                    return new FieldValidatorResults<T>(Message: emptyMessage);
+                    var validator = this.Validator;
+                    if (validator != null)
+                    {
+                        // If we have a validator, we can run it to get a custom message
+                        return RunValidator();
+                    }
+                    else
+                    {
+                        // No validator, just return with the default empty message
+                        string emptyMessage = this.EmptyFieldMessage;
+                        emptyMessage = string.IsNullOrWhiteSpace(emptyMessage) ? DefaultEmptyFieldMessage : emptyMessage;
+                        emptyMessage = ShowValidationMessage(emptyMessage);
+                        return new FieldValidatorResults<T>(Message: emptyMessage);
+                    } 
                 }
             }
 
@@ -90,16 +107,15 @@ public sealed class FieldValidator<T>(
                 // Need to parse  
                 bool isParsed = false;
                 T? maybeValue = default;
-                bool isIParsableOfT = 
+                bool isIParsableOfT =
                     typeof(T)
                     .GetInterfaces()
                     .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IParsable<>));
                 if (isIParsableOfT)
                 {
                     // Type T implements IParsable<T>, we can parse directly
-
                     isParsed = propertyText.TryParseAny<T>(out maybeValue);
-                } 
+                }
                 else if (typeof(T).IsEnum)
                 {
                     isParsed = Enum.TryParse(typeof(T), propertyText, ignoreCase: true, out object? enumValue);
@@ -126,8 +142,24 @@ public sealed class FieldValidator<T>(
                 valueIsFound = true;
             }
         }
+        else
+        {
+            // Form property is not of type string (check boxes, radio enums, etc)
+            try
+            {
+                // Assumes that the types should match 
+                propertyValue = viewModel.Get<T>(propertyName); ;
+                valueIsFound = true;
+            }
+            catch (Exception ex)
+            {
+                // Swallow
+                Debug.WriteLine(ex);
+                viewModel.Logger.Info("Failed to retrieve property: " + propertyName + " of type " + typeof(T).Name);
+            }
+        }
 
-        if (!valueIsFound || propertyValue is null )
+        if (!valueIsFound || propertyValue is null)
         {
             string emptyMessage = this.EmptyFieldMessage;
             emptyMessage = string.IsNullOrWhiteSpace(emptyMessage) ? DefaultEmptyFieldMessage : emptyMessage;
@@ -137,19 +169,6 @@ public sealed class FieldValidator<T>(
 
         // Now we have a value: Run the Fluent Validator if we have one, 
         // If no validator is specified, it's all done and valid...
-        var validator = this.Validator;
-        if (validator != null)
-        {
-            bool isValid = validator.IsValid(propertyValue, out string message);
-            if (!isValid)
-            {
-                ShowValidationMessage(message);
-                return
-                    new FieldValidatorResults<T>(Message: message);
-            }
-        }
-
-        viewModel.ClearValidationMessage(this.MessagePropertyName);
-        return new FieldValidatorResults<T>(IsValid: true, HasValue: true, Value: propertyValue);
+        return RunValidator();
     }
 }
