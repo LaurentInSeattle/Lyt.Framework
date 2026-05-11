@@ -11,14 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference 
-        Include="..\Lyt.CodeGenerators\Lyt.CodeGenerators.csproj" 
-        OutputItemType="Analyzer" 
-        ReferenceOutputAssembly="false"
-      />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Lyt.Framework.Interfaces\Lyt.Framework.Interfaces.csproj" />
   </ItemGroup>
 

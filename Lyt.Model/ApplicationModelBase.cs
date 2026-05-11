@@ -1,7 +1,5 @@
 ﻿namespace Lyt.Model;
 
-using Lyt.CodeGenerators.Generated;
-
 public class ApplicationModelBase(IProfiler profiler, ILogger logger, IApplicationBase application) : IApplicationModel
 {
     protected readonly IProfiler profiler = profiler;
@@ -10,10 +8,6 @@ public class ApplicationModelBase(IProfiler profiler, ILogger logger, IApplicati
 
     public async Task Initialize()
     {
-        //Console.WriteLine(Lyt.CodeGenerators.Generated.HelloWorld.Greet("World"));
-        //logger.Info(Lyt.CodeGenerators.Generated.HelloWorld.Greet("World"));
-        logger.Info("World".Greet());
-
         try
         {
             foreach (var model in this.application.GetModels())
