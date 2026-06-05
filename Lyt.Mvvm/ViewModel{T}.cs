@@ -1,7 +1,7 @@
 ﻿namespace Lyt.Mvvm;
 
 /// <summary> Strongly typed view model </summary>
-public class ViewModel<TView> : ViewModel where TView : class, IView, new() 
+public class ViewModel<TView> : ViewModel where TView : class, IView, new()
 {
     public ViewModel() : base() { }
 
@@ -14,8 +14,25 @@ public class ViewModel<TView> : ViewModel where TView : class, IView, new()
         return view;
     }
 
-    public bool IsBound => this.ViewBase as TView is not null ;
+    public bool IsBound => this.ViewBase as TView is not null;
 
     public TView View
-        => this.ViewBase as TView ?? throw new InvalidOperationException("View is null");
+    {
+        get
+        {
+            if (this.ViewBase is null)
+            {
+                throw new InvalidOperationException("View is null");
+            }
+
+            if (this.ViewBase is TView view)
+            {
+                return view;
+            }
+            else
+            {
+                throw new InvalidOperationException("View is not of type TView");
+            }
+        }
+    }
 }
