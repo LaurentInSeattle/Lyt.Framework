@@ -92,7 +92,7 @@ public sealed class FileManagerModel : ModelBase, IModel
         this.Configuration = configuration;
         try
         {
-            this.SetupEnvironment();
+            this.SetupEnvironment(configuration.UserFolders);
         }
         catch (Exception ex)
         {
@@ -111,7 +111,7 @@ public sealed class FileManagerModel : ModelBase, IModel
         return Task.CompletedTask;
     }
 
-    private void SetupEnvironment()
+    private void SetupEnvironment(List<string>? userSubFolders)
     {
         string directory =
             Path.Combine(
@@ -138,10 +138,18 @@ public sealed class FileManagerModel : ModelBase, IModel
                 this.Configuration.Organization);
         this.CreateFolderIfNeeded(userDirectory);
 
-        string userSubDirectory =
-            Path.Combine(userDirectory, this.Configuration.Application);
+        string userSubDirectory = Path.Combine(userDirectory, this.Configuration.Application);
         this.CreateFolderIfNeeded(userSubDirectory);
         this.ApplicationUserFolderPath = userSubDirectory;
+
+        if ( userSubFolders is not null && userSubFolders.Count > 0)
+        {
+            foreach (string userSubFolder in userSubFolders)
+            {
+                string userSubFolderPath = Path.Combine(userSubDirectory, userSubFolder);
+                this.CreateFolderIfNeeded(userSubFolderPath);
+            }
+        }
     }
 
     public static string TimestampString()
@@ -337,15 +345,23 @@ public sealed class FileManagerModel : ModelBase, IModel
 
     public string MakePath(FileId fileId)
     {
-        fileId.Deconstruct(out Area area, out Kind kind, out string name);
-        return this.MakePath(area, kind, name);
+        fileId.Deconstruct(out Area area, out Kind kind, out string name, out string subFolder);
+        return this.MakePath(area, kind, name, subFolder);
     }
 
-    public string MakePath(Area area, Kind kind, string name)
+    public string MakePath(Area area, Kind kind, string name, string subFolder="")
     {
         try
         {
-            return Path.Combine(this.PathFromArea(area), string.Concat(name, FileManagerModel.ExtensionFromKind(kind)));
+            if (string.IsNullOrWhiteSpace(subFolder))
+            {
+                return Path.Combine(this.PathFromArea(area), string.Concat(name, FileManagerModel.ExtensionFromKind(kind)));
+            }
+            else
+            {
+                string subFolderPath = Path.Combine(this.PathFromArea(area), subFolder);
+                return Path.Combine(subFolderPath, string.Concat(name, FileManagerModel.ExtensionFromKind(kind)));
+            }
         }
         catch (Exception ex)
         {
@@ -357,11 +373,11 @@ public sealed class FileManagerModel : ModelBase, IModel
 
     public T Load<T>(FileId fileId) where T : class
     {
-        fileId.Deconstruct(out Area area, out Kind kind, out string name);
-        return this.Load<T>(area, kind, name);
+        fileId.Deconstruct(out Area area, out Kind kind, out string name, out string subFolder);
+        return this.Load<T>(area, kind, name, subFolder);
     }
 
-    public T Load<T>(Area area, Kind kind, string name) where T : class
+    public T Load<T>(Area area, Kind kind, string name, string subFolder) where T : class
     {
         try
         {
@@ -379,10 +395,14 @@ public sealed class FileManagerModel : ModelBase, IModel
                 }
             }
 
+            string areaPath = 
+                string.IsNullOrWhiteSpace(subFolder) ?
+                    this.PathFromArea(area) :
+                    Path.Combine(this.PathFromArea(area), subFolder);
             string path =
                 kind == Kind.BinaryNoExtension ?
-                    Path.Combine(this.PathFromArea(area), name) :
-                    Path.Combine(this.PathFromArea(area), string.Concat(name, extension));
+                    Path.Combine(areaPath, name) :
+                    Path.Combine(areaPath, string.Concat(name, extension));
             switch (kind)
             {
                 default:
@@ -452,14 +472,14 @@ public sealed class FileManagerModel : ModelBase, IModel
 
     public void Duplicate(FileId fileId) 
     {
-        fileId.Deconstruct(out Area area, out Kind kind, out string name);
-        this.Duplicate(area, kind, name);
+        fileId.Deconstruct(out Area area, out Kind kind, out string name, out string subFolder);
+        this.Duplicate(area, kind, name, subFolder);
     }
 
-    public void Duplicate(Area area, Kind kind, string name)
+    public void Duplicate(Area area, Kind kind, string name, string subFolder)
     {
-        string sourcePath = this.MakePath(area, kind, name);
-        string duplicatePath = this.MakePath(area, kind, name + "_" + TimestampString());
+        string sourcePath = this.MakePath(area, kind, name, subFolder);
+        string duplicatePath = this.MakePath(area, kind, name + "_" + TimestampString(), subFolder);
         try
         {
             File.Copy(sourcePath, duplicatePath);
@@ -474,11 +494,11 @@ public sealed class FileManagerModel : ModelBase, IModel
 
     public void Save<T>(FileId fileId, T content) where T : class
     {
-        fileId.Deconstruct(out Area area, out Kind kind, out string name);
-        this.Save<T>(area, kind, name, content);
+        fileId.Deconstruct(out Area area, out Kind kind, out string name, out string subFolder);
+        this.Save<T>(area, kind, name, content, subFolder);
     }
 
-    public void Save<T>(Area area, Kind kind, string name, T content) where T : class
+    public void Save<T>(Area area, Kind kind, string name, T content, string subFolder="") where T : class
     {
         try
         {
@@ -487,8 +507,8 @@ public sealed class FileManagerModel : ModelBase, IModel
                 throw new NotSupportedException("Cant save resource files");
             }
 
-            string path =
-                Path.Combine(this.PathFromArea(area), string.Concat(name, FileManagerModel.ExtensionFromKind(kind)));
+            // TODO !
+            string path = this.MakePath(area, kind, name, subFolder);
             switch (kind)
             {
                 default:
@@ -539,30 +559,30 @@ public sealed class FileManagerModel : ModelBase, IModel
 
     public bool Exists(FileId fileId)
     {
-        fileId.Deconstruct(out Area area, out Kind kind, out string name);
-        return this.Exists(area, kind, name);
+        fileId.Deconstruct(out Area area, out Kind kind, out string name, out string subFolder);
+        return this.Exists(area, kind, name, subFolder);
     }
 
-    public bool Exists(Area area, Kind kind, string name)
+    public bool Exists(Area area, Kind kind, string name, string subFolder = "")
     {
-        string path = this.MakePath(area, kind, name);
+        string path = this.MakePath(area, kind, name, subFolder);
         return Path.Exists(path);
     }
 
     /// <summary> Can throw, use in a TCF construct! </summary>
     public void Delete(FileId fileId)
     {
-        fileId.Deconstruct(out Area area, out Kind kind, out string name);
-        this.Delete(area, kind, name);
+        fileId.Deconstruct(out Area area, out Kind kind, out string name, out string subFolder);
+        this.Delete(area, kind, name, subFolder);
     }
 
-    public void Delete(Area area, Kind kind, string name)
+    public void Delete(Area area, Kind kind, string name, string subFolder = "")
     {
-        string path = this.MakePath(area, kind, name);
+        string path = this.MakePath(area, kind, name, subFolder);
         File.Delete(path);
     }
 
-    public List<string> Enumerate(Area area, Kind kind, string filter = "")
+    public List<string> Enumerate(Area area, Kind kind, string filter = "", string subFolder = "")
     {
         try
         {
