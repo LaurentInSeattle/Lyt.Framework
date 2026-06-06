@@ -154,11 +154,21 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
     /// <summary> Invoked when this view model's control is loaded. </summary>
     public virtual void OnViewLoaded() { }
 
+    public bool IsActivated { get; private set; }
+
     /// <summary> Usually invoked when this view model is about to be shown, but could be used for other purposes. </summary>
-    public virtual void Activate(object? activationParameters) => this.LogActivation(activationParameters);
+    public virtual void Activate(object? activationParameters)
+    {
+        this.LogActivation(activationParameters);
+        this.IsActivated = true;
+    }
 
     /// <summary> Usually invoked when this view model is about to be hidden, and same as above. </summary>
-    public virtual void Deactivate() => this.LogDeactivation();
+    public virtual void Deactivate()
+    {
+        this.LogDeactivation();
+        this.IsActivated = false;
+    }
 
     public virtual bool CanEscape { get; set; } = true;
 
