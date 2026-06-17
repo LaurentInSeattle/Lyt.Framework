@@ -28,14 +28,30 @@ public static class GeneralExtensions
 
     public static bool IsNullOrEmpty(this Guid? id) => null == id || Guid.Empty == id;
 
-    public static void With ( ref bool flag , Action action)
+    // Kept for compatibility
+    public static void With(ref bool flag, Action action)
     {
-#pragma warning disable IDE0059 
+//#pragma warning disable IDE0059 
         // Unnecessary assignment of a value
         // Required by design 
         flag = true;
         action();
         flag = false;
-#pragma warning restore IDE0059 // Unnecessary assignment of a value
+//#pragma warning restore IDE0059 // Unnecessary assignment of a value
+    }
+}
+
+public static class With
+{
+    // Solo in class allow for cute and cool usage 
+    public static void Flag(ref bool flag, Action action)
+    {
+// #pragma warning disable IDE0059 
+        // Unnecessary assignment of a value
+        // Required by design 
+        flag = true;
+        action();
+        flag = false;
+// #pragma warning restore IDE0059 // Unnecessary assignment of a value
     }
 }
