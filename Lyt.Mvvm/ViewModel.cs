@@ -182,6 +182,8 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
 
     public virtual void Cancel() { }
 
+    public virtual void Initialize() { }
+
     #region IBindable implementation 
 
     public void Set<T>(string propertyName, T value)
