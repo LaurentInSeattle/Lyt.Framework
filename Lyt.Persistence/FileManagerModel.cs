@@ -162,6 +162,12 @@ public sealed class FileManagerModel : ModelBase, IModel
                 now.Hour, now.Minute, now.Second);
     }
 
+    public static string BriefTimestampString()
+    {
+        var now = DateTime.Now.ToLocalTime();
+        return string.Format( "{0:D2}_{1:D2}_{2:D2}_{3:D2}", now.Month, now.Day, now.Hour, now.Minute);
+    }
+
     public static string ShortTimestampString()
     {
         var now = DateTime.Now.ToLocalTime();
