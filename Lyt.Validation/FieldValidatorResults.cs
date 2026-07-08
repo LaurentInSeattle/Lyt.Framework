@@ -15,6 +15,7 @@ internal sealed record class FieldValidatorResults<T>
     string Message = ""
 ) : FieldValidatorResults(IsValid , HasValue , Message )
 {
+    // ! If HasValue is true, then Value is not null, by design 
     internal T SafeValue 
         => this.HasValue ? this.Value! : throw new Exception("Should have checked 'HasValue'..."); 
 }

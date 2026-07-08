@@ -8,8 +8,10 @@ public sealed class UserAdministrationModel(ILogger logger) : ModelBase(logger),
 
     public bool IsLoggedIn => this.LoggedInUser != null;
 
+    // ! Checked verified by IsLoggedIn 
     public bool IsLoggedInAsUser => this.IsLoggedIn && !this.LoggedInUser!.IsAdministrator;
 
+    // ! Checked verified by IsLoggedIn 
     public bool IsLoggedInAsAdministrator => this.IsLoggedIn && this.LoggedInUser!.IsAdministrator;
 
     public override Task Initialize()

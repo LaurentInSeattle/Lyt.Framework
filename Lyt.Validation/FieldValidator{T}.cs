@@ -58,6 +58,7 @@ public sealed class FieldValidator<T>(
             if (!isEmpty)
             {
                 // Trim 
+                // ! Verified by isEmpty 
                 propertyText = maybePropertyText!;
                 propertyText = propertyText.Trim();
 

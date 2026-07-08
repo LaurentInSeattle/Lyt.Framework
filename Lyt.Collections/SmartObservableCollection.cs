@@ -335,6 +335,7 @@ public class SmartObservableCollection<T> : Collection<T>, INotifyCollectionChan
     private void OnSerializing(StreamingContext context)
     {
         this.EnsureMonitorInitialized();
+        // ! Verified by EnsureMonitorInitialized
         monitor!.busyCount = blockReentrancyCount;
     }
 

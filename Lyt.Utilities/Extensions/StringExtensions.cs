@@ -25,7 +25,7 @@ public static partial class StringExtensions
         string? ts = x?.ToString();
         if (string.IsNullOrEmpty(ts))
         {
-            return string.Empty; 
+            return string.Empty;
         }
 
         string y = ts.Wordify().Trim();
@@ -34,7 +34,7 @@ public static partial class StringExtensions
 
     public static string BeautifyEnumString(this string enumString)
     {
-        string eString ;
+        string eString;
         if (enumString.Contains('_', StringComparison.InvariantCultureIgnoreCase))
         {
             eString = enumString.ToLower().Replace("_", " ").ToTitleCase();
@@ -45,18 +45,24 @@ public static partial class StringExtensions
             eString = enumString.Capitalize().Wordify();
         }
 
-        return eString; 
+        return eString;
     }
 
-    public static string BeautifyEnumString(this object value, string prefixTrim = "", string postfixTrim = "" )
+    public static string BeautifyEnumString(this object value, string prefixTrim = "", string postfixTrim = "")
     {
         if (!value.GetType().IsEnum)
         {
             if (Debugger.IsAttached) { Debugger.Break(); }
-            return value.ToString()!;
+            string? strValue = value.ToString();
+            return string.IsNullOrWhiteSpace(strValue) ? string.Empty : strValue;
         }
 
-        string enumString = value.ToString()!;
+        string? enumString = value.ToString();
+        if ( string.IsNullOrWhiteSpace(enumString))
+        {
+            return string.Empty; 
+        }
+
         if (!string.IsNullOrWhiteSpace(prefixTrim) &&
             enumString.StartsWith(prefixTrim, StringComparison.InvariantCultureIgnoreCase))
         {

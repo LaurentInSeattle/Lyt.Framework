@@ -74,16 +74,21 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
 
     public IHost Host => StaticHost;
 
-    public ILocalizer Localizer =>
-        this.CanLocalize ? StaticLocalizer! : throw new Exception("Should have checked CanLocalize property.");
-
-    public IFocuser Focuser =>
-        this.CanFocus ? StaticFocuser! : throw new Exception("Should have checked CanFocus property.");
-
     public IDispatch Dispatcher => StaticDispatcher;
 
     public IProfiler Profiler => StaticProfiler;
 
+#pragma warning disable NX0001 // Nullable
+
+    public ILocalizer Localizer =>
+        // ! Verified by CanLocalize
+        this.CanLocalize ? StaticLocalizer! : throw new Exception("Should have checked CanLocalize property.");
+
+    public IFocuser Focuser =>
+        // ! Verified by CanFocus
+        this.CanFocus ? StaticFocuser! : throw new Exception("Should have checked CanFocus property.");
+
+#pragma warning restore NX0001 // Nullable
 #pragma warning restore CA1822 // Mark members as static
 #pragma warning restore IDE0079
 

@@ -48,7 +48,12 @@ public sealed class Profiler(ILogger logger) : IProfiler
             return;
         }
 
-        string typeName = method.DeclaringType!.Name;
+        if (method.DeclaringType is null)
+        {
+            return;
+        }
+
+        string typeName = method.DeclaringType.Name;
         string memberName = method.Name;
         this.logger.Info(
             string.Format(

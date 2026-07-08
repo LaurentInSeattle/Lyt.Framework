@@ -192,7 +192,12 @@ public abstract class ModelBase(ILogger logger) : IModel
                 return;
             }
 
-            typeName = frameMethod.DeclaringType!.Name;
+            if (frameMethod.DeclaringType is null)
+            {
+                return; 
+            }
+
+            typeName = frameMethod.DeclaringType.Name;
         }
         while (typeName.StartsWith("ModelBase"));
 

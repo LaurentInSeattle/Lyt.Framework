@@ -416,6 +416,7 @@ public sealed class FileManagerModel : ModelBase, IModel
                     if (typeof(T) == typeof(string))
                     {
                         string content = File.ReadAllText(path);
+                        // ! T is string 
                         return (content as T)!;
                     }
 
@@ -437,6 +438,7 @@ public sealed class FileManagerModel : ModelBase, IModel
                     if (typeof(T) == typeof(byte[]))
                     {
                         byte[] data = File.ReadAllBytes(path);
+                        // ! T is byte[] 
                         return (data as T)!;
                     }
 
@@ -460,6 +462,7 @@ public sealed class FileManagerModel : ModelBase, IModel
                 if (typeof(T) == typeof(string))
                 {
                     string content = streamReader.ReadToEnd();
+                    // ! T is verified to be string 
                     return (content as T)!;
                 }
 

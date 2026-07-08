@@ -32,16 +32,16 @@ public class ConsoleBase(
     private readonly List<Type> validatedModelTypes = [];
 
     public static T GetRequiredService<T>() where T : notnull
-        => ConsoleBase.AppHost!.Services.GetRequiredService<T>();
+        => ConsoleBase.AppHost.Services.GetRequiredService<T>();
 
     public static object GetRequiredService(Type type)
-        => ConsoleBase.AppHost!.Services.GetRequiredService(type);
+        => ConsoleBase.AppHost.Services.GetRequiredService(type);
 
     public static T? GetOptionalService<T>() where T : notnull
-        => ConsoleBase.AppHost!.Services.GetService<T>();
+        => ConsoleBase.AppHost.Services.GetService<T>();
 
     public static object? GetOptionalService(Type type)
-        => ConsoleBase.AppHost!.Services.GetService(type);
+        => ConsoleBase.AppHost.Services.GetService(type);
 
     public static TModel GetModel<TModel>() where TModel : notnull
     {
@@ -73,10 +73,11 @@ public class ConsoleBase(
         List<IModel> models = [];
         foreach (Type type in this.validatedModelTypes)
         {
-            object model = ConsoleBase.AppHost!.Services.GetRequiredService(type);
+            object model = ConsoleBase.AppHost.Services.GetRequiredService(type);
             bool isModel = typeof(IModel).IsAssignableFrom(model.GetType());
             if (isModel)
             {
+                // ! Verified by isModel 
                 models.Add((model as IModel)!);
             }
         }
@@ -104,7 +105,7 @@ public class ConsoleBase(
 
         IApplicationModel applicationModel = ConsoleBase.GetRequiredService<IApplicationModel>();
         await applicationModel.Shutdown();
-        await ConsoleBase.AppHost!.StopAsync();
+        await ConsoleBase.AppHost.StopAsync();
         this.OnShutdownComplete();
 
         ForceShutdown();
@@ -143,7 +144,10 @@ public class ConsoleBase(
                         }
                         else
                         {
-                            Debug.WriteLine(modelType.FullName!.ToString() + " is not a IModel");
+                            if (modelType.FullName is not null )
+                            {
+                                Debug.WriteLine(modelType.FullName.ToString() + " is not a IModel");
+                            }
                         }
                     }
 
@@ -228,7 +232,7 @@ public class ConsoleBase(
         // This ensures that the Application Model and all listed models are constructed.
         foreach (Type type in this.validatedModelTypes)
         {
-            object model = ConsoleBase.AppHost!.Services.GetRequiredService(type);
+            object model = ConsoleBase.AppHost.Services.GetRequiredService(type);
             if (model is not IModel)
             {
                 throw new ApplicationException("Failed to warmup model: " + type.FullName);
