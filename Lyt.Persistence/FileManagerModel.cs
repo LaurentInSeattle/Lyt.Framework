@@ -44,17 +44,21 @@ public sealed class FileManagerModel : ModelBase, IModel
         this.jsonSerializerOptions =
             new JsonSerializerOptions
             {
+                // 'Classic' properties 
+                //
                 AllowTrailingCommas = true,
                 WriteIndented = true,
                 IndentSize = 4,
                 ReadCommentHandling = JsonCommentHandling.Skip,
                 IgnoreReadOnlyFields = true,
                 IgnoreReadOnlyProperties = true,
-                // .Net 9 properties 
+
+                // .Net 9 and above properties 
                 //
-                // AllowOutOfOrderMetadataProperties = true,
-                // RespectRequiredConstructorParameters = true,
-                // RespectNullableAnnotations= true,
+                AllowOutOfOrderMetadataProperties = true,
+                RespectRequiredConstructorParameters = true,
+                RespectNullableAnnotations= true,
+                NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals,
             };
         this.jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     }
