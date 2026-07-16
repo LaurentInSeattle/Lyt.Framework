@@ -53,6 +53,10 @@ public sealed class FileManagerModel : ModelBase, IModel
                 IgnoreReadOnlyFields = true,
                 IgnoreReadOnlyProperties = true,
 
+                // .Net 7 properties 
+                //
+                UnknownTypeHandling = JsonUnknownTypeHandling.JsonElement,
+
                 // .Net 9 and above properties 
                 //
                 AllowOutOfOrderMetadataProperties = true,
