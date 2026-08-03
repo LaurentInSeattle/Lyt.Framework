@@ -46,7 +46,7 @@ public static class RefectionExtensions
             return false;
         }
 
-        var parseMethod = parsableInterface.GetMethod("TryParse", new[] { typeof(string), type.MakeByRefType() });
+        var parseMethod = parsableInterface.GetMethod("TryParse", [typeof(string), type.MakeByRefType()]);
         if (parseMethod is null)
         {
             return false;
