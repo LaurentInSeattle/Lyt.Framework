@@ -1,7 +1,7 @@
 ﻿namespace Lyt.Collections;
 
-public sealed class LruDictionary<TKey, TValue>(int capacity) : IDictionary<TKey, TValue> 
-    where TKey: notnull
+public sealed class LruDictionary<TKey, TValue>(int capacity) : 
+    IDictionary<TKey, TValue>  where TKey: notnull
 {
     private sealed class Node(TKey key, TValue value)
     {
@@ -20,6 +20,8 @@ public sealed class LruDictionary<TKey, TValue>(int capacity) : IDictionary<TKey
     private readonly LinkedList<Node> list = new();
 
     public int Count => this.map.Count;
+
+    public int Capacity => this.capacity;
 
     public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
     {
@@ -105,16 +107,47 @@ public sealed class LruDictionary<TKey, TValue>(int capacity) : IDictionary<TKey
 
     public bool Contains(KeyValuePair<TKey, TValue> item) => this.ContainsKey(item.Key);
 
+    public IEnumerator<TKey> GetKeysEnumerator() => this.map.Keys.GetEnumerator();
 
+    #region Unsupported IDictionary interface Members
 
-    public bool Remove(TKey key) => throw new NotImplementedException();
+    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+    {
+        Debug.WriteLine("Enumerating KVP's is not supported in LruDictionary. Enumerate keys instead.");
 
-    public bool Remove(KeyValuePair<TKey, TValue> item) => throw new NotImplementedException();
+        if (Debugger.IsAttached)
+        {
+            Debugger.Break();
+        }
 
-    public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) => throw new NotImplementedException();
-    
-    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => throw new NotImplementedException();
-    
+        return Enumerable.Empty<KeyValuePair<TKey, TValue>>().GetEnumerator();
+    }
+
     IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
+    public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+    {
+        Debug.WriteLine("CopyTo is not supported in LruDictionary.");
+
+        if (Debugger.IsAttached)
+        {
+            Debugger.Break();
+        }
+    }
+
+    public bool Remove(TKey key)
+    {
+        Debug.WriteLine("Remove is not supported in LruDictionary. Use Clear() to remove all items.");  
+
+        if ( Debugger.IsAttached)
+        {
+            Debugger.Break();
+        }
+
+        return false;
+    }
+
+    public bool Remove(KeyValuePair<TKey, TValue> item) => this.Remove(item.Key);
+
+    #endregion Unsupported IDictionary interface Members
 }
