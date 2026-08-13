@@ -133,4 +133,40 @@ public static class FileSystemExtensions
 
         return string.Empty;
     }
+
+
+    public static bool IsReadable(this string filePath)
+    {
+        // First, do a quick check to avoid unnecessary exception overhead
+        if (!File.Exists(filePath))
+        {
+            return false;
+        }
+
+        try
+        {
+            // Attempt to open the file strictly for reading
+            using FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+            // The file was successfully opened and can be read
+            return true;
+        }
+        catch (IOException ioex)
+        {
+            // Thrown if the file is locked by another process or a disk error occurs
+            Debug.WriteLine(ioex.ToString());
+            return false;
+        }
+        catch (UnauthorizedAccessException uaex)
+        {
+            // Thrown if the application lacks OS permissions to read the file
+            Debug.WriteLine(uaex.ToString());
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.ToString());
+            return false;
+        }
+    }
 }
