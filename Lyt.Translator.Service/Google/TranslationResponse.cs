@@ -21,13 +21,13 @@ Sample :
 
 */
 
-internal class Sentence
+public class Sentence
 {
     [JsonPropertyName("trans")]
     public string? Translation { get; init; }
 }
 
-internal class TranslationResponse
+public class TranslationResponse
 {
     [JsonPropertyName("sentences")]
     public List<Sentence>? Sentences { get; init; }

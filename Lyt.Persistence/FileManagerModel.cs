@@ -1,5 +1,7 @@
 ﻿namespace Lyt.Persistence;
 
+using System.Text.Json.Serialization.Metadata;
+
 public sealed class FileManagerModel : ModelBase, IModel
 {
     public enum Area
@@ -36,35 +38,35 @@ public sealed class FileManagerModel : ModelBase, IModel
     // private const string SettingsFolder = "Settings";
     // private static readonly string[] ApplicationFolders = [LogsFolder, SettingsFolder, ConfigurationFolder, UserFolder];
 
-    private readonly JsonSerializerOptions jsonSerializerOptions;
+    //private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public FileManagerModel(ILogger logger) : base(logger)
     {
         this.Configuration = new FileManagerConfiguration(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
-        this.jsonSerializerOptions =
-            new JsonSerializerOptions
-            {
-                // 'Classic' properties 
-                //
-                AllowTrailingCommas = true,
-                WriteIndented = true,
-                IndentSize = 4,
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                IgnoreReadOnlyFields = true,
-                IgnoreReadOnlyProperties = true,
+        //this.jsonSerializerOptions =
+        //    new JsonSerializerOptions
+        //    {
+        //        // 'Classic' properties 
+        //        //
+        //        AllowTrailingCommas = true,
+        //        WriteIndented = true,
+        //        IndentSize = 4,
+        //        ReadCommentHandling = JsonCommentHandling.Skip,
+        //        IgnoreReadOnlyFields = true,
+        //        IgnoreReadOnlyProperties = true,
 
-                // .Net 7 properties 
-                //
-                UnknownTypeHandling = JsonUnknownTypeHandling.JsonElement,
+        //        // .Net 7 properties 
+        //        //
+        //        UnknownTypeHandling = JsonUnknownTypeHandling.JsonElement,
 
-                // .Net 9 and above properties 
-                //
-                AllowOutOfOrderMetadataProperties = true,
-                RespectRequiredConstructorParameters = true,
-                RespectNullableAnnotations= true,
-                NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals,
-            };
-        this.jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        //        // .Net 9 and above properties 
+        //        //
+        //        AllowOutOfOrderMetadataProperties = true,
+        //        RespectRequiredConstructorParameters = true,
+        //        RespectNullableAnnotations= true,
+        //        NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals,
+        //    };
+        //this.jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     }
 
     public FileManagerConfiguration Configuration { get; private set; }
@@ -291,11 +293,51 @@ public sealed class FileManagerModel : ModelBase, IModel
         }
     }
 
-    public string Serialize<T>(T deserialized) where T : class
+    //public string Serialize<T>(T deserialized) where T : class
+    //{
+    //    try
+    //    {
+    //        string serialized = JsonSerializer.Serialize(deserialized, this.jsonSerializerOptions);
+    //        if (!string.IsNullOrWhiteSpace(serialized))
+    //        {
+    //            return serialized;
+    //        }
+
+    //        throw new Exception();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        string msg = "Failed to serialize " + typeof(T).FullName + "\n" + ex.ToString();
+    //        this.Logger.Error(msg);
+    //        throw new Exception(msg, ex);
+    //    }
+    //}
+
+    //public T Deserialize<T>(string serialized) where T : class
+    //{
+    //    try
+    //    {
+    //        object? deserialized = JsonSerializer.Deserialize<T>(serialized, this.jsonSerializerOptions);
+    //        if (deserialized is T deserializedOfT)
+    //        {
+    //            return deserializedOfT;
+    //        }
+
+    //        throw new Exception();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        string msg = "Failed to deserialize " + typeof(T).FullName + "\n" + ex.ToString();
+    //        this.Logger.Fatal(msg);
+    //        throw new Exception(msg, ex);
+    //    }
+    //}
+
+    public string Serialize<T>(T deserialized , JsonTypeInfo<T> jsonTypeInfo) where T : class
     {
         try
         {
-            string serialized = JsonSerializer.Serialize(deserialized, this.jsonSerializerOptions);
+            string serialized = JsonSerializer.Serialize(deserialized, jsonTypeInfo);
             if (!string.IsNullOrWhiteSpace(serialized))
             {
                 return serialized;
@@ -311,11 +353,11 @@ public sealed class FileManagerModel : ModelBase, IModel
         }
     }
 
-    public T Deserialize<T>(string serialized) where T : class
+    public T Deserialize<T>(string serialized, JsonTypeInfo<T> jsonTypeInfo) where T : class
     {
         try
         {
-            object? deserialized = JsonSerializer.Deserialize<T>(serialized, this.jsonSerializerOptions);
+            object? deserialized = JsonSerializer.Deserialize(serialized, jsonTypeInfo);
             if (deserialized is T deserializedOfT)
             {
                 return deserializedOfT;
@@ -385,13 +427,13 @@ public sealed class FileManagerModel : ModelBase, IModel
         }
     }
 
-    public T Load<T>(FileId fileId) where T : class
+    public T Load<T>(FileId fileId, JsonTypeInfo<T> jsonTypeInfo) where T : class
     {
         fileId.Deconstruct(out Area area, out Kind kind, out string name, out string subFolder);
-        return this.Load<T>(area, kind, name, subFolder);
+        return this.Load<T>(area, kind, name, subFolder, jsonTypeInfo);
     }
 
-    public T Load<T>(Area area, Kind kind, string name, string subFolder) where T : class
+    public T Load<T>(Area area, Kind kind, string name, string subFolder, JsonTypeInfo<T> jsonTypeInfo) where T : class
     {
         try
         {
@@ -432,13 +474,13 @@ public sealed class FileManagerModel : ModelBase, IModel
 
                 case Kind.Json:
                     string serializedJson = File.ReadAllText(path);
-                    T deserialized = this.Deserialize<T>(serializedJson);
+                    T deserialized = this.Deserialize<T>(serializedJson, jsonTypeInfo);
                     return deserialized;
 
                 case Kind.JsonCompressed:
                     byte[] dataJsonCompressed = File.ReadAllBytes(path);
                     string serializedDecompressed = CompressionUtilities.DecompressToString(dataJsonCompressed);
-                    T deserializedDecompressed = this.Deserialize<T>(serializedDecompressed);
+                    T deserializedDecompressed = this.Deserialize<T>(serializedDecompressed, jsonTypeInfo);
                     return deserializedDecompressed;
 
                 case Kind.Binary:
@@ -461,7 +503,7 @@ public sealed class FileManagerModel : ModelBase, IModel
         }
     }
 
-    public T LoadResourceFromStream<T>(Kind kind, StreamReader streamReader) where T : class
+    public T LoadResourceFromStream<T>(Kind kind, StreamReader streamReader, JsonTypeInfo<T> jsonTypeInfo) where T : class
     {
         switch (kind)
         {
@@ -478,7 +520,7 @@ public sealed class FileManagerModel : ModelBase, IModel
 
             case Kind.Json:
                 string serialized = streamReader.ReadToEnd();
-                T deserialized = this.Deserialize<T>(serialized);
+                T deserialized = this.Deserialize<T>(serialized, jsonTypeInfo);
                 return deserialized;
 
             case Kind.Binary:
@@ -509,13 +551,13 @@ public sealed class FileManagerModel : ModelBase, IModel
         }
     }
 
-    public void Save<T>(FileId fileId, T content) where T : class
+    public void Save<T>(FileId fileId, T content, JsonTypeInfo<T> jsonTypeInfo) where T : class
     {
         fileId.Deconstruct(out Area area, out Kind kind, out string name, out string subFolder);
-        this.Save<T>(area, kind, name, content, subFolder);
+        this.Save<T>(area, kind, name, content, jsonTypeInfo, subFolder);
     }
 
-    public void Save<T>(Area area, Kind kind, string name, T content, string subFolder="") where T : class
+    public void Save<T>(Area area, Kind kind, string name, T content, JsonTypeInfo<T> jsonTypeInfo, string subFolder="") where T : class
     {
         try
         {
@@ -542,12 +584,12 @@ public sealed class FileManagerModel : ModelBase, IModel
                     break;
 
                 case Kind.Json:
-                    string serializedJson = this.Serialize<T>(content);
+                    string serializedJson = this.Serialize<T>(content, jsonTypeInfo);
                     File.WriteAllText(path, serializedJson);
                     break;
 
                 case Kind.JsonCompressed:
-                    string serializedJsonCompressed = this.Serialize<T>(content);
+                    string serializedJsonCompressed = this.Serialize<T>(content, jsonTypeInfo);
                     byte[] dataCompressed = CompressionUtilities.CompressString(serializedJsonCompressed);
                     File.WriteAllBytes(path, dataCompressed);
                     break;

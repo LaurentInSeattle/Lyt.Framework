@@ -1,5 +1,11 @@
 ﻿namespace Lyt.Translator.Service.Google;
 
+[JsonSourceGenerationOptions(WriteIndented = false)]
+[JsonSerializable(typeof(TranslationResponse))]
+public partial class AppJsonContext : JsonSerializerContext
+{
+}
+
 internal class GoogleTranslate
 {
     private const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0";
@@ -27,7 +33,7 @@ internal class GoogleTranslate
             var stream = await response.Content.ReadAsStreamAsync();
             using var reader = new StreamReader(stream, Encoding.UTF8);
             string jsonText = reader.ReadToEnd();
-            var responseObject = JsonSerializer.Deserialize<TranslationResponse>(jsonText);
+            var responseObject = JsonSerializer.Deserialize(jsonText, AppJsonContext.Default.TranslationResponse);
             if (responseObject is TranslationResponse translationResponse)
             {
                 var sentences = translationResponse.Sentences;
