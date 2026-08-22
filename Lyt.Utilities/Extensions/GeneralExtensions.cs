@@ -2,6 +2,28 @@
 
 public static class GeneralExtensions
 {
+    public static bool Is<T>(this Type type) => typeof(T) == type;
+
+    public static bool Implements<TInterface>(this object obj)
+        => typeof(TInterface).IsAssignableFrom(obj.GetType());
+
+    public static bool Implements<TInterface>(this Type type)
+        => typeof(TInterface).IsAssignableFrom(type);
+
+    public static bool DerivesFrom<TBase>(this Type type)
+        where TBase : class
+        => typeof(TBase).IsAssignableFrom(type);
+
+    public static Action<object>? CastToActionObject<T>(this Action<T> actionOfT)
+    {
+        if (actionOfT == null)
+        {
+            return null;
+        }
+
+        return new Action<object>((o) => actionOfT((T)o));
+    }
+
     public static void ForEach<T>(this IEnumerable<T> sequence, Action<T> action)
     {
         if (sequence == null)
@@ -28,30 +50,15 @@ public static class GeneralExtensions
 
     public static bool IsNullOrEmpty(this Guid? id) => null == id || Guid.Empty == id;
 
-    // Kept for compatibility
-    public static void With(ref bool flag, Action action)
-    {
-//#pragma warning disable IDE0059 
-        // Unnecessary assignment of a value
-        // Required by design 
-        flag = true;
-        action();
-        flag = false;
-//#pragma warning restore IDE0059 // Unnecessary assignment of a value
-    }
-}
-
-public static class With
-{
-    // Solo in class allow for cute and cool usage 
-    public static void Flag(ref bool flag, Action action)
-    {
-// #pragma warning disable IDE0059 
-        // Unnecessary assignment of a value
-        // Required by design 
-        flag = true;
-        action();
-        flag = false;
-// #pragma warning restore IDE0059 // Unnecessary assignment of a value
-    }
+    //    // Kept for compatibility
+    //    public static void With(ref bool flag, Action action)
+    //    {
+    ////#pragma warning disable IDE0059 
+    //        // Unnecessary assignment of a value
+    //        // Required by design 
+    //        flag = true;
+    //        action();
+    //        flag = false;
+    ////#pragma warning restore IDE0059 // Unnecessary assignment of a value
+    //    }
 }

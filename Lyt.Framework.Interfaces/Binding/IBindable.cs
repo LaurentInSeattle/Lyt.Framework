@@ -14,7 +14,10 @@ public interface IBindable
 
     string Localize(string message, bool failSilently = false);
 
-    T? Get<T>(string propertyName); 
+    //  Most like useless now that we have move on the MSFT CTK 
+    //  Used by the Validation Framework 
 
-    void Set<T>(string propertyName, T value); 
+    T? Get<T>(string propertyName);
+
+    void Set<T>(string propertyName, T value);
 }

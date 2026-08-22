@@ -1,6 +1,4 @@
-﻿using Lyt.Utilities.Extensions;
-
-namespace Lyt.Validation.Extensions;
+﻿namespace Lyt.Validation.Extensions;
 
 public static class ValidationExtensions
 {

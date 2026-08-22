@@ -20,6 +20,7 @@ global using Lyt.Framework.Interfaces.Logging;
 global using Lyt.Framework.Interfaces.Messaging;
 
 global using Lyt.Utilities.Extensions;
+global using Lyt.Utilities.Reflection;
 global using Lyt.Validation.Extensions;
 
 global using FluentValidation;

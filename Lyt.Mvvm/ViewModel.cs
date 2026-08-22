@@ -195,7 +195,7 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
     {
         try
         {
-            this.InvokeSetProperty(propertyName, value);
+            // this.InvokeSetProperty(propertyName, value);
         }
         catch (Exception ex)
         {
@@ -208,26 +208,26 @@ public class ViewModel : ObservableObject, ISupportBehaviors, IBindable
     {
         try
         {
-            object? maybeT = this.InvokeGetProperty(propertyName);
-            if (maybeT is T realT)
-            {
-                return realT;
-            }
+            //object? maybeT = this.InvokeGetProperty(propertyName);
+            //if (maybeT is T realT)
+            //{
+            //    return realT;
+            //}
 
-            if (typeof(T) == typeof(string))
-            {
-                return default;
-            }
-            else
-            {
-                maybeT = Convert.ChangeType(maybeT, typeof(T), CultureInfo.InvariantCulture);
-                if (maybeT is T convertedT)
-                {
-                    return convertedT;
-                }
+            //if (typeof(T) == typeof(string))
+            //{
+            //    return default;
+            //}
+            //else
+            //{
+            //    maybeT = Convert.ChangeType(maybeT, typeof(T), CultureInfo.InvariantCulture);
+            //    if (maybeT is T convertedT)
+            //    {
+            //        return convertedT;
+            //    }
 
-                throw new Exception("Incompatible types");
-            }
+            throw new Exception("Incompatible types");
+            //}
         }
         catch (Exception ex)
         {

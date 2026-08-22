@@ -36,6 +36,7 @@ public sealed class Profiler(ILogger logger) : IProfiler
     }
 
     [Conditional("DEBUG")]
+    [RequiresUnreferencedCode("Not trim  safe, but ok since it is conditional debug")]
     public void Track(
         string message,
         [CallerFilePath] string sourceFilePath = "",
