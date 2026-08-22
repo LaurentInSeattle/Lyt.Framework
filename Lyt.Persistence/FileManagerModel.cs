@@ -503,7 +503,8 @@ public sealed class FileManagerModel : ModelBase, IModel
         }
     }
 
-    public T LoadResourceFromStream<T>(Kind kind, StreamReader streamReader, JsonTypeInfo<T> jsonTypeInfo) where T : class
+    public T LoadResourceFromStream<T>(
+        Kind kind, StreamReader streamReader, JsonTypeInfo<T>? jsonTypeInfo =null ) where T : class
     {
         switch (kind)
         {
@@ -519,6 +520,11 @@ public sealed class FileManagerModel : ModelBase, IModel
                 throw new NotSupportedException("string type mismatch");
 
             case Kind.Json:
+                if ( jsonTypeInfo is  null )
+                {
+                    throw new NotSupportedException("jsonTypeInfo is required for JSON deserialization");
+                }
+
                 string serialized = streamReader.ReadToEnd();
                 T deserialized = this.Deserialize<T>(serialized, jsonTypeInfo);
                 return deserialized;
