@@ -2,7 +2,7 @@
 
 public interface IApplicationBase
 {
-    IEnumerable<IModel> GetModels();
+    List<IModel> GetModels();
     
     Task Shutdown ();
 }

@@ -1,7 +1,5 @@
 ﻿namespace Lyt.Model;
 
-using System.Diagnostics.CodeAnalysis;
-
 [AttributeUsage(AttributeTargets.Property)]
 public class ModelDoNotLogAttribute : Attribute { }
 
@@ -80,7 +78,6 @@ public abstract class ModelBase(ILogger logger) : IModel
 
     /// <summary> Sets the value of a property, AND changes the dirty state of the model  </summary>
     /// <returns> True, if the value was changed, false otherwise. </returns>
-    [RequiresUnreferencedCode("Calls Lyt.Model.ModelBase.LogPropertyChanged(String, Object)")]
     protected bool Set<T>(T? value, [CallerMemberName] string? name = null)
     {
         if (name is null)
@@ -99,7 +96,6 @@ public abstract class ModelBase(ILogger logger) : IModel
 
     /// <summary> Sets the value of a property, without changing the dirty state of the model  </summary>
     /// <returns> True, if the value was changed, false otherwise. </returns>
-    [RequiresUnreferencedCode("Calls Lyt.Model.ModelBase.LogPropertyChanged(String, Object)")]
     protected bool SetClean<T>(T? value, [CallerMemberName] string? name = null)
     {
         if (name is null)
@@ -116,7 +112,6 @@ public abstract class ModelBase(ILogger logger) : IModel
         return this.PrivateSet<T>(value, name, setDirty: false);
     }
 
-    [RequiresUnreferencedCode("Calls Lyt.Model.ModelBase.LogPropertyChanged(String, Object)")]
     private bool PrivateSet<T>(T? value, string name, bool setDirty)
     {
         this.properties[name] = value;
@@ -180,7 +175,6 @@ public abstract class ModelBase(ILogger logger) : IModel
 
     /// <summary> Logs that a model property is changing. </summary>
     [Conditional("DEBUG")]
-    [RequiresUnreferencedCode("Not trimming safe but ok since this is Conditional(\"DEBUG\")")]
     private void LogPropertyChanged(string name, object? value)
     {
         if (this.Logger is null)
@@ -188,44 +182,8 @@ public abstract class ModelBase(ILogger logger) : IModel
             return;
         }
 
-        int frameIndex = 1;
-        string typeName;
-        do
-        {
-            ++frameIndex;
-            var frame = new StackFrame(frameIndex);
-            var frameMethod = frame.GetMethod();
-            if (frameMethod == null)
-            {
-                return;
-            }
-
-            if (frameMethod.DeclaringType is null)
-            {
-                return; 
-            }
-
-            typeName = frameMethod.DeclaringType.Name;
-        }
-        while (typeName.StartsWith("ModelBase"));
-
-        ++frameIndex;
-        var frameAbove = new StackFrame(frameIndex);
-        var methodAbove = frameAbove.GetMethod();
-        if (methodAbove is not null)
-        {
-            var logAttribute = methodAbove.GetCustomAttribute<ModelDoNotLogAttribute>();
-            if (logAttribute is not null)
-            {
-                return;
-            }
-        }
-
-        string methodAboveName = methodAbove != null ? methodAbove.Name : "<none>";
         string message =
-            string.Format(
-                "From {0} in {1}: Property {2} changed to:   {3}",
-                typeName, methodAboveName, name, value == null ? "null" : value.ToString());
+            string.Format(" Property {0} changed to:   {1}", name, value == null ? "null" : value.ToString());
         this.Logger.Info(message);
     }
 
