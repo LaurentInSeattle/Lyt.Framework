@@ -12,6 +12,7 @@ public class ApplicationModelBase(IProfiler profiler, ILogger logger, IApplicati
         {
             foreach (var model in this.application.GetModels())
             {
+                this.logger.Info(" Initializing: " + model.GetType().Name);
                 await model.Initialize();
             }
 
@@ -58,6 +59,7 @@ public class ApplicationModelBase(IProfiler profiler, ILogger logger, IApplicati
         {
             foreach (var model in this.application.GetModels())
             {
+                this.logger.Info(" Shutdown: " + model.GetType().Name);
                 await model.Shutdown();
             }
         }
