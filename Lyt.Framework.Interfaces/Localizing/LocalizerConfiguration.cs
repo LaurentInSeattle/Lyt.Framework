@@ -1,8 +1,12 @@
 ﻿namespace Lyt.Framework.Interfaces.Localizing;
 
+using System.Reflection;
+
 public sealed class LocalizerConfiguration
 {
     public HashSet<string> Languages { get; set; } = []; // Example: = ["en-US", "fr-FR", "it-IT"];
+
+    public Assembly? Assembly { get; set; } = null; 
 
     public string AssemblyName { get; set; } = string.Empty; // Example: = "TextoCopier";
 
@@ -22,12 +26,14 @@ public sealed class LocalizerConfiguration
         !string.IsNullOrWhiteSpace(this.LanguagesSubFolder) &&
         !string.IsNullOrWhiteSpace(this.LanguagesFilePrefix);
 
+    public string ResourcePathString()
+        => string.Format(
+            "{0}/{1}/{2}", this.AssemblyName, this.AssetsFolder, this.LanguagesSubFolder);
+
     public string ResourceFileEmbeddedPathString(string targetLanguage)
         => string.Format(
-            "{0}/{1}/{2}/{3}{4}{5}",
-            this.AssetsFolder,
-            this.LanguagesSubFolder, this.LanguagesFilePrefix,
-            targetLanguage, this.LanguagesFileExtension);
+            "{0}{1}{2}",
+            this.LanguagesFilePrefix, targetLanguage, this.LanguagesFileExtension);
 
     // These two utilities are Avalonia specific.
     public string ResourceFileUriString(string targetLanguage)
