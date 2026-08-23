@@ -8,7 +8,6 @@ public interface ILocalizer
     Task Configure(LocalizerConfiguration localizerConfiguration);
 
     /// <summary> Returns true if the requested language exists and gets selected </summary>
-    [RequiresUnreferencedCode("For Resource Include")]
     bool SelectLanguage(string targetLanguage);
 
     /// <summary> Returns the current language, if one is selected </summary>
