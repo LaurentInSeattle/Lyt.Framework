@@ -22,6 +22,13 @@ public sealed class LocalizerConfiguration
         !string.IsNullOrWhiteSpace(this.LanguagesSubFolder) &&
         !string.IsNullOrWhiteSpace(this.LanguagesFilePrefix);
 
+    public string ResourceFileEmbeddedPathString(string targetLanguage)
+        => string.Format(
+            "{0}/{1}/{2}/{3}{4}{5}",
+            this.AssetsFolder,
+            this.LanguagesSubFolder, this.LanguagesFilePrefix,
+            targetLanguage, this.LanguagesFileExtension);
+
     // These two utilities are Avalonia specific.
     public string ResourceFileUriString(string targetLanguage)
         => string.Format(
