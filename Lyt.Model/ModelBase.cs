@@ -144,15 +144,18 @@ public abstract class ModelBase(ILogger logger) : IModel
         this.properties.Clear();
     }
 
-    [RequiresUnreferencedCode("Not trimming safe")]
+    //[RequiresUnreferencedCode("Not trimming safe")]
     protected void CopyJSonRequiredProperties<T>(T source)
     {
         if (source is not ModelBase)
         {
             throw new Exception("Source is not a model.");
         }
-
+#pragma warning disable IL2075
+        // Apparently just works fine 
         var allProperties = source.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+#pragma warning restore IL2075
+
         List<PropertyInfo> copyProperties = new (allProperties.Length);
         for (int i = 0; i < allProperties.Length; ++i)
         {
