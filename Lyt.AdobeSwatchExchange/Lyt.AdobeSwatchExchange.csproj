@@ -23,24 +23,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\AseFiles\arne16.ase" />
-    <EmbeddedResource Include="Resources\AseFiles\arne16pal.ase" />
-    <EmbeddedResource Include="Resources\AseFiles\COLOURlovers.com_Blue_Lace.ase" />
-    <EmbeddedResource Include="Resources\AseFiles\COLOURlovers.com_Giant_Goldfish.ase" />
-    <EmbeddedResource Include="Resources\AseFiles\db.ase" />
-    <EmbeddedResource Include="Resources\AseFiles\db16.ase" />
-    <EmbeddedResource Include="Resources\AseFiles\db16pal.ase" />
-    <EmbeddedResource Include="Resources\AseFiles\db32.ase" />
-    <EmbeddedResource Include="Resources\AseFiles\db32pal.ase" />
-    <EmbeddedResource Include="Resources\AseFiles\demo.ase" />
-    <EmbeddedResource Include="Resources\AseFiles\sw-colors-number-ase.ase" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Nullable.Extended.Analyzer" Version="1.15.6581">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\AseFiles\" />
   </ItemGroup>
 
 </Project>
