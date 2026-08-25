@@ -3,22 +3,35 @@
 public class TranslatorService(ILogger logger)
 {
     private readonly ILogger logger = logger;
-    private readonly GoogleTranslate googleTranslate = new();
+    // private readonly GoogleTranslate googleTranslate = new();
+    private readonly LibreTranslate libreTranslate = 
+        new(new LibreTranslateOptions()
+        {
+            Alternatives = 1,
+            ApiKey = "",
+            Format = TranslationFormat.text
+        });
 
     public async Task<Tuple<bool, string>> Translate(
-        ProviderKey provider, 
+        ProviderKey provider,
         string sourceText, string sourceLanguageKey, string destinationLanguageKey)
     {
         try
         {
+            await Task.Delay(60);
+
             switch (provider)
             {
-                case ProviderKey.Google:
-                    await Task.Delay(100); 
-                    return await this.googleTranslate.Translate(sourceText, sourceLanguageKey, destinationLanguageKey);
-
                 default:
-                    break;
+                case ProviderKey.Google:
+                    // return await this.googleTranslate.Translate(sourceText, sourceLanguageKey, destinationLanguageKey);
+                    return Tuple.Create(false, "No longer supported"); ; 
+
+                case ProviderKey.LibreTranslate:
+                    var libreTranslation = 
+                        await this.libreTranslate.Translate(sourceText, sourceLanguageKey, destinationLanguageKey);
+                    return 
+                        new Tuple<bool, string>(libreTranslation.IsSuccessful, libreTranslation.Result.TranslatedText); 
             }
 
             throw new NotImplementedException();
@@ -32,15 +45,15 @@ public class TranslatorService(ILogger logger)
     }
 
     public async Task<Tuple<bool, Dictionary<string, string>>> BatchTranslate(
-        ProviderKey provider, 
-        Dictionary<string,string> sourceTexts, string sourceLanguageKey, string destinationLanguageKey,
+        ProviderKey provider,
+        Dictionary<string, string> sourceTexts, string sourceLanguageKey, string destinationLanguageKey,
         int throttleDelayMillisecs = 1_000)
     {
-        bool success = true ;
+        bool success = true;
         try
         {
-            Dictionary<string, string> translatedTexts = new ((int)(sourceTexts.Count* 1.25));
-            bool isFirst = true ;
+            Dictionary<string, string> translatedTexts = new((int)(sourceTexts.Count * 1.25));
+            bool isFirst = true;
             foreach (var item in sourceTexts)
             {
                 if (!isFirst)
@@ -53,8 +66,8 @@ public class TranslatorService(ILogger logger)
                 }
                 else
                 {
-                    isFirst = false ;
-                } 
+                    isFirst = false;
+                }
 
                 string key = item.Key;
                 string sourceText = item.Value;
@@ -66,7 +79,7 @@ public class TranslatorService(ILogger logger)
                 else
                 {
                     success = false;
-                    break ;
+                    break;
                 }
             }
 

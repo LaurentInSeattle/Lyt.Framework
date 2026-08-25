@@ -1,12 +1,5 @@
 ﻿namespace Lyt.Translator.Service.Google;
 
-[JsonSourceGenerationOptions(WriteIndented = false)]
-[JsonSerializable(typeof(TranslationResponse))]
-[JsonSerializable(typeof(Sentence))]
-public partial class AppJsonContext : JsonSerializerContext
-{
-}
-
 internal class GoogleTranslate
 {
     private const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0";

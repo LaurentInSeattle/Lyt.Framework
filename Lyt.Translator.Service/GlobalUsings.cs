@@ -7,6 +7,7 @@ global using System.ComponentModel;
 global using System.Diagnostics;
 global using System.Linq;
 global using System.Net;
+global using System.Net.Http.Json;
 global using System.Net.NetworkInformation;
 global using System.Reflection;
 global using System.Runtime.CompilerServices;
@@ -23,3 +24,5 @@ global using Lyt.Framework.Interfaces.Logging;
 
 global using Lyt.Translator.Service;
 global using Lyt.Translator.Service.Google;
+global using Lyt.Translator.Service.Libre;
+
