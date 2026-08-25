@@ -264,4 +264,6 @@ public class ConsoleBase(
         // ??? 
         // What can we do here ? 
     }
+
+    List<IModel> IApplicationBase.GetModels() => [];
 }

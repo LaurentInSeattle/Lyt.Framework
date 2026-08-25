@@ -2,6 +2,7 @@
 
 [JsonSourceGenerationOptions(WriteIndented = false)]
 [JsonSerializable(typeof(TranslationResponse))]
+[JsonSerializable(typeof(Sentence))]
 public partial class AppJsonContext : JsonSerializerContext
 {
 }
@@ -30,37 +31,45 @@ internal class GoogleTranslate
                 string.Format(
                     GoogleTranslatorUrl, sourceLanguageKey, destinationLanguageKey, encodedSourceText);
             using var response = await this.client.GetAsync(url);
-            var stream = await response.Content.ReadAsStreamAsync();
-            using var reader = new StreamReader(stream, Encoding.UTF8);
-            string jsonText = reader.ReadToEnd();
-            var responseObject = JsonSerializer.Deserialize(jsonText, AppJsonContext.Default.TranslationResponse);
-            if (responseObject is TranslationResponse translationResponse)
+            if (response.IsSuccessStatusCode)
             {
-                var sentences = translationResponse.Sentences;
-                if (sentences is not null && sentences.Count > 0)
+                var stream = await response.Content.ReadAsStreamAsync();
+                using var reader = new StreamReader(stream, Encoding.UTF8);
+                string jsonText = reader.ReadToEnd();
+                var responseObject = JsonSerializer.Deserialize(jsonText, AppJsonContext.Default.TranslationResponse);
+                if (responseObject is TranslationResponse translationResponse)
                 {
-                    string translation = string.Empty;
-                    foreach (Sentence sentence in sentences)
+                    var sentences = translationResponse.Sentences;
+                    if (sentences is not null && sentences.Count > 0)
                     {
-                        string? maybeTranslation = sentence.Translation;
-                        if (!string.IsNullOrWhiteSpace(maybeTranslation))
+                        string translation = string.Empty;
+                        foreach (Sentence sentence in sentences)
                         {
-                            translation = string.Concat(translation, " ", maybeTranslation);
+                            string? maybeTranslation = sentence.Translation;
+                            if (!string.IsNullOrWhiteSpace(maybeTranslation))
+                            {
+                                translation = string.Concat(translation, " ", maybeTranslation);
+                            }
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(translation))
+                        {
+                            Debug.WriteLine(sourceText + " :  " + translation.Trim());
+                            return new Tuple<bool, string>(true, translation.Trim());
                         }
                     }
-
-                    if (!string.IsNullOrWhiteSpace(translation))
-                    {
-                        Debug.WriteLine(sourceText + " :  " + translation.Trim());
-                        return new Tuple<bool, string>(true, translation.Trim());
-                    }
                 }
-            }
 
-            throw new Exception("Deserialization Error");
+                throw new Exception("Deserialization Error");
+            } 
+            else
+            {
+                return new Tuple<bool, string>(false, response.ReasonPhrase ?? "No reason provided.");
+            }
         }
         catch (Exception ex)
         {
+            Debug.WriteLine(ex); 
             return new Tuple<bool, string>(false, ex.Message);
         }
     }
