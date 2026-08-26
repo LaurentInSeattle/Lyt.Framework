@@ -13,6 +13,9 @@ public sealed class Language(
     public static readonly Dictionary<string, Language> Languages = new()
     {
         // TODO: Some culture keys possibly incorrect, verify 
+        
+        // No supported by Libre 
+        // {  "hy-AM" , new Language( "hy-AM", "hy-AM", "Armenian", "Հայերէն", "Armenia") },
 
         // Verified 
         {  DefaultCultureKey , Default },
@@ -28,9 +31,8 @@ public sealed class Language(
         {  "de-DE" , new Language( "de-DE", "de", "German", "Deutsch", "Germany", "Austria") },
         {  "ka-GE" , new Language( "ka-GE", "ka", "Georgian", "ქართული ენა", "Georgia") },
         {  "pl-PL" , new Language( "pl-PL", "pl", "Polish", "Polski", "Poland") },
-        {  "pt-PT" , new Language( "pt-PT", "pt-PT", "Portuguese", "Português", "Portugal", "Brazil") },
+        {  "pt-PT" , new Language( "pt-PT", "pt", "Portuguese", "Português", "Portugal", "Brazil") },
         {  "ro-RO" , new Language( "ro-RO", "ro", "Romanian", "Românesc", "Romania", "Moldova") },
-        {  "hy-AM" , new Language( "hy-AM", "hy-AM", "Armenian", "Հայերէն", "Armenia") },
         {  "cs-CS" , new Language( "cs-CS", "cs-CS", "Czech", "Čeština", "Czech") },
         {  "zh-CN" , new Language( "zh-CN", "zh-CN", "Chinese (Simplified)", "簡體 中文", "China") },
         {  "zh-TW" , new Language( "zh-TW", "zh-TW", "Chinese (Traditional)", "繁體 中文", "Taiwan") },
