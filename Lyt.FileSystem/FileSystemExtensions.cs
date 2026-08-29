@@ -20,6 +20,7 @@ public static class FileSystemExtensions
         return null;
     }
 
+    // Available Free Space in bytes 
     public static long AvailableFreeSpace(this string folderPath)
     {
         if (DriveInfo(folderPath) is DriveInfo driveInfo)
