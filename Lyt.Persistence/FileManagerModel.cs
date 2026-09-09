@@ -40,34 +40,12 @@ public sealed class FileManagerModel : ModelBase, IModel
 
     //private readonly JsonSerializerOptions jsonSerializerOptions;
 
-    public FileManagerModel(ILogger logger) : base(logger)
-    {
-        this.Configuration = new FileManagerConfiguration(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
-        //this.jsonSerializerOptions =
-        //    new JsonSerializerOptions
-        //    {
-        //        // 'Classic' properties 
-        //        //
-        //        AllowTrailingCommas = true,
-        //        WriteIndented = true,
-        //        IndentSize = 4,
-        //        ReadCommentHandling = JsonCommentHandling.Skip,
-        //        IgnoreReadOnlyFields = true,
-        //        IgnoreReadOnlyProperties = true,
-
-        //        // .Net 7 properties 
-        //        //
-        //        UnknownTypeHandling = JsonUnknownTypeHandling.JsonElement,
-
-        //        // .Net 9 and above properties 
-        //        //
-        //        AllowOutOfOrderMetadataProperties = true,
-        //        RespectRequiredConstructorParameters = true,
-        //        RespectNullableAnnotations= true,
-        //        NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals,
-        //    };
-        //this.jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    }
+#pragma warning disable IDE0290 // Use primary constructor
+    public FileManagerModel(ILogger logger) : base(logger) => 
+        this.Configuration = 
+            new FileManagerConfiguration(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+    
+#pragma warning restore IDE0290 // Use primary constructor
 
     public FileManagerConfiguration Configuration { get; private set; }
 
@@ -647,7 +625,9 @@ public sealed class FileManagerModel : ModelBase, IModel
         File.Delete(path);
     }
 
+#pragma warning disable IDE0060 // Remove unused parameter
     public List<string> Enumerate(Area area, Kind kind, string filter = "", string subFolder = "")
+#pragma warning restore IDE0060 // Remove unused parameter
     {
         try
         {

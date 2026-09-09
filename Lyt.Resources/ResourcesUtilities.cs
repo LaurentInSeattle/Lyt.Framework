@@ -6,10 +6,7 @@ public static class ResourcesUtilities
     private static Assembly ExecutingAssembly;
     public const string ResourcesExtension = ".json";
 
-    static ResourcesUtilities()
-    {
-        ExecutingAssembly = Assembly.GetExecutingAssembly();
-    }
+    static ResourcesUtilities() => ExecutingAssembly = Assembly.GetExecutingAssembly();
 
     public static void SetResourcesPath(string resourcePath )
         => ResourcesUtilities.ResourcesPath = resourcePath;

@@ -75,7 +75,7 @@ public sealed class LruDictionary<TKey, TValue>(int capacity) :
 
     public ICollection<TKey> Keys => this.map.Keys;
 
-    public ICollection<TValue> Values => this.list.Select(node => node.Value).ToList();
+    public ICollection<TValue> Values => [.. this.list.Select(node => node.Value)];
 
     public TValue this[TKey key]
     {
