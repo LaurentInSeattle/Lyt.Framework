@@ -1,7 +1,5 @@
 ﻿namespace Lyt.Templator;
 
-using System.Reflection.Metadata;
-
 public sealed record class Parameter(
     string Tag,
     object Value,
