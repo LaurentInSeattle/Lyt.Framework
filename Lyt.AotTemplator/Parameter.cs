@@ -5,6 +5,19 @@ public sealed record class Parameter(
     object Value,
     ParameterKind Kind = ParameterKind.Scalar)
 {
+    public string StringValue
+    {
+        get
+        {
+            if (this.Value is not string stringValue)
+            {
+                throw new Exception("Unexpected Type for Parameter Value (string expected)");
+            }
+
+            return stringValue;
+        }
+    }
+
     public string ToCode()
     {
         switch (this.Kind)
