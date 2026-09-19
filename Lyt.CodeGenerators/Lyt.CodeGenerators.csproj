@@ -7,6 +7,7 @@
     <IsRoslynComponent>true</IsRoslynComponent>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <LangVersion>latest</LangVersion>
+    <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
