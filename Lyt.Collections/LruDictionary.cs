@@ -1,7 +1,7 @@
 ﻿namespace Lyt.Collections;
 
-public sealed class LruDictionary<TKey, TValue>(int capacity) : 
-    IDictionary<TKey, TValue>  where TKey: notnull
+public sealed class LruDictionary<TKey, TValue>(int capacity, bool withDispose = false) :
+    IDictionary<TKey, TValue> where TKey : notnull
 {
     private sealed class Node(TKey key, TValue value)
     {
@@ -10,13 +10,15 @@ public sealed class LruDictionary<TKey, TValue>(int capacity) :
         public TValue Value { get; set; } = value;
     }
 
+    private readonly bool withDispose = withDispose;
+
     private readonly int capacity =
             capacity <= 0 || capacity > 8 * 1024 * 1024 ?
                 throw new ArgumentOutOfRangeException(nameof(capacity)) :
                 capacity;
 
     private readonly Dictionary<TKey, LinkedListNode<Node>> map = [];
-    
+
     private readonly LinkedList<Node> list = new();
 
     public int Count => this.map.Count;
@@ -55,8 +57,17 @@ public sealed class LruDictionary<TKey, TValue>(int capacity) :
             var lruNode = this.list.Last;
             if (lruNode != null)
             {
-                this.map.Remove(lruNode.Value.Key);
+                var lruNodeValue = lruNode.Value;
+                this.map.Remove(lruNodeValue.Key);
                 this.list.RemoveLast();
+                if (this.withDispose)
+                {
+                    TValue nodeValue = lruNodeValue.Value;
+                    if (nodeValue is IDisposable disposable)
+                    {
+                        disposable.Dispose();
+                    }
+                }
             }
         }
 
@@ -67,6 +78,17 @@ public sealed class LruDictionary<TKey, TValue>(int capacity) :
 
     public void Clear()
     {
+        if (this.withDispose)
+        {
+            foreach (var value in this.list)
+            {
+                if (value is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+            }
+        }
+
         this.map.Clear();
         this.list.Clear();
     }
@@ -87,7 +109,7 @@ public sealed class LruDictionary<TKey, TValue>(int capacity) :
             }
 
             throw new KeyNotFoundException($"The given key '{key}' was not present in the dictionary.");
-        } 
+        }
 
         set
         {
@@ -103,7 +125,7 @@ public sealed class LruDictionary<TKey, TValue>(int capacity) :
 
     public void Add(KeyValuePair<TKey, TValue> item) => this.Add(item.Key, item.Value);
 
-    public bool ContainsKey(TKey key) => this.map.ContainsKey(key) ;
+    public bool ContainsKey(TKey key) => this.map.ContainsKey(key);
 
     public bool Contains(KeyValuePair<TKey, TValue> item) => this.ContainsKey(item.Key);
 
@@ -137,9 +159,9 @@ public sealed class LruDictionary<TKey, TValue>(int capacity) :
 
     public bool Remove(TKey key)
     {
-        Debug.WriteLine("Remove is not supported in LruDictionary. Use Clear() to remove all items.");  
+        Debug.WriteLine("Remove is not supported in LruDictionary. Use Clear() to remove all items.");
 
-        if ( Debugger.IsAttached)
+        if (Debugger.IsAttached)
         {
             Debugger.Break();
         }
