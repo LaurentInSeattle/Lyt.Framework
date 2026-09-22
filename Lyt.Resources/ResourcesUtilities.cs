@@ -45,6 +45,12 @@ public static class ResourcesUtilities
     public static string? GetFullResourceName(string name)
     {
         var resourceNames = ExecutingAssembly.GetManifestResourceNames().ToList();
+#if DEBUG 
+        if (!resourceNames.Select(str => str.EndsWith(name)).Any())
+        {
+            if ( Debugger.IsAttached) { Debugger.Break(); }
+        } 
+#endif
         return resourceNames.Single(str => str.EndsWith(name));
     }
 
