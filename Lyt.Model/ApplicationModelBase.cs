@@ -20,7 +20,7 @@ public class ApplicationModelBase(IProfiler profiler, ILogger logger, IApplicati
         }
         catch (Exception ex)
         {
-            // Should never fail here
+            // Should never fail here - but actually we do
             if (Debugger.IsAttached) { Debugger.Break(); }
             this.logger.Error(ex.ToString());
             throw new ApplicationException("Failed to initialize models.", ex);
