@@ -40,6 +40,9 @@ public static class GeneralExtensions
         }
     }
 
+    public static bool IsInBounds<T>(this int index, ICollection<T> collection)
+        => (index >= 0) && (index < collection.Count);
+
     public static bool IsOutOfBounds<T>(this int index, ICollection<T> collection)
         => (index < 0) || (index >= collection.Count);
 
