@@ -4,7 +4,11 @@ using Serilog;
 
 public sealed class FileLogger : Lyt.Framework.Interfaces.Logging.ILogger
 {
+#pragma warning disable CA2211 
+    // Non-constant fields should not be visible
     public static string AppName = string.Empty;
+
+#pragma warning restore CA2211 
 
     public FileLogger()
     {
