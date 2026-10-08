@@ -2,6 +2,25 @@
 
 public static partial class StringExtensions
 {
+    public static string Shorten(this string str, int length)
+    {
+        if (string.IsNullOrEmpty(str))
+        {
+            return string.Empty;
+        }
+
+        if (str.Length <= length)
+        {
+            return str;
+        }
+
+        int halfLength = length / 2;
+
+        string firstHalf = str[..halfLength];
+        string secondHalf = str.Substring(str.Length - halfLength, halfLength);
+        return string.Concat(firstHalf, " ... ", secondHalf);
+    }
+
     public static string Capitalize(this string str)
     {
         if (string.IsNullOrEmpty(str))
@@ -58,9 +77,9 @@ public static partial class StringExtensions
         }
 
         string? enumString = value.ToString();
-        if ( string.IsNullOrWhiteSpace(enumString))
+        if (string.IsNullOrWhiteSpace(enumString))
         {
-            return string.Empty; 
+            return string.Empty;
         }
 
         if (!string.IsNullOrWhiteSpace(prefixTrim) &&
