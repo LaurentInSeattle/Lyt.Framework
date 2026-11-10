@@ -5,13 +5,13 @@ internal class Upgrade
     private readonly EnumerationOptions enumerationOptions;
     private string rootPath;
 
-    //private const string find = "<TargetFramework>net9.0</TargetFramework>";
-    //private const string source = "<TargetFramework>net10.0</TargetFramework>";
-    //private const string target = "<TargetFramework>net11.0</TargetFramework>";
+    private const string find = "<TargetFramework>net10.0";
+    private const string source = "<TargetFramework>net10.0";
+    private const string target = "<TargetFramework>net11.0";
 
-    private const string find = "<PackageReference Include=\"Avalonia";
-    private const string source = "Version=\"12.1.2\"";
-    private const string target = "Version=\"12.1.4\"";
+    //private const string find = "<PackageReference Include=\"Avalonia";
+    //private const string source = "Version=\"12.1.2\"";
+    //private const string target = "Version=\"12.1.4\"";
 
     public Upgrade()
     {
