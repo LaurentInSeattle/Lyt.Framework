@@ -4,6 +4,7 @@ using Lyt.Framework.Interfaces.Logging;
 
 public interface IBindable
 {
+
     ILogger Logger { get; }
 
     bool CanFocus { get; }
