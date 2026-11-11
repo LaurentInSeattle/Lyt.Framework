@@ -156,7 +156,7 @@ public abstract class ModelBase(ILogger logger) : IModel
         var allProperties = source.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
 #pragma warning restore IL2075
 
-        List<PropertyInfo> copyProperties = new (allProperties.Length);
+        List<PropertyInfo> copyProperties = [with(allProperties.Length)];
         for (int i = 0; i < allProperties.Length; ++i)
         {
             var property = allProperties[i];
