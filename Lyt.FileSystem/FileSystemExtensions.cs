@@ -170,4 +170,47 @@ public static class FileSystemExtensions
             return false;
         }
     }
+
+    // Make sure the provided folder is writeable and readable, and that we can create
+    // and delete a file in it. (Full Control)
+    public static bool IsFolderFullControl(this string folderPath)
+    {
+        try
+        {
+            if( !Directory.Exists(folderPath))
+            {
+                return false;
+            }
+
+            const string testReadWrite = "testReadWrite";
+            string testFilePath = Path.Combine(folderPath, testReadWrite + ".txt");
+            File.WriteAllText(testFilePath, testReadWrite);
+            string content = File.ReadAllText(testFilePath);
+            bool fail = false;
+            if (content != testReadWrite)
+            {
+                fail = true;
+            }
+
+            File.Delete(testFilePath);
+            return !fail;
+        }
+        catch (IOException ioex)
+        {
+            // Thrown if the file is locked by another process or a disk error occurs
+            Debug.WriteLine(ioex.ToString());
+            return false;
+        }
+        catch (UnauthorizedAccessException uaex)
+        {
+            // Thrown if the application lacks OS permissions to read or write a file
+            Debug.WriteLine(uaex.ToString());
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("Exception in IsValid: " + ex.ToString());
+            return false;
+        }
+    }
 }
