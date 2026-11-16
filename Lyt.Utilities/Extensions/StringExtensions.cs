@@ -1,7 +1,25 @@
 ﻿namespace Lyt.Utilities.Extensions;
 
+using System.Buffers.Text; 
+
 public static partial class StringExtensions
 {
+    // Convert Guid to 22-character URL-safe string
+    public static string ToShortString(this Guid guid)
+    {
+        Span<byte> bytes = stackalloc byte[16];
+        guid.TryWriteBytes(bytes);
+        return Base64Url.EncodeToString(bytes);
+    }
+
+    // Convert 22-character string back to Guid
+    public static Guid FromShortString(this string shortGuid)
+    {
+        Span<byte> bytes = stackalloc byte[16];
+        Base64Url.DecodeFromChars(shortGuid, bytes);
+        return new Guid(bytes);
+    }
+
     public static string Shorten(this string str, int length)
     {
         if (string.IsNullOrEmpty(str))
