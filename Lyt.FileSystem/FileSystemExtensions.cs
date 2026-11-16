@@ -213,4 +213,82 @@ public static class FileSystemExtensions
             return false;
         }
     }
+
+    private static readonly HashSet<string> WindowsReservedNames = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "CON", "PRN", "AUX", "NUL",
+        "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+        "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"
+    };
+
+    public static string SanitizeFolderName(string input, string fallback = "Untitled", int minLength = 4, int maxLength = 20)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            return fallback;
+        }
+
+        if (input.Length < minLength)
+        {
+            return fallback;
+        }
+
+        // Replace invalid file/folder name characters with an underscore
+        char[] invalidChars = Path.GetInvalidFileNameChars();
+        string sanitized = string.Concat(input.Select(c => invalidChars.Contains(c) ? '_' : c));
+
+        // Trim leading/trailing whitespace and trailing dots (Windows strips trailing dots/spaces)
+        sanitized = sanitized.Trim().TrimEnd('.');
+
+        // Handle empty strings or relative path segments ("." or "..")
+        if (string.IsNullOrWhiteSpace(sanitized) || sanitized is "." or "..")
+        {
+            return fallback;
+        } 
+
+        // Prefix Windows reserved device names (e.g., "CON" or "CON.txt" -> "_CON")
+        string nameWithoutExtension = Path.GetFileNameWithoutExtension(sanitized);
+        if (WindowsReservedNames.Contains(nameWithoutExtension))
+        {
+            sanitized = "_" + sanitized;
+        }
+
+        // Enforce a safe segment length (255 is standard max for NTFS/ext4/APFS)
+        if (sanitized.Length > maxLength)
+        {
+            sanitized = sanitized[..maxLength].TrimEnd('.', ' ');
+        }
+
+        if (sanitized.Length < minLength)
+        {
+            return fallback;
+        }
+
+        return sanitized;
+    }
+
+    public static DirectoryInfo CreateSafeSubdirectory(string baseDirectory, string rawFolderName)
+    {
+        string safeName = SanitizeFolderName(rawFolderName);
+        return CreateSafeSubdirectory(baseDirectory, safeName, rawFolderName); 
+    } 
+
+    public static DirectoryInfo CreateSafeSubdirectory(string baseDirectory, string safeName, string rawFolderName)
+    { 
+        string fullBasePath = Path.GetFullPath(baseDirectory);
+        string targetPath = Path.GetFullPath(Path.Combine(fullBasePath, safeName));
+
+        // Prevent path traversal attacks (ensure final path is strictly inside baseDirectory)
+        string baseWithSeparator = 
+            fullBasePath.EndsWith(Path.DirectorySeparatorChar)  ? 
+                fullBasePath : 
+                fullBasePath + Path.DirectorySeparatorChar;
+
+        if (!targetPath.StartsWith(baseWithSeparator, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new UnauthorizedAccessException("Resulting folder path escapes the base directory.");
+        }
+
+        return Directory.CreateDirectory(targetPath);
+    }
 }
